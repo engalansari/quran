@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#123b35" />
+    <title>Ayah Studio</title>
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.getRegistrations()
+          .then((items) => items.forEach((item) => item.unregister()))
+          .catch(() => {});
+      }
+    </script>
+    <link rel="stylesheet" href="styles.css?v=20260704-saadi-caption" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="control-panel" aria-label="إعداد الفيديو">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">مولد فيديو قرآن</p>
+            <h1>Ayah Studio</h1>
+          </div>
+          <span class="account">@tilawat_alquran30</span>
+        </header>
+
+        <section class="panel">
+          <div class="section-title">
+            <span>1</span>
+            <div>
+              <h2>اختر الآيات</h2>
+              <p>اختر السورة والآية مباشرة، ثم راجع النص قبل التوليد.</p>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <label>
+              السورة
+              <select id="surahSelect"></select>
+            </label>
+            <label>
+              آية البداية
+              <input id="ayahStart" type="number" min="1" value="1" inputmode="numeric" />
+            </label>
+            <label>
+              عدد الآيات
+              <input id="ayahCount" type="number" min="1" max="20" value="2" inputmode="numeric" />
+            </label>
+          </div>
+          <div id="rangeSummary" class="range-summary">اختر السورة وآية البداية وعدد الآيات.</div>
+
+          <article class="ayah-card">
+            <p id="referenceLine" class="reference-line">جار تحميل المصحف...</p>
+            <div id="ayahPreview" class="ayah-preview"></div>
+            <p id="sourceLine" class="source-line"></p>
+          </article>
+        </section>
+
+        <section class="panel">
+          <div class="section-title">
+            <span>2</span>
+            <div>
+              <h2>اختر الصوت والخلفية</h2>
+              <p>اختر الخلفية من الصور، أو اجعل البرنامج يقترح الأقرب لمعنى الآيات.</p>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <label>
+              القارئ
+              <select id="reciterSelect"></select>
+            </label>
+            <label class="hidden-field">
+              الخلفية
+              <select id="backgroundSelect">
+                <option value="makkah">الحرم المكي</option>
+                <option value="madinah">المسجد النبوي</option>
+                <option value="nature">طبيعة هادئة</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="background-tools">
+            <input id="backgroundSearch" class="background-search" type="search" placeholder="بحث في الخلفيات" />
+            <button id="suggestBackgrounds" class="secondary-action" type="button">اقتراح خلفيات مناسبة للآيات</button>
+            <p id="suggestionLine" class="suggestion-line">عند اختيار الآيات سأعرض الخلفيات الأقرب للمعنى في الأعلى.</p>
+          </div>
+          <label class="background-category-field">
+            نوع الخلفية
+            <select id="backgroundCategoryFilters" class="background-category-select" aria-label="تصفية الخلفيات">
+              <option value="all">الكل</option>
+              <option value="suggested">المقترحة</option>
+              <option value="makkah">مكة</option>
+              <option value="madinah">المدينة</option>
+              <option value="mosque">مسجد</option>
+              <option value="nature">طبيعة</option>
+              <option value="sea">بحر</option>
+              <option value="sky">سماء / غروب</option>
+            </select>
+          </label>
+          <div class="library-toolbar">
+            <span id="backgroundCount">0 خلفية</span>
+            <button id="backgroundRefresh" class="pager-action" type="button">تحديث</button>
+            <button id="backgroundLoadMore" class="pager-action" type="button">عرض المزيد</button>
+          </div>
+          <div id="backgroundGrid" class="background-grid" aria-label="اختيار خلفية الفيديو"></div>
+          <div class="free-reels-section" hidden>
+            <div class="library-toolbar">
+              <span id="freeReelsCount">0 مصادر مجانية</span>
+            </div>
+            <div id="freeReelsGrid" class="free-reels-grid" aria-label="مصادر فيديوهات ريلز مجانية"></div>
+          </div>
+        </section>
+
+        <section class="panel action-panel">
+          <button id="generateButton" class="primary-action" type="button">توليد فيديو MP4</button>
+          <div id="statusBox" class="status-box">جاهز للتجربة. اختر الآيات ثم اضغط توليد.</div>
+          <a id="videoLink" class="video-link" href="#" target="_blank" rel="noreferrer" hidden>فتح الفيديو الناتج</a>
+          <div id="videoResultPanel" class="video-result-panel" hidden>
+            <p id="videoResultName" class="video-result-name"></p>
+            <div class="video-result-actions">
+              <a id="videoDownloadLink" class="result-action" href="#" download>تحميل</a>
+              <button id="copyVideoLink" class="result-action" type="button">نسخ الرابط</button>
+            </div>
+          </div>
+          <div id="instagramCaptionPanel" class="instagram-caption-panel" hidden>
+            <div class="caption-head">
+              <strong>وصف إنستغرام جاهز</strong>
+              <button id="copyInstagramCaption" class="result-action" type="button">نسخ الوصف</button>
+            </div>
+            <textarea id="instagramCaptionText" class="instagram-caption-text" readonly rows="5"></textarea>
+          </div>
+        </section>
+      </section>
+
+      <aside class="preview-panel" aria-label="معاينة الفيديو">
+        <div class="phone-preview">
+          <video
+            id="backgroundPreview"
+            autoplay
+            muted
+            playsinline
+            loop
+            preload="auto"
+            poster="assets/bg-makkah.svg"
+            src="assets/production/makkah.mp4"
+          ></video>
+          <div class="shade"></div>
+          <div class="brand-mark">@tilawat_alquran30</div>
+          <div id="phoneAyah" class="phone-ayah"></div>
+          <div class="phone-meta">
+            <span id="phoneReference"></span>
+            <span id="phoneReciter"></span>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <aside class="quick-generate-bar" aria-label="توليد سريع">
+      <div class="quick-generate-summary">
+        <strong id="quickGenerateTitle">جاهز للتجربة</strong>
+        <span id="quickGenerateSummary">اختر الآيات والقارئ والخلفية.</span>
+      </div>
+      <div class="quick-generate-actions">
+        <button id="quickGenerateButton" class="quick-generate-button" type="button">توليد الفيديو</button>
+        <a id="quickOpenVideo" class="quick-result-action" href="#" target="_blank" rel="noreferrer" hidden>فتح</a>
+        <a id="quickDownloadVideo" class="quick-result-action" href="#" download hidden>تحميل</a>
+        <button id="quickShareVideo" class="quick-result-action" type="button" hidden>إرسال</button>
+        <button id="quickCopyCaption" class="quick-result-action" type="button" hidden>نسخ الوصف</button>
+      </div>
+    </aside>
+
+    <script src="app.js?v=20260704-saadi-caption"></script>
+  </body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "authority": {
+    "name": "QuranEnc API",
+    "officialSiteUrl": "https://quranenc.com/",
+    "developerPlatformUrl": "https://quranenc.com/api/v1/translation/sura/english_saheeh/1",
+    "description": "QuranEnc API source authority for Uthmani arabic_text imports. Review before production use.",
+    "acceptedSourceDomains": [
+      "quranenc.com"
+    ],
+    "acceptedFormats": [
+      "json"
+    ],
+    "reviewed": true,
+    "reviewedBy": "Project owner approval",
+    "reviewNote": "Approved by project owner after reviewing the QuranEnc API Uthmani source evidence report.",
+    "reviewDate": "2026-06-30"
+  }
+}

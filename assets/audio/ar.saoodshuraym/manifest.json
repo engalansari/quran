@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-01T20:51:00.639Z",
+  "provider": {
+    "name": "Al Quran Cloud / Islamic Network CDN",
+    "apiBase": "https://api.alquran.cloud/v1",
+    "note": "Ayah Studio stores downloaded MP3 files locally and maps every file to an explicit surah and ayah. No recognition or guessing is used."
+  },
+  "reciter": "ar.saoodshuraym",
+  "reciterName": "سعود الشريم",
+  "ayahs": [
+    {
+      "surah": 1,
+      "ayah": 1,
+      "globalAyahNumber": 1,
+      "reciter": "ar.saoodshuraym",
+      "reciterName": "سعود الشريم",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/64/ar.saoodshuraym/1.mp3",
+      "file": "assets/audio/ar.saoodshuraym/001/001.mp3",
+      "sha256": "7d500cd313aa37a571104da511ac5deda83a38a2d595a2b5cdd46bc18ea66512"
+    },
+    {
+      "surah": 1,
+      "ayah": 2,
+      "globalAyahNumber": 2,
+      "reciter": "ar.saoodshuraym",
+      "reciterName": "سعود الشريم",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/64/ar.saoodshuraym/2.mp3",
+      "file": "assets/audio/ar.saoodshuraym/001/002.mp3",
+      "sha256": "4da70cbf4038fff579829678912186985a141c4bc38fe2ad72c19a5e68ba2d5a"
+    },
+    {
+      "surah": 4,
+      "ayah": 2,
+      "globalAyahNumber": 495,
+      "reciter": "ar.saoodshuraym",
+      "reciterName": "سعود الشريم",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/64/ar.saoodshuraym/495.mp3",
+      "file": "assets/audio/ar.saoodshuraym/004/002.mp3",
+      "sha256": "720c036f89b80ff31879f29291c31a75fdb3a4adc5b5ba39225ecb2c2250f56a"
+    },
+    {
+      "surah": 4,
+      "ayah": 3,
+      "globalAyahNumber": 496,
+      "reciter": "ar.saoodshuraym",
+      "reciterName": "سعود الشريم",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/64/ar.saoodshuraym/496.mp3",
+      "file": "assets/audio/ar.saoodshuraym/004/003.mp3",
+      "sha256": "ba670e7ccd83fbe3dccef04e4ce059966ace18f1124274809dabfec45e2d3fa0"
+    }
+  ]
+}

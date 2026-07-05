@@ -1,0 +1,26 @@
+{
+  "engine": {
+    "name": "Exact Quran transcript matcher",
+    "provider": "Ayah Studio",
+    "version": "0.1.0",
+    "sourceUrl": "https://local.ayah-studio/transcript-exact-quran-matching",
+    "modelFile": "tools/whisper.cpp/models/ggml-small.bin",
+    "mode": "transcript-exact-match",
+    "asrProvider": "whisper.cpp local",
+    "asrExecutable": "tools/whisper.cpp/Release/whisper-cli.exe",
+    "method": "Use local whisper.cpp to transcribe the first recitation audio window, normalize the transcript and reviewed Quran text the same way, then accept only a unique exact contiguous Quran match. Multiple matches are shown as candidates for user choice. No nearest match is allowed.",
+    "supportsSurahDetection": true,
+    "supportsAyahStartDetection": true,
+    "supportsConfidenceScore": true,
+    "allowsAutomaticSelection": true,
+    "automaticSelectionPolicy": "unique-normalized-transcript-only",
+    "transcriptInitialSeconds": 7,
+    "transcriptExpansionSeconds": [15, 30, 60],
+    "ambiguousCandidatePolicy": "show-candidates-for-user-choice",
+    "noMatchPolicy": "extend-analysis-window",
+    "requiresManualConfirmation": true,
+    "reviewed": false,
+    "exportReady": false,
+    "reviewNote": "Selected free local ASR path: whisper.cpp. Not production-ready until whisper.cpp, the multilingual model, and Quran-recitation transcript matching are installed and validated locally."
+  }
+}

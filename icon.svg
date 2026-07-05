@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Ayah Studio">
+  <rect width="512" height="512" rx="96" fill="#103b35"/>
+  <path d="M122 140c48-28 103-42 165-42 37 0 72 5 103 16v244c-31-11-66-16-103-16-62 0-117 14-165 42V140Z" fill="#f8efd8"/>
+  <path d="M143 161c41-20 88-30 141-30 30 0 58 3 85 10v174c-27-7-55-10-85-10-53 0-100 10-141 30V161Z" fill="#fffaf0"/>
+  <path d="M167 202h176M167 246h176M167 290h128" stroke="#b89346" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="371" cy="363" r="34" fill="#b89346"/>
+  <path d="M367 346c10 7 18 17 20 31-15-10-28-10-42 0 3-14 11-24 22-31Z" fill="#103b35"/>
+</svg>

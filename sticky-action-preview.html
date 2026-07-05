@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ayah Studio - Sticky Action Preview</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f7f3ea;
+      --panel: #fffdf8;
+      --ink: #17241f;
+      --muted: #69766f;
+      --line: #e1d8c2;
+      --emerald: #123b35;
+      --gold: #cfa953;
+      --ready: #0f7a55;
+      --shadow: rgba(24, 34, 28, 0.14);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 22px;
+      padding: 20px;
+      padding-bottom: 112px;
+    }
+
+    .control-panel {
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    h1,
+    h2,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 28px;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      font-size: 18px;
+      line-height: 1.3;
+      letter-spacing: 0;
+    }
+
+    .eyebrow,
+    .hint,
+    .meta {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .account {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 9px 12px;
+      background: white;
+      color: var(--emerald);
+      font-weight: 700;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 12px 34px var(--shadow);
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .section-title {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .section-title > span {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: var(--emerald);
+      color: white;
+      font-weight: 800;
+      flex: 0 0 auto;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    select,
+    input {
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+      color: var(--ink);
+      padding: 0 10px;
+    }
+
+    .background-tools {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+    }
+
+    .ayah-card {
+      border: 1px solid #eadfca;
+      border-radius: 8px;
+      background: #fffaf0;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .ayah {
+      font-family: "Traditional Arabic", "Amiri", serif;
+      font-size: 28px;
+      line-height: 1.9;
+    }
+
+    .secondary {
+      min-height: 42px;
+      border: 1px solid var(--emerald);
+      border-radius: 8px;
+      background: white;
+      color: var(--emerald);
+      font-weight: 800;
+      padding: 0 12px;
+    }
+
+    .library-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .background-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .background-card {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfbf7;
+      padding: 8px;
+      text-align: start;
+      color: inherit;
+      display: grid;
+      gap: 7px;
+    }
+
+    .background-card.is-selected {
+      border-color: var(--ready);
+      box-shadow: 0 0 0 2px rgba(15, 122, 85, 0.16);
+      background: #eef6f0;
+    }
+
+    .background-card img {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      border-radius: 7px;
+      background: #dfe5df;
+    }
+
+    .background-card strong {
+      font-size: 13px;
+      line-height: 1.35;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .action-panel {
+      opacity: 0.55;
+    }
+
+    .primary-old {
+      min-height: 48px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--emerald);
+      color: white;
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .preview-panel {
+      position: sticky;
+      top: 20px;
+      height: calc(100vh - 40px);
+      display: grid;
+      place-items: center;
+    }
+
+    .phone-preview {
+      width: min(100%, 310px);
+      aspect-ratio: 9 / 16;
+      border-radius: 28px;
+      overflow: hidden;
+      border: 8px solid #17201d;
+      background:
+        linear-gradient(to bottom, rgba(0,0,0,0.06), rgba(0,0,0,0.72)),
+        url("assets/background-library/posters/pexels-35189233.jpg");
+      background-size: cover;
+      background-position: center;
+      color: white;
+      padding: 18px;
+      display: grid;
+      align-content: space-between;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.24);
+    }
+
+    .mobile-preview-card {
+      display: none;
+    }
+
+    .phone-ayah {
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 8px;
+      background: rgba(7, 10, 9, 0.56);
+      padding: 16px;
+      text-align: center;
+      font-family: "Traditional Arabic", "Amiri", serif;
+      font-size: 27px;
+      line-height: 1.85;
+    }
+
+    .sticky-generate {
+      position: fixed;
+      z-index: 20;
+      right: 16px;
+      left: 16px;
+      bottom: max(12px, env(safe-area-inset-bottom));
+      margin: 0 auto;
+      max-width: 760px;
+      border: 1px solid rgba(18, 59, 53, 0.16);
+      border-radius: 8px;
+      background: rgba(255, 253, 248, 0.96);
+      box-shadow: 0 -10px 38px rgba(24, 34, 28, 0.22);
+      backdrop-filter: blur(12px);
+      padding: 10px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .sticky-summary {
+      min-width: 0;
+      display: grid;
+      gap: 3px;
+    }
+
+    .sticky-summary strong {
+      font-size: 14px;
+      line-height: 1.35;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sticky-summary span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sticky-button {
+      min-height: 46px;
+      min-width: 154px;
+      border: 0;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--ready), var(--gold));
+      color: #06110d;
+      font-weight: 900;
+      padding: 0 16px;
+    }
+
+    @media (max-width: 760px) {
+      .app-shell {
+        display: block;
+        padding: 12px 12px 110px;
+      }
+
+      .control-panel {
+        gap: 12px;
+      }
+
+      .topbar {
+        margin-bottom: 12px;
+      }
+
+      .mobile-preview-card {
+        display: grid;
+        place-items: center;
+        margin-bottom: 12px;
+      }
+
+      .mobile-preview-card .phone-preview {
+        width: min(62vw, 250px);
+        border-width: 6px;
+        border-radius: 24px;
+        padding: 14px;
+      }
+
+      .mobile-preview-card .phone-ayah {
+        font-size: 23px;
+        padding: 12px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      .form-grid,
+      .background-tools {
+        grid-template-columns: 1fr;
+      }
+
+      .background-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .preview-panel {
+        display: none;
+      }
+
+      .sticky-generate {
+        right: 10px;
+        left: 10px;
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .sticky-button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app-shell">
+    <section class="control-panel" aria-label="إعداد الفيديو">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">مولد فيديو قرآن</p>
+          <h1>Ayah Studio</h1>
+        </div>
+        <span class="account">@tilawat_alquran30</span>
+      </header>
+
+      <section class="mobile-preview-card" aria-label="بطاقة معاينة القرآن بشكل هاتف">
+        <div class="phone-preview">
+          <span>@tilawat_alquran30</span>
+          <div class="phone-ayah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+          <span>الفاتحة 1-3 | مشاري العفاسي</span>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="section-title">
+          <span>1</span>
+          <div>
+            <h2>اختر الآيات</h2>
+            <p class="hint">نفس فكرة التصميم الأصلي، بدون تغيير كبير على ترتيب العمل.</p>
+          </div>
+        </div>
+        <div class="form-grid">
+          <label>السورة<select><option>الفاتحة</option></select></label>
+          <label>آية البداية<input type="number" value="1" /></label>
+          <label>عدد الآيات<input type="number" value="3" /></label>
+        </div>
+        <article class="ayah-card">
+          <p class="meta">سورة الفاتحة - الآيات 1 إلى 3</p>
+          <div class="ayah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+        </article>
+      </section>
+
+      <section class="panel">
+        <div class="section-title">
+          <span>2</span>
+          <div>
+            <h2>اختر الصوت والخلفية</h2>
+            <p class="hint">بعد اختيار أول صورة لا تحتاج للنزول إلى آخر الصفحة؛ زر التوليد يبقى أسفل الشاشة.</p>
+          </div>
+        </div>
+        <div class="form-grid">
+          <label>القارئ<select><option>مشاري العفاسي</option></select></label>
+          <label>نوع الخلفية<select><option>مكة</option></select></label>
+          <label>بحث<input type="search" value="الكعبة" /></label>
+        </div>
+        <div class="background-tools">
+          <button class="secondary" type="button">اقتراح خلفيات مناسبة للآيات</button>
+          <button class="secondary" type="button">عرض المزيد</button>
+        </div>
+        <div class="library-toolbar">
+          <span>78 خلفية في مكة</span>
+          <span>الصورة الأولى محددة</span>
+        </div>
+        <div class="background-grid">
+          <button class="background-card is-selected" type="button">
+            <img src="assets/background-library/posters/pexels-35189233.jpg" alt="" />
+            <strong>Kaaba at Masjid Al Haram</strong>
+            <span class="meta">مكة - جاهز</span>
+          </button>
+          <button class="background-card" type="button">
+            <img src="assets/background-library/posters/pexels-35189252.jpg" alt="" />
+            <strong>Masjid Al Haram Crowd</strong>
+            <span class="meta">مكة - جاهز</span>
+          </button>
+          <button class="background-card" type="button">
+            <img src="assets/background-library/posters/pexels-35155756.jpg" alt="" />
+            <strong>Holy Mosque View</strong>
+            <span class="meta">مكة - جاهز</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="panel action-panel">
+        <button class="primary-old" type="button">توليد فيديو MP4</button>
+        <p class="hint">يبقى الزر الأصلي موجودا، لكن الشريط السفلي يحل مشكلة الوصول السريع.</p>
+      </section>
+    </section>
+
+    <aside class="preview-panel" aria-label="معاينة الفيديو">
+      <div class="phone-preview">
+        <span>@tilawat_alquran30</span>
+        <div class="phone-ayah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+        <span>الفاتحة 1-3 | مشاري العفاسي</span>
+      </div>
+    </aside>
+  </main>
+
+  <aside class="sticky-generate" aria-label="زر التوليد السريع">
+    <div class="sticky-summary">
+      <strong>جاهز للتوليد</strong>
+      <span>الفاتحة 1-3 | مشاري العفاسي | مكة</span>
+    </div>
+    <button class="sticky-button" type="button">توليد الفيديو</button>
+  </aside>
+</body>
+</html>

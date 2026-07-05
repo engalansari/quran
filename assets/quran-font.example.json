@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "purpose": "Reviewed Uthmani Quran font manifest for Ayah Studio production export.",
+  "font": {
+    "file": "assets/fonts/hafs.18.ttf",
+    "familyName": "KFGQPC HAFS Uthmanic Script",
+    "sourceName": "King Fahad Qur'an Printing Complex Hafs font via quran-data-kfgqpc",
+    "sourceUrl": "https://github.com/thetruetruth/quran-data-kfgqpc/blob/main/hafs/font/hafs.18.ttf",
+    "license": "Quran Complex digital Mushaf usage terms: https://dm.qurancomplex.gov.sa/copyright-2/",
+    "reviewed": true,
+    "exportReady": true,
+    "notes": "Approved by visual test in Ayah Studio. FFmpeg/libass selects the internal family as KFGQPCHAFSUthmanicScript-Regula."
+  }
+}

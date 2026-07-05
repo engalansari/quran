@@ -1,0 +1,15 @@
+key/
+*.env
+.env.local
+node_modules/
+outputs/
+tools/
+*.log
+server-*.out.log
+server-*.err.log
+*.zip
+ui-preview-*.png
+ayah-studio-*.png
+ayah-studio-*.jpg
+ayah-preview-*.png
+ayah-design1-*.png

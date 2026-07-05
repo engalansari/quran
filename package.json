@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "test": "node scripts/test-all.mjs",
+    "start": "node scripts/serve-mobile-backend.mjs --host 127.0.0.1 --port 4173",
+    "audit:backgrounds": "node scripts/audit-background-sources.mjs",
+    "proof:ffmpeg": "node scripts/find-ffmpeg.mjs"
+  },
+  "dependencies": {
+    "tesseract.js": "^5.1.1"
+  }
+}

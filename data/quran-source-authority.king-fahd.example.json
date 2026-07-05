@@ -1,0 +1,21 @@
+{
+  "authority": {
+    "name": "King Fahd Glorious Quran Printing Complex",
+    "officialSiteUrl": "https://qurancomplex.gov.sa/",
+    "developerPlatformUrl": "https://qurancomplex.gov.sa/en/kfgqpc-quran-developer/",
+    "description": "Official Quran Complex source authority for Uthmani Quran text imports.",
+    "acceptedSourceDomains": [
+      "qurancomplex.gov.sa",
+      "download.qurancomplex.gov.sa"
+    ],
+    "acceptedFormats": [
+      "json",
+      "csv",
+      "xml",
+      "txt"
+    ],
+    "reviewed": false,
+    "reviewedBy": "",
+    "reviewNote": ""
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "purpose": "Production background catalog for Ayah Studio.",
+  "requirements": [
+    "Source name and URL must be documented.",
+    "License must allow the intended publishing use.",
+    "No external watermark or required visible attribution inside the final video.",
+    "The file must be visually reviewed so it does not obscure Quran text or important landmarks."
+  ],
+  "backgrounds": [
+    {
+      "id": "makkah-production",
+      "name": "Makkah inspired production background",
+      "category": "landmark",
+      "file": "assets/production/makkah.mp4",
+      "sourceName": "Ayah Studio generated production background",
+      "sourceUrl": "https://local.ayah-studio/generated-backgrounds/makkah-production",
+      "license": "Original project-generated asset. Approved for Ayah Studio publishing use. No external attribution required.",
+      "reviewed": true,
+      "exportReady": true,
+      "sha256": "38838a4021c126ccd20b55547b152ec374cd93456464f3ee0970f37927069188",
+      "reviewNote": "Generated locally with FFmpeg as an abstract Makkah-inspired background; avoids third-party imagery."
+    },
+    {
+      "id": "madinah-production",
+      "name": "Madinah inspired production background",
+      "category": "landmark",
+      "file": "assets/production/madinah.mp4",
+      "sourceName": "Ayah Studio generated production background",
+      "sourceUrl": "https://local.ayah-studio/generated-backgrounds/madinah-production",
+      "license": "Original project-generated asset. Approved for Ayah Studio publishing use. No external attribution required.",
+      "reviewed": true,
+      "exportReady": true,
+      "sha256": "c608fc30c7c50c1c34d1945b1fab12bcaa9fa5c3842e698ca6bad8e6dcb52932",
+      "reviewNote": "Generated locally with FFmpeg as an abstract Madinah-inspired background; avoids third-party imagery."
+    },
+    {
+      "id": "nature-production",
+      "name": "Nature inspired production background",
+      "category": "nature",
+      "file": "assets/production/nature.mp4",
+      "sourceName": "Ayah Studio generated production background",
+      "sourceUrl": "https://local.ayah-studio/generated-backgrounds/nature-production",
+      "license": "Original project-generated asset. Approved for Ayah Studio publishing use. No external attribution required.",
+      "reviewed": true,
+      "exportReady": true,
+      "sha256": "8c81c299dd170ac47e1d6a5e929860a2a795782a81bca657f4445974ef9e2274",
+      "reviewNote": "Generated locally with FFmpeg as a quiet nature-inspired background; avoids third-party imagery."
+    }
+  ]
+}

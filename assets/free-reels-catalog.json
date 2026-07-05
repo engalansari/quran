@@ -1,0 +1,100 @@
+{
+  "version": 1,
+  "providerPolicy": "Free sources only. Do not add premium, paid, sponsored, Canva edit, Shutterstock, iStock, Adobe Stock, restricted, or editorial-only links.",
+  "licenseSources": [
+    {
+      "provider": "Pixabay",
+      "licenseName": "Pixabay Content License",
+      "licenseUrl": "https://pixabay.com/service/license-summary/"
+    },
+    {
+      "provider": "Pexels",
+      "licenseName": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  ],
+  "items": [
+    {
+      "id": "pixabay-201668",
+      "title": "Ramadan Islam Mosque - vertical reel",
+      "category": "mosque",
+      "provider": "Pixabay",
+      "sourceUrl": "https://pixabay.com/videos/ramadan-islam-mosque-prayer-pray-201668/",
+      "poster": "https://cdn.pixabay.com/video/2024/02/23/201668-916080463_tiny.jpg",
+      "licenseName": "Pixabay Content License",
+      "licenseUrl": "https://pixabay.com/service/license-summary/",
+      "quality": "4K",
+      "duration": "0:40",
+      "orientation": "vertical",
+      "verifiedFree": true
+    },
+    {
+      "id": "pixabay-198048",
+      "title": "Mecca Madina Saudia Arabia Haram",
+      "category": "makkah",
+      "provider": "Pixabay",
+      "sourceUrl": "https://pixabay.com/videos/mecca-madina-saudia-arabia-haram-198048/",
+      "poster": "https://cdn.pixabay.com/video/2024/01/25/198048-906522343_tiny.jpg",
+      "licenseName": "Pixabay Content License",
+      "licenseUrl": "https://pixabay.com/service/license-summary/",
+      "quality": "HD",
+      "duration": "0:30",
+      "orientation": "horizontal",
+      "verifiedFree": true
+    },
+    {
+      "id": "pixabay-198047",
+      "title": "Mecca Madina Haram - Kaaba view",
+      "category": "makkah",
+      "provider": "Pixabay",
+      "sourceUrl": "https://pixabay.com/videos/mecca-madina-saudia-arabia-haram-198047/",
+      "poster": "https://cdn.pixabay.com/video/2024/01/25/198047-906522337_tiny.jpg",
+      "licenseName": "Pixabay Content License",
+      "licenseUrl": "https://pixabay.com/service/license-summary/",
+      "quality": "HD",
+      "duration": "0:20",
+      "orientation": "horizontal",
+      "verifiedFree": true
+    },
+    {
+      "id": "pixabay-112360",
+      "title": "Madinah Outside Medina Umrah",
+      "category": "madinah",
+      "provider": "Pixabay",
+      "sourceUrl": "https://pixabay.com/videos/madinah-outside-medina-umrah-madina-112360/",
+      "poster": "https://cdn.pixabay.com/video/2022/03/30/112360-694236351_tiny.jpg",
+      "licenseName": "Pixabay Content License",
+      "licenseUrl": "https://pixabay.com/service/license-summary/",
+      "quality": "HD",
+      "duration": "0:11",
+      "orientation": "horizontal",
+      "verifiedFree": true
+    }
+  ],
+  "searchPages": [
+    {
+      "id": "pixabay-search-makkah",
+      "title": "Pixabay Makkah videos",
+      "provider": "Pixabay",
+      "sourceUrl": "https://pixabay.com/videos/search/makkah/",
+      "licenseUrl": "https://pixabay.com/service/license-summary/",
+      "resultNote": "17+ free Makkah videos"
+    },
+    {
+      "id": "pixabay-search-madinah",
+      "title": "Pixabay Madinah videos",
+      "provider": "Pixabay",
+      "sourceUrl": "https://pixabay.com/videos/search/madinah/",
+      "licenseUrl": "https://pixabay.com/service/license-summary/",
+      "resultNote": "12+ free Madinah videos"
+    },
+    {
+      "id": "pexels-search-makkah",
+      "title": "Pexels Makkah videos",
+      "provider": "Pexels",
+      "sourceUrl": "https://www.pexels.com/search/videos/makkah/",
+      "licenseUrl": "https://www.pexels.com/license/",
+      "resultNote": "Free Makkah videos search page"
+    }
+  ]
+}

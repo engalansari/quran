@@ -1,0 +1,22 @@
+{
+  "purpose": "Source review metadata for a King Fahd Glorious Quran Printing Complex Uthmani Quran dataset.",
+  "source": {
+    "name": "King Fahd Glorious Quran Printing Complex - Quran software developer platform",
+    "url": "https://qurancomplex.gov.sa/",
+    "edition": "Madinah Mushaf Uthmani Unicode dataset",
+    "formatReceived": "json/csv/xml/sql/pdf",
+    "rawSha256": "",
+    "reviewed": false,
+    "reviewedBy": "",
+    "reviewDate": "",
+    "notes": "Replace this example with the exact official download URL, edition/version, and reviewer details before production export."
+  },
+  "localFiles": {
+    "rawSourceFile": "data/source/king-fahd-quran-source.json",
+    "preparedOutput": "data/quran-uthmani.json"
+  },
+  "commands": {
+    "prepare": "node scripts/prepare-quran-data.mjs --input data/source/king-fahd-quran-source.json --output data/quran-uthmani.json --source-name \"King Fahd Glorious Quran Printing Complex\" --source-url \"https://qurancomplex.gov.sa/\" --source-edition \"Madinah Mushaf Uthmani Unicode dataset\"",
+    "validate": "node scripts/validate-quran-data.mjs --file data/quran-uthmani.json"
+  }
+}

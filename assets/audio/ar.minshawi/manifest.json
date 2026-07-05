@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-01T21:00:55.056Z",
+  "provider": {
+    "name": "Al Quran Cloud / Islamic Network CDN",
+    "apiBase": "https://api.alquran.cloud/v1",
+    "note": "Ayah Studio stores downloaded MP3 files locally and maps every file to an explicit surah and ayah. No recognition or guessing is used."
+  },
+  "reciter": "ar.minshawi",
+  "reciterName": "محمد صديق المنشاوي",
+  "ayahs": [
+    {
+      "surah": 4,
+      "ayah": 2,
+      "globalAyahNumber": 495,
+      "reciter": "ar.minshawi",
+      "reciterName": "محمد صديق المنشاوي",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.minshawi/495.mp3",
+      "file": "assets/audio/ar.minshawi/004/002.mp3",
+      "sha256": "b18cc2bdbd7b58347fc829056a919ba0a764bd396894bd81f88a8a1bf661c74a"
+    }
+  ]
+}

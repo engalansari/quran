@@ -1,0 +1,19 @@
+{
+  "name": "Ayah Studio",
+  "short_name": "Ayah Studio",
+  "description": "Web Mobile studio for respectful Quran reels.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "dir": "rtl",
+  "lang": "ar",
+  "background_color": "#f6f4ef",
+  "theme_color": "#103b35",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

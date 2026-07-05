@@ -1,0 +1,151 @@
+{
+  "version": 1,
+  "purpose": "Verse-by-verse Quran recitation catalog for deterministic Ayah Studio video generation.",
+  "provider": {
+    "name": "Al Quran Cloud / Islamic Network CDN",
+    "apiBase": "https://api.alquran.cloud/v1",
+    "note": "Ayah Studio stores downloaded MP3 files locally and maps every file to an explicit surah and ayah. No recognition or guessing is used."
+  },
+  "reciters": [
+    {
+      "id": "ar.alafasy",
+      "name": "مشاري راشد العفاسي",
+      "riwayah": "حفص عن عاصم",
+      "quality": "128kbps",
+      "verseByVerse": true
+    },
+    {
+      "id": "ar.abdulbasitmurattal",
+      "name": "عبدالباسط عبدالصمد - مرتل",
+      "riwayah": "حفص عن عاصم",
+      "quality": "128kbps",
+      "verseByVerse": true
+    },
+    {
+      "id": "ar.abdullahbasfar",
+      "name": "عبد الله بصفر",
+      "riwayah": "حفص عن عاصم",
+      "quality": "provider-default",
+      "verseByVerse": true
+    },
+    {
+      "id": "ar.abdurrahmaansudais",
+      "name": "عبدالرحمن السديس",
+      "riwayah": "حفص عن عاصم",
+      "quality": "provider-default",
+      "verseByVerse": true
+    },
+    {
+      "id": "ar.abdulsamad",
+      "name": "عبدالباسط عبدالصمد",
+      "riwayah": "حفص عن عاصم",
+      "quality": "provider-default",
+      "verseByVerse": true
+    },
+    {
+      "id": "ar.shaatree",
+      "name": "أبو بكر الشاطري",
+      "riwayah": "حفص عن عاصم",
+      "quality": "provider-default",
+      "verseByVerse": true
+    },
+    {
+      "id": "ar.ahmedajamy",
+      "name": "أحمد بن علي العجمي",
+      "riwayah": "حفص عن عاصم",
+      "quality": "provider-default",
+      "verseByVerse": true
+    },
+    {
+      "id": "ar.minshawi",
+      "name": "محمد صديق المنشاوي",
+      "riwayah": "حفص عن عاصم",
+      "quality": "128kbps",
+      "verseByVerse": true
+    },
+    {
+      "id": "ar.hanirifai",
+      "name": "هاني الرفاعي",
+      "riwayah": "حفص عن عاصم",
+      "quality": "provider-default",
+      "verseByVerse": true
+    },
+    {
+      "id": "ar.husary",
+      "name": "محمود خليل الحصري",
+      "riwayah": "حفص عن عاصم",
+      "quality": "128kbps",
+      "verseByVerse": true
+    },
+    {
+      "id": "ar.husarymujawwad",
+      "name": "محمود خليل الحصري - المجود",
+      "riwayah": "حفص عن عاصم",
+      "quality": "provider-default",
+      "verseByVerse": true
+    },
+    {
+      "id": "ar.hudhaify",
+      "name": "علي بن عبدالرحمن الحذيفي",
+      "riwayah": "حفص عن عاصم",
+      "quality": "provider-default",
+      "verseByVerse": true
+    },
+    {
+      "id": "ar.ibrahimakhbar",
+      "name": "إبراهيم الأخضر",
+      "riwayah": "حفص عن عاصم",
+      "quality": "provider-default",
+      "verseByVerse": true
+    },
+    {
+      "id": "ar.mahermuaiqly",
+      "name": "ماهر المعيقلي",
+      "riwayah": "حفص عن عاصم",
+      "quality": "128kbps",
+      "verseByVerse": true
+    },
+    {
+      "id": "ar.minshawimujawwad",
+      "name": "محمد صديق المنشاوي - المجود",
+      "riwayah": "حفص عن عاصم",
+      "quality": "provider-default",
+      "verseByVerse": true
+    },
+    {
+      "id": "ar.muhammadayyoub",
+      "name": "محمد أيوب",
+      "riwayah": "حفص عن عاصم",
+      "quality": "provider-default",
+      "verseByVerse": true
+    },
+    {
+      "id": "ar.muhammadjibreel",
+      "name": "محمد جبريل",
+      "riwayah": "حفص عن عاصم",
+      "quality": "provider-default",
+      "verseByVerse": true
+    },
+    {
+      "id": "ar.saoodshuraym",
+      "name": "سعود الشريم",
+      "riwayah": "حفص عن عاصم",
+      "quality": "128kbps",
+      "verseByVerse": true
+    },
+    {
+      "id": "ar.parhizgar",
+      "name": "شهريار پرهيزگار",
+      "riwayah": "حفص عن عاصم",
+      "quality": "provider-default",
+      "verseByVerse": true
+    },
+    {
+      "id": "ar.aymanswoaid",
+      "name": "أيمن سويد",
+      "riwayah": "حفص عن عاصم",
+      "quality": "provider-default",
+      "verseByVerse": true
+    }
+  ]
+}

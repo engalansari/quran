@@ -1,0 +1,12 @@
+{
+  "library": {
+    "name": "Quran exact audio fingerprint reference library",
+    "provider": "",
+    "version": "",
+    "sourceUrl": "",
+    "matchPolicy": "exact-fingerprint-only",
+    "reviewed": false,
+    "exportReady": false,
+    "entries": []
+  }
+}

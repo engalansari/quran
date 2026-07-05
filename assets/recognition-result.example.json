@@ -1,0 +1,32 @@
+{
+  "engine": {
+    "name": "Quran audio recognition engine",
+    "provider": "Example Provider",
+    "version": "0.0.0"
+  },
+  "sourceAudio": {
+    "fileName": "recitation.mp4",
+    "sha256": ""
+  },
+  "result": {
+    "surahNumber": 1,
+    "ayahStart": 1,
+    "ayahCount": 1,
+    "confidence": 1,
+    "method": "external-recognition-engine",
+    "exactMatch": true,
+    "matchEvidence": {
+      "method": "exact-recitation-to-ayah-alignment",
+      "description": "Exact match asserted by the external engine. Ayah Studio still requires manual confirmation."
+    },
+    "requiresManualConfirmation": true,
+    "segments": [
+      {
+        "ayahNumber": 1,
+        "start": 0,
+        "end": 5.2,
+        "confidence": 1
+      }
+    ]
+  }
+}

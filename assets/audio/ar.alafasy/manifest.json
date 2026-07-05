@@ -1,0 +1,273 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-04T20:09:13.772Z",
+  "provider": {
+    "name": "Al Quran Cloud / Islamic Network CDN",
+    "apiBase": "https://api.alquran.cloud/v1",
+    "note": "Ayah Studio stores downloaded MP3 files locally and maps every file to an explicit surah and ayah. No recognition or guessing is used."
+  },
+  "reciter": "ar.alafasy",
+  "reciterName": "مشاري راشد العفاسي",
+  "ayahs": [
+    {
+      "surah": 1,
+      "ayah": 1,
+      "globalAyahNumber": 1,
+      "reciter": "ar.alafasy",
+      "reciterName": "مشاري العفاسي",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/1.mp3",
+      "file": "assets/audio/ar.alafasy/001/001.mp3",
+      "sha256": "c0d5ba887523e64b5cf7db8f26a6ddd3936b1ac9286f133e258f0dd7f6b7353e"
+    },
+    {
+      "surah": 1,
+      "ayah": 2,
+      "globalAyahNumber": 2,
+      "reciter": "ar.alafasy",
+      "reciterName": "مشاري العفاسي",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/2.mp3",
+      "file": "assets/audio/ar.alafasy/001/002.mp3",
+      "sha256": "edcb258eb1a5cfe11a1a382db4f743953684678335e0e0167c5081b8da6b60d7"
+    },
+    {
+      "surah": 1,
+      "ayah": 3,
+      "globalAyahNumber": 3,
+      "reciter": "ar.alafasy",
+      "reciterName": "مشاري العفاسي",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/3.mp3",
+      "file": "assets/audio/ar.alafasy/001/003.mp3",
+      "sha256": "7b817a608500519bba4e36529fab902cc9c9cc244ed8ae73c944472e14370ad1"
+    },
+    {
+      "surah": 1,
+      "ayah": 4,
+      "globalAyahNumber": 4,
+      "reciter": "ar.alafasy",
+      "reciterName": "مشاري العفاسي",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/4.mp3",
+      "file": "assets/audio/ar.alafasy/001/004.mp3",
+      "sha256": "118fa4b7c3cbbcd04b4f4e3d5384eac9c20636c62b5bd2f404830a68e2f6ce2c"
+    },
+    {
+      "surah": 2,
+      "ayah": 3,
+      "globalAyahNumber": 10,
+      "reciter": "ar.alafasy",
+      "reciterName": "مشاري العفاسي",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/10.mp3",
+      "file": "assets/audio/ar.alafasy/002/003.mp3",
+      "sha256": "90930585b5f58fc112724e05cebb18403ebb68973580dc1022eb708a7fbcaec4"
+    },
+    {
+      "surah": 2,
+      "ayah": 4,
+      "globalAyahNumber": 11,
+      "reciter": "ar.alafasy",
+      "reciterName": "مشاري العفاسي",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/11.mp3",
+      "file": "assets/audio/ar.alafasy/002/004.mp3",
+      "sha256": "0a43491d3d2386615b8fc6070f46873b87eb7bac01e355992a0b493b3b08bb2f"
+    },
+    {
+      "surah": 2,
+      "ayah": 5,
+      "globalAyahNumber": 12,
+      "reciter": "ar.alafasy",
+      "reciterName": "مشاري العفاسي",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/12.mp3",
+      "file": "assets/audio/ar.alafasy/002/005.mp3",
+      "sha256": "e10530e44f2f2c55ccc34a4a5b39202060fe89c2a137ad1b0f6b864121ede9ec"
+    },
+    {
+      "surah": 2,
+      "ayah": 6,
+      "globalAyahNumber": 13,
+      "reciter": "ar.alafasy",
+      "reciterName": "مشاري العفاسي",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/13.mp3",
+      "file": "assets/audio/ar.alafasy/002/006.mp3",
+      "sha256": "0f9b7968af4b424ad3f742d0833153c7c5d883e0b3e161199e65e407b640eb41"
+    },
+    {
+      "surah": 3,
+      "ayah": 2,
+      "globalAyahNumber": 295,
+      "reciter": "ar.alafasy",
+      "reciterName": "مشاري العفاسي",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/295.mp3",
+      "file": "assets/audio/ar.alafasy/003/002.mp3",
+      "sha256": "6577cc49e3eb7c38c20e82baceffad129a3c17bd3474e11226e2e948920b3fcc"
+    },
+    {
+      "surah": 3,
+      "ayah": 3,
+      "globalAyahNumber": 296,
+      "reciter": "ar.alafasy",
+      "reciterName": "مشاري العفاسي",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/296.mp3",
+      "file": "assets/audio/ar.alafasy/003/003.mp3",
+      "sha256": "d541c28ffce43754d74962bcc07c360d6ecc89931b65ce21ec8e9ace96f86835"
+    },
+    {
+      "surah": 5,
+      "ayah": 1,
+      "globalAyahNumber": 670,
+      "reciter": "ar.alafasy",
+      "reciterName": "مشاري العفاسي",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/670.mp3",
+      "file": "assets/audio/ar.alafasy/005/001.mp3",
+      "sha256": "a94ba6f0f9dd8286fc9c86c96ab876a47b9a13c5242264f954eaa6d34c62f099"
+    },
+    {
+      "surah": 5,
+      "ayah": 15,
+      "globalAyahNumber": 684,
+      "reciter": "ar.alafasy",
+      "reciterName": "مشاري العفاسي",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/684.mp3",
+      "file": "assets/audio/ar.alafasy/005/015.mp3",
+      "sha256": "ff80c4441a01bfd98db31989518921f08704a3463e11a35e96309b10849a7e39"
+    },
+    {
+      "surah": 6,
+      "ayah": 4,
+      "globalAyahNumber": 793,
+      "reciter": "ar.alafasy",
+      "reciterName": "مشاري العفاسي",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/793.mp3",
+      "file": "assets/audio/ar.alafasy/006/004.mp3",
+      "sha256": "ba136047fcfdb32de4d6aee4afc13104066345c504bd07c36c10de6d7026aed8"
+    },
+    {
+      "surah": 6,
+      "ayah": 5,
+      "globalAyahNumber": 794,
+      "reciter": "ar.alafasy",
+      "reciterName": "مشاري العفاسي",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/794.mp3",
+      "file": "assets/audio/ar.alafasy/006/005.mp3",
+      "sha256": "3de03093bb6eced6a754e97a3bbd623e10c3ab7fcf9a0f35e944be0fda7439a4"
+    },
+    {
+      "surah": 6,
+      "ayah": 6,
+      "globalAyahNumber": 795,
+      "reciter": "ar.alafasy",
+      "reciterName": "مشاري العفاسي",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/795.mp3",
+      "file": "assets/audio/ar.alafasy/006/006.mp3",
+      "sha256": "016c1db38c4d6083ceac55ee21ae97bfd2fd2b30106d285be6e39a15b69b8ffa"
+    },
+    {
+      "surah": 6,
+      "ayah": 7,
+      "globalAyahNumber": 796,
+      "reciter": "ar.alafasy",
+      "reciterName": "مشاري العفاسي",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/796.mp3",
+      "file": "assets/audio/ar.alafasy/006/007.mp3",
+      "sha256": "96e7e22c9b5d4e8ecf51c4e27d20cbe0922fedff57c6bf769803a7e4a5fbf5aa"
+    },
+    {
+      "surah": 6,
+      "ayah": 8,
+      "globalAyahNumber": 797,
+      "reciter": "ar.alafasy",
+      "reciterName": "مشاري العفاسي",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/797.mp3",
+      "file": "assets/audio/ar.alafasy/006/008.mp3",
+      "sha256": "8b3b316e3c5c9e30da794ccddd45889f2dc61eed27c0e0d8a495dafffacc91ac"
+    },
+    {
+      "surah": 6,
+      "ayah": 9,
+      "globalAyahNumber": 798,
+      "reciter": "ar.alafasy",
+      "reciterName": "مشاري العفاسي",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/798.mp3",
+      "file": "assets/audio/ar.alafasy/006/009.mp3",
+      "sha256": "13928546024a1733a761a8bca10d31a5ca2b45e5356aac0187536a581439be8a"
+    },
+    {
+      "surah": 7,
+      "ayah": 12,
+      "globalAyahNumber": 966,
+      "reciter": "ar.alafasy",
+      "reciterName": "مشاري العفاسي",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/966.mp3",
+      "file": "assets/audio/ar.alafasy/007/012.mp3",
+      "sha256": "910d129d36e723c5236f365fa675c5b3bb8104df7a83ccf3ab78bf0a9eee80e1"
+    },
+    {
+      "surah": 7,
+      "ayah": 13,
+      "globalAyahNumber": 967,
+      "reciter": "ar.alafasy",
+      "reciterName": "مشاري العفاسي",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/967.mp3",
+      "file": "assets/audio/ar.alafasy/007/013.mp3",
+      "sha256": "f50a4b9a0be73c5277aa57a0f03e2893284680e06cd0c391faace9d6af2f0193"
+    },
+    {
+      "surah": 9,
+      "ayah": 1,
+      "globalAyahNumber": 1236,
+      "reciter": "ar.alafasy",
+      "reciterName": "مشاري العفاسي",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/1236.mp3",
+      "file": "assets/audio/ar.alafasy/009/001.mp3",
+      "sha256": "b4d5ad3b60d11c7927d6c4839afdddbc17a6e0e7bd25b905f22fc6c08e172b23"
+    },
+    {
+      "surah": 9,
+      "ayah": 2,
+      "globalAyahNumber": 1237,
+      "reciter": "ar.alafasy",
+      "reciterName": "مشاري العفاسي",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/1237.mp3",
+      "file": "assets/audio/ar.alafasy/009/002.mp3",
+      "sha256": "f7e1603494406d5e01dccfaacabfd398a2daed61a020ad7e7709ef99d3849c15"
+    },
+    {
+      "surah": 10,
+      "ayah": 2,
+      "globalAyahNumber": 1366,
+      "reciter": "ar.alafasy",
+      "reciterName": "مشاري العفاسي",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/1366.mp3",
+      "file": "assets/audio/ar.alafasy/010/002.mp3",
+      "sha256": "e2e14ba22851e1e545f9e02f893532c0d5ffc9653bb660a37faa84b01239f70b"
+    },
+    {
+      "surah": 10,
+      "ayah": 3,
+      "globalAyahNumber": 1367,
+      "reciter": "ar.alafasy",
+      "reciterName": "مشاري العفاسي",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/1367.mp3",
+      "file": "assets/audio/ar.alafasy/010/003.mp3",
+      "sha256": "3c8914ae0249644b8b4cc11c9a979f9763b9c15929c12bfd8e2016db4981602c"
+    },
+    {
+      "surah": 10,
+      "ayah": 7,
+      "globalAyahNumber": 1371,
+      "reciter": "ar.alafasy",
+      "reciterName": "مشاري العفاسي",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/1371.mp3",
+      "file": "assets/audio/ar.alafasy/010/007.mp3",
+      "sha256": "b2b3dfd76dc577680484f73fe9cd9ea01db693edd8a613584e88958a40cdc928"
+    },
+    {
+      "surah": 10,
+      "ayah": 8,
+      "globalAyahNumber": 1372,
+      "reciter": "ar.alafasy",
+      "reciterName": "مشاري العفاسي",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/1372.mp3",
+      "file": "assets/audio/ar.alafasy/010/008.mp3",
+      "sha256": "931fb2bd9235ab6ab2d54b269af0f7bde1e7f3f953d8663bc5f0908c3d009725"
+    }
+  ]
+}
