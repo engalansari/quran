@@ -42,10 +42,7 @@ async function downloadRange() {
   const ayahs = [];
   for (let offset = 0; offset < ayahCount; offset += 1) {
     const ayah = ayahStart + offset;
-    const metadata = await fetchJson(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/${reciter}`);
-    if (metadata.code !== 200 || !metadata.data?.audio) {
-      fail(`Audio API did not return an audio URL for ${reciter} ${surah}:${ayah}.`);
-    }
+    const metadata = await resolveAyahAudio(ayah);
 
     const file = join(targetDir, `${pad3(ayah)}.mp3`);
     let sha256 = "";
@@ -64,6 +61,7 @@ async function downloadRange() {
       reciter,
       reciterName: metadata.data.edition?.name || catalogReciter.name,
       sourceUrl: metadata.data.audio,
+      sourceProvider: catalogReciter.source?.provider || catalog.provider?.name || "Al Quran Cloud",
       file: relativePath(file),
       sha256,
     });
@@ -89,6 +87,36 @@ async function downloadRange() {
     files: ayahs.map((item) => item.file),
     manifest: relativePath(manifestPath),
   };
+}
+
+async function resolveAyahAudio(ayah) {
+  const source = catalogReciter.source || {};
+  if (source.type === "template" && source.urlTemplate) {
+    return {
+      code: 200,
+      data: {
+        number: null,
+        audio: buildSourceUrl(source.urlTemplate, surah, ayah),
+        edition: {
+          name: catalogReciter.name,
+        },
+      },
+    };
+  }
+
+  const metadata = await fetchJson(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/${reciter}`);
+  if (metadata.code !== 200 || !metadata.data?.audio) {
+    fail(`Audio API did not return an audio URL for ${reciter} ${surah}:${ayah}.`);
+  }
+  return metadata;
+}
+
+function buildSourceUrl(template, surahNumber, ayahNumber) {
+  return String(template)
+    .replaceAll("{surah3}", pad3(surahNumber))
+    .replaceAll("{ayah3}", pad3(ayahNumber))
+    .replaceAll("{surah}", String(surahNumber))
+    .replaceAll("{ayah}", String(ayahNumber));
 }
 
 function mergeAyahs(existing, incoming) {

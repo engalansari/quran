@@ -1,0 +1,73 @@
+{
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      ".firebaserc",
+      ".git/**",
+      ".agents/**",
+      ".codex/**",
+      "key/**",
+      "node_modules/**",
+      "outputs/**",
+      "tools/**",
+      "scripts/**",
+      "budget-guard/**",
+      "design-backups/**",
+      ".git.broken-empty-20260705/**",
+      "assets/audio/**",
+      "assets/background-library/source/**",
+      "assets/background-library/catalog.before-key-import.json",
+      "data/source/**",
+      ".gitignore",
+      ".firebaserc.example",
+      "server-*.log",
+      "server-*.out.log",
+      "server-*.err.log",
+      "*.log",
+      "*.md",
+      "**/*.md",
+      "*.docx",
+      "quran-phone-*.png",
+      "quran-current-*.png",
+      "ayah-*.png",
+      "ayah-studio-*.png",
+      "ayah-studio-*.jpg",
+      "ui-preview-*.png",
+      "package*.json",
+      "*.rules",
+      "*.example.json",
+      "**/*.example.json",
+      "Dockerfile",
+      ".dockerignore",
+      "ui-preview.html",
+      "sticky-action-preview.html"
+    ],
+    "rewrites": [
+      {
+        "source": "/api/**",
+        "run": {
+          "serviceId": "ayah-studio-render",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/outputs/**",
+        "run": {
+          "serviceId": "ayah-studio-render",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  },
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "storage": {
+    "rules": "storage.rules"
+  }
+}

@@ -5,16 +5,18 @@ import { createServer } from "node:http";
 import { extname, join, normalize, resolve, sep } from "node:path";
 import { spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
+import { createRenderJobStore } from "./render-job-store.mjs";
 
 const args = parseArgs(process.argv.slice(2));
 const root = resolve(args.root || process.cwd());
 const host = args.host || "0.0.0.0";
-const port = Number(args.port || 4173);
+const port = Number(args.port || process.env.PORT || 4173);
 const uploadDir = resolve(args["upload-dir"] || join(tmpdir(), "ayah-studio-uploads"));
 const quranPath = resolve(args.quran || "data/quran-uthmani.json");
 const whisperPath = resolve(args.whisper || "tools/whisper.cpp/Release/whisper-cli.exe");
 const modelPath = resolve(args.model || "tools/whisper.cpp/models/ggml-small.bin");
-const ffmpegPath = resolve(args.ffmpeg || "tools/ffmpeg/ffmpeg-master-latest-win64-gpl/bin/ffmpeg.exe");
+const ffmpegPath = executableArg(args.ffmpeg, process.env.FFMPEG, "tools/ffmpeg/ffmpeg-master-latest-win64-gpl/bin/ffmpeg.exe", "ffmpeg");
+const renderJobs = createRenderJobStore(args["jobs-file"] || join(root, "outputs/render-jobs-local.json"));
 
 mkdirSync(uploadDir, { recursive: true });
 
@@ -27,6 +29,18 @@ const server = createServer(async (request, response) => {
     }
     if (request.method === "POST" && url.pathname === "/api/compose-selected-video") {
       await handleComposeSelectedVideo(request, response);
+      return;
+    }
+    if (request.method === "POST" && url.pathname === "/api/render") {
+      await handleCreateRenderJob(request, response);
+      return;
+    }
+    if (request.method === "GET" && url.pathname.startsWith("/api/render/")) {
+      await handleGetRenderJob(url, response);
+      return;
+    }
+    if (request.method === "POST" && url.pathname === "/api/compose-external-audio-video") {
+      await handleComposeExternalAudioVideo(request, response);
       return;
     }
     if (request.method === "POST" && url.pathname === "/api/prepare-background") {
@@ -160,11 +174,15 @@ async function handleComposeSelectedVideo(request, response) {
 
   const parsed = parseLastJsonObject(result.stdout);
   if ((result.status ?? 1) !== 0 || !parsed?.ready) {
+    const output = `${result.stdout || ""}${result.stderr || ""}`.trim();
+    const failure = classifyComposeFailure(output, result.status ?? 1);
     writeJson(response, 500, {
       ready: false,
-      error: "Video generation failed.",
+      error: failure.message,
+      code: failure.code,
+      hint: failure.hint,
       status: result.status ?? 1,
-      output: `${result.stdout || ""}${result.stderr || ""}`.trim(),
+      output,
     });
     return;
   }
@@ -173,6 +191,194 @@ async function handleComposeSelectedVideo(request, response) {
     ...parsed,
     outUrl: `/${parsed.out}`,
     processStatus: result.status ?? 0,
+  });
+}
+
+async function handleCreateRenderJob(request, response) {
+  const body = await readBody(request);
+  const payload = parseJson(body.toString("utf8")) || {};
+  const job = renderJobs.create({
+    userId: payload.userId || "local-user",
+    request: payload,
+  });
+
+  const processing = renderJobs.update(job.jobId, { status: "processing" });
+  const result = runSelectedAyahRenderJob(processing);
+  const finalJob = result.ready
+    ? renderJobs.update(job.jobId, { status: "completed", result })
+    : renderJobs.update(job.jobId, { status: "failed", error: result.error || "Render failed.", result });
+
+  writeJson(response, result.ready ? 200 : 500, {
+    ready: result.ready,
+    jobId: finalJob.jobId,
+    status: finalJob.status,
+    videoUrl: finalJob.result?.outUrl || "",
+    error: finalJob.error || "",
+    code: finalJob.result?.code || "",
+    hint: finalJob.result?.hint || "",
+  });
+}
+
+async function handleGetRenderJob(url, response) {
+  const jobId = decodeURIComponent(url.pathname.replace(/^\/api\/render\//, "")).trim();
+  const job = renderJobs.get(jobId);
+  if (!job) {
+    writeJson(response, 404, { ready: false, error: "Render job not found.", jobId });
+    return;
+  }
+  writeJson(response, 200, renderJobResponse(job));
+}
+
+function runSelectedAyahRenderJob(job) {
+  const request = job?.request || {};
+  const surah = positiveInteger(request.surah);
+  const ayahStart = positiveInteger(request.ayahStart);
+  const ayahCount = positiveInteger(request.ayahCount);
+  const reciter = sanitizeReciter(request.reciter || "ar.alafasy");
+  const background = backgroundPath(request.background || "nature");
+
+  if (!surah || !ayahStart || !ayahCount) {
+    return { ready: false, error: "Missing valid surah, ayahStart, or ayahCount.", code: "invalid-render-request" };
+  }
+  if (!background) {
+    return {
+      ready: false,
+      error: "Selected background is not ready.",
+      code: "background-not-ready",
+    };
+  }
+
+  const outputName = `render-${job.jobId}-${surah}-${ayahStart}-${ayahCount}.mp4`;
+  const outputPath = join(root, "outputs", outputName);
+  const result = spawnSync(process.execPath, [
+    "scripts/compose-selected-ayah-video.mjs",
+    "--surah", String(surah),
+    "--ayah-start", String(ayahStart),
+    "--ayah-count", String(ayahCount),
+    "--reciter", reciter,
+    "--background", background,
+    "--download",
+    "--out", outputPath,
+  ], {
+    cwd: root,
+    encoding: "utf8",
+    windowsHide: true,
+    maxBuffer: 50 * 1024 * 1024,
+  });
+
+  const parsed = parseLastJsonObject(result.stdout);
+  if ((result.status ?? 1) !== 0 || !parsed?.ready) {
+    const output = `${result.stdout || ""}${result.stderr || ""}`.trim();
+    const failure = classifyComposeFailure(output, result.status ?? 1);
+    return {
+      ready: false,
+      error: failure.message,
+      code: failure.code,
+      hint: failure.hint,
+      output,
+    };
+  }
+
+  return {
+    ...parsed,
+    ready: true,
+    outUrl: `/${parsed.out}`,
+    processStatus: result.status ?? 0,
+  };
+}
+
+function renderJobResponse(job) {
+  return {
+    ready: true,
+    jobId: job.jobId,
+    status: job.status,
+    createdAt: job.createdAt,
+    updatedAt: job.updatedAt,
+    userId: job.userId,
+    request: job.request,
+    videoUrl: job.result?.outUrl || "",
+    error: job.error || "",
+    code: job.result?.code || "",
+    hint: job.result?.hint || "",
+  };
+}
+
+async function handleComposeExternalAudioVideo(request, response) {
+  const type = request.headers["content-type"] || "";
+  const boundary = boundaryFrom(type);
+  if (!boundary) {
+    writeJson(response, 400, { ready: false, error: "ارفع ملف صوت أو فيديو أولا." });
+    return;
+  }
+
+  const body = await readBody(request);
+  const fields = parseMultipart(body, boundary);
+  const audio = fields.find((field) => field.name === "audio" && field.filename);
+  if (!audio) {
+    writeJson(response, 400, { ready: false, error: "لم يصل ملف الصوت أو الفيديو إلى الخادم." });
+    return;
+  }
+
+  const safeName = sanitizeFileName(audio.filename || "external-audio.bin");
+  const uploadPath = join(uploadDir, `${Date.now()}-${safeName}`);
+  writeFileSync(uploadPath, audio.data);
+
+  const background = backgroundPath(fieldValue(fields, "background") || "nature");
+  if (!background) {
+    writeJson(response, 400, {
+      ready: false,
+      error: "الخلفية المختارة غير جاهزة للتوليد.",
+      hint: "اختر خلفية ظاهرة بصورة حقيقية أو جهز الخلفية أولا.",
+    });
+    return;
+  }
+
+  const useAyahs = fieldValue(fields, "useAyahs") === "1";
+  const surah = positiveInteger(fieldValue(fields, "surah"));
+  const ayahStart = positiveInteger(fieldValue(fields, "ayahStart"));
+  const ayahCount = positiveInteger(fieldValue(fields, "ayahCount"));
+  const reciterName = sanitizeOverlayText(fieldValue(fields, "reciterName"));
+  const outputName = `external-audio-${Date.now()}.mp4`;
+  const outputPath = join(root, "outputs", outputName);
+  const command = [
+    "scripts/compose-external-audio-video.mjs",
+    "--audio", uploadPath,
+    "--background", background,
+    "--out", outputPath,
+  ];
+
+  if (reciterName) command.push("--reciter-name", reciterName);
+  if (useAyahs && surah && ayahStart && ayahCount) {
+    command.push("--surah", String(surah), "--ayah-start", String(ayahStart), "--ayah-count", String(ayahCount));
+  }
+
+  const result = spawnSync(process.execPath, command, {
+    cwd: root,
+    encoding: "utf8",
+    windowsHide: true,
+    maxBuffer: 50 * 1024 * 1024,
+  });
+
+  const parsed = parseLastJsonObject(result.stdout);
+  if ((result.status ?? 1) !== 0 || !parsed?.ready) {
+    const output = `${result.stdout || ""}${result.stderr || ""}`.trim();
+    const failure = classifyComposeFailure(output, result.status ?? 1);
+    writeJson(response, 500, {
+      ready: false,
+      error: failure.message,
+      code: failure.code,
+      hint: failure.hint,
+      status: result.status ?? 1,
+      output,
+    });
+    return;
+  }
+
+  writeJson(response, 200, {
+    ...parsed,
+    outUrl: `/${parsed.out}`,
+    processStatus: result.status ?? 0,
+    uploadedFileName: safeName,
   });
 }
 
@@ -603,12 +809,94 @@ function sanitizeFileName(value) {
   return String(value || "upload.bin").replace(/[<>:"/\\|?*\x00-\x1F]/g, "_").slice(0, 120);
 }
 
+function sanitizeOverlayText(value) {
+  return String(value || "")
+    .replace(/[\x00-\x1F<>|]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 80);
+}
+
+function executableArg(explicitValue, envValue, localPath, commandName) {
+  if (explicitValue) return resolve(explicitValue);
+  if (envValue) return /[\\/]/.test(envValue) || /^[A-Za-z]:/.test(envValue) ? resolve(envValue) : envValue;
+  const resolvedLocal = resolve(localPath);
+  return existsSync(resolvedLocal) ? resolvedLocal : commandName;
+}
+
 function parseJson(text) {
   try {
     return JSON.parse(text);
   } catch {
     return null;
   }
+}
+
+function classifyComposeFailure(output, status) {
+  const text = String(output || "");
+  const lower = text.toLowerCase();
+
+  if (lower.includes("missing recitation audio") || lower.includes("audio api did not return") || lower.includes("could not download audio")) {
+    return {
+      code: "recitation-audio-failed",
+      message: "تعذر تجهيز صوت القارئ المختار.",
+      hint: "اختر قارئا آخر أو أعد المحاولة بعد التأكد من اتصال الإنترنت، لأن البرنامج يحتاج تنزيل صوت الآيات عند أول توليد.",
+    };
+  }
+
+  if (lower.includes("reciter ") && lower.includes(" is not listed")) {
+    return {
+      code: "reciter-not-supported",
+      message: "القارئ المختار غير موجود في مكتبة القراء.",
+      hint: "اختر قارئا من القائمة الحالية ثم أعد التوليد.",
+    };
+  }
+
+  if (lower.includes("missing ffmpeg") || lower.includes("missing ffprobe") || (lower.includes("ffmpeg") && lower.includes("enoent"))) {
+    return {
+      code: "ffmpeg-missing",
+      message: "أداة FFmpeg غير جاهزة على الجهاز.",
+      hint: "ثبت FFmpeg المحمول داخل tools/ffmpeg أو شغل اختبار FFmpeg قبل التوليد.",
+    };
+  }
+
+  if (lower.includes("missing chromium") || lower.includes("chromium") || lower.includes("crashpad")) {
+    return {
+      code: "quran-renderer-failed",
+      message: "فشل محرك رسم نص القرآن في التصدير.",
+      hint: "المشكلة في Chromium داخل الخادم، وليست في الآية أو الخلفية. راجع سجل التوليد لتعديل إعدادات محرك الرسم.",
+    };
+  }
+
+  if (lower.includes("command failed") && lower.includes("ffmpeg")) {
+    return {
+      code: "ffmpeg-failed",
+      message: "فشل تركيب الفيديو عبر FFmpeg.",
+      hint: "جرّب خلفية أخرى أو آيات أقل، وإذا تكرر الخطأ افتح تفاصيل السجل لمعرفة سبب FFmpeg.",
+    };
+  }
+
+  if (lower.includes("missing background") || lower.includes("background")) {
+    return {
+      code: "background-missing",
+      message: "الخلفية المختارة غير جاهزة للتوليد.",
+      hint: "اختر خلفية ظاهرة بصورة حقيقية أو اضغط تجهيز الخلفية ثم أعد التوليد.",
+    };
+  }
+
+  if (lower.includes("missing font")) {
+    return {
+      code: "font-missing",
+      message: "خط القرآن المستخدم في التصدير غير موجود.",
+      hint: "تأكد من وجود ملف الخط داخل assets/fonts ثم أعد التوليد.",
+    };
+  }
+
+  return {
+    code: "compose-failed",
+    message: "فشل توليد الفيديو.",
+    hint: status ? `انتهت عملية التوليد برمز خطأ ${status}.` : "راجع تفاصيل الخطأ ثم أعد المحاولة.",
+  };
 }
 
 function parseLastJsonObject(text) {
@@ -695,15 +983,23 @@ function backgroundPath(value) {
       // Fall back to the prototype backgrounds below.
     }
   }
+  const fallback = fallbackBackgroundPathForCategory(id);
+  return existsSync(resolve(root, fallback)) ? fallback : "";
+}
+
+function fallbackBackgroundPathForCategory(value) {
   const map = {
     makkah: "assets/production/makkah.mp4",
     madinah: "assets/production/madinah.mp4",
+    mosque: "assets/production/makkah.mp4",
+    sea: "assets/production/nature.mp4",
+    sky: "assets/production/nature.mp4",
     nature: "assets/production/nature.mp4",
     "makkah-production": "assets/production/makkah.mp4",
     "madinah-production": "assets/production/madinah.mp4",
     "nature-production": "assets/production/nature.mp4",
   };
-  return map[id] || map.nature;
+  return map[String(value || "").toLowerCase()] || map.nature;
 }
 
 function isFallbackPoster(path) {

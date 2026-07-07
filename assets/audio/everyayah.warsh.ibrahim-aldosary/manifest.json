@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-07T14:21:13.659Z",
+  "provider": {
+    "name": "Al Quran Cloud / Islamic Network CDN",
+    "apiBase": "https://api.alquran.cloud/v1",
+    "note": "Ayah Studio stores downloaded MP3 files locally and maps every file to an explicit surah and ayah. No recognition or guessing is used."
+  },
+  "reciter": "everyayah.warsh.ibrahim-aldosary",
+  "reciterName": "إبراهيم الدوسري - ورش",
+  "ayahs": [
+    {
+      "surah": 1,
+      "ayah": 1,
+      "globalAyahNumber": null,
+      "reciter": "everyayah.warsh.ibrahim-aldosary",
+      "reciterName": "إبراهيم الدوسري - ورش",
+      "sourceUrl": "https://everyayah.com/data/warsh/warsh_ibrahim_aldosary_128kbps/001001.mp3",
+      "sourceProvider": "EveryAyah",
+      "file": "assets/audio/everyayah.warsh.ibrahim-aldosary/001/001.mp3",
+      "sha256": "f6a305ab341181837f5a7b64fa82c1177ab723ac66a32cc0d3ebd00c486e704b"
+    }
+  ]
+}

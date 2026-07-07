@@ -20,8 +20,32 @@ const checks = [
     args: ["--check", "scripts/compose-selected-ayah-video.mjs"],
   },
   {
+    label: "compose relative paths",
+    args: ["scripts/test-compose-relative-paths.mjs"],
+  },
+  {
     label: "generator UI policy",
     args: ["scripts/test-generator-ui-policy.mjs"],
+  },
+  {
+    label: "recitation audio policy",
+    args: ["scripts/test-recitation-audio-policy.mjs"],
+  },
+  {
+    label: "Quran text policy",
+    args: ["scripts/test-quran-text-policy.mjs"],
+  },
+  {
+    label: "Quran font policy",
+    args: ["scripts/test-quran-font-policy.mjs"],
+  },
+  {
+    label: "ayah text fit policy",
+    args: ["scripts/test-ayah-text-fit-policy.mjs"],
+  },
+  {
+    label: "ayah layout examples",
+    args: ["scripts/test-ayah-layout-examples.mjs"],
   },
   {
     label: "static video range support",
@@ -34,6 +58,10 @@ const checks = [
   {
     label: "background catalog UX readiness",
     args: ["scripts/test-background-catalog-ux.mjs"],
+  },
+  {
+    label: "background selection readiness",
+    args: ["scripts/test-background-selection-ready.mjs"],
   },
   {
     label: "background source audit",

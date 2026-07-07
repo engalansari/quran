@@ -200,14 +200,28 @@ const state = {
   visibleBackgroundLimit: 48,
   backgroundBatchSize: 48,
   captionRequestId: 0,
+  lastVideoReady: false,
   busy: false,
 };
 
 const els = {
   surahSelect: document.getElementById("surahSelect"),
   ayahStart: document.getElementById("ayahStart"),
+  ayahStartMinus: document.getElementById("ayahStartMinus"),
+  ayahStartPlus: document.getElementById("ayahStartPlus"),
+  surahAyahTotal: document.getElementById("surahAyahTotal"),
+  selectedAyahStartLabel: document.getElementById("selectedAyahStartLabel"),
   ayahCount: document.getElementById("ayahCount"),
+  ayahCountMinus: document.getElementById("ayahCountMinus"),
+  ayahCountPlus: document.getElementById("ayahCountPlus"),
+  maxAyahCountLabel: document.getElementById("maxAyahCountLabel"),
+  selectedAyahCountLabel: document.getElementById("selectedAyahCountLabel"),
   reciterSelect: document.getElementById("reciterSelect"),
+  audioMode: document.getElementById("audioMode"),
+  externalAudioPanel: document.getElementById("externalAudioPanel"),
+  externalAudioFile: document.getElementById("externalAudioFile"),
+  externalReciterName: document.getElementById("externalReciterName"),
+  externalUseAyahs: document.getElementById("externalUseAyahs"),
   backgroundSelect: document.getElementById("backgroundSelect"),
   backgroundSearch: document.getElementById("backgroundSearch"),
   backgroundCategoryFilters: document.getElementById("backgroundCategoryFilters"),
@@ -225,6 +239,11 @@ const els = {
   sourceLine: document.getElementById("sourceLine"),
   generateButton: document.getElementById("generateButton"),
   statusBox: document.getElementById("statusBox"),
+  renderJobPanel: document.getElementById("renderJobPanel"),
+  renderJobTitle: document.getElementById("renderJobTitle"),
+  renderJobBadge: document.getElementById("renderJobBadge"),
+  renderJobProgress: document.getElementById("renderJobProgress"),
+  renderJobDetail: document.getElementById("renderJobDetail"),
   videoLink: document.getElementById("videoLink"),
   videoResultPanel: document.getElementById("videoResultPanel"),
   videoResultName: document.getElementById("videoResultName"),
@@ -245,6 +264,7 @@ const els = {
   phoneAyah: document.getElementById("phoneAyah"),
   phoneReference: document.getElementById("phoneReference"),
   phoneReciter: document.getElementById("phoneReciter"),
+  phoneRiwayah: document.getElementById("phoneRiwayah"),
 };
 
 init();
@@ -255,7 +275,7 @@ async function init() {
   await Promise.all([loadQuran(), loadReciters(), loadBackgrounds(), loadFreeReels()]);
   bindEvents();
   renderAll();
-  setStatus("جاهز للتجربة. اختر الآيات ثم اضغط توليد.", "info");
+  setStatus("جاهز للتجربة. اختر الآيات ثم اضغط إنشاء.", "info");
 }
 
 async function loadQuran() {
@@ -272,7 +292,7 @@ async function loadReciters() {
 }
 
 async function loadBackgrounds() {
-  const response = await fetch("assets/background-library/catalog.json?v=20260704-pexels-makkah-madinah", { cache: "no-store" });
+  const response = await fetch("assets/background-library/catalog.json?v=20260706-background-ready-v2", { cache: "no-store" });
   if (!response.ok) {
     state.backgrounds = uniqueBackgrounds(featuredBackgrounds()).filter(isUsableBackground);
     return;
@@ -301,17 +321,57 @@ function bindEvents() {
     updateBackgroundSuggestions({ selectFirst: false });
     renderAll();
   });
+  els.ayahStartMinus?.addEventListener("click", () => {
+    setAyahStartByStep(-1);
+  });
+  els.ayahStartPlus?.addEventListener("click", () => {
+    setAyahStartByStep(1);
+  });
+  els.ayahCountMinus?.addEventListener("click", () => {
+    setAyahCountByStep(-1);
+  });
+  els.ayahCountPlus?.addEventListener("click", () => {
+    setAyahCountByStep(1);
+  });
+  bindNumericStepperInput(els.ayahStart);
+  bindNumericStepperInput(els.ayahCount);
   els.ayahStart.addEventListener("input", () => {
+    sanitizeNumericInput(els.ayahStart);
+    clampAyahInputs({ commit: false });
+    updateBackgroundSuggestions({ selectFirst: false });
+    renderAll();
+  });
+  els.ayahStart.addEventListener("change", () => {
     clampAyahInputs();
     updateBackgroundSuggestions({ selectFirst: false });
     renderAll();
   });
   els.ayahCount.addEventListener("input", () => {
+    sanitizeNumericInput(els.ayahCount);
+    clampAyahInputs({ commit: false });
+    updateBackgroundSuggestions({ selectFirst: false });
+    renderAll();
+  });
+  els.ayahCount.addEventListener("change", () => {
     clampAyahInputs();
     updateBackgroundSuggestions({ selectFirst: false });
     renderAll();
   });
-  els.reciterSelect.addEventListener("change", renderPhonePreview);
+  els.reciterSelect.addEventListener("change", () => {
+    renderAyahPreview();
+    renderPhonePreview();
+  });
+  els.audioMode?.addEventListener("change", () => {
+    updateAudioModeUi();
+    renderPhonePreview();
+    updateQuickGenerateBar();
+  });
+  els.externalAudioFile?.addEventListener("change", () => {
+    renderPhonePreview();
+    updateQuickGenerateBar();
+  });
+  els.externalReciterName?.addEventListener("input", renderPhonePreview);
+  els.externalUseAyahs?.addEventListener("change", renderPhonePreview);
   els.backgroundSelect.addEventListener("change", () => {
     selectBackground(els.backgroundSelect.value);
   });
@@ -377,8 +437,51 @@ function bindEvents() {
   els.copyInstagramCaption?.addEventListener("click", copyInstagramCaption);
   els.copyVideoLink.addEventListener("click", copyGeneratedVideoLink);
   els.backgroundPreview.addEventListener("error", () => {
-    setStatus("تعذر تشغيل فيديو الخلفية في المعاينة، لذلك ظهرت صورة احتياطية. التوليد نفسه سيستخدم ملف الخلفية.", "error");
+    setStatus("تعذر تشغيل فيديو الخلفية في المعاينة، لذلك ظهرت صورة احتياطية. الإنشاء نفسه سيستخدم ملف الخلفية.", "error");
   });
+}
+
+function bindNumericStepperInput(input) {
+  if (!input) return;
+  input.addEventListener("focus", () => {
+    input.dataset.replaceNextDigit = "1";
+    window.setTimeout(() => input.select(), 0);
+  });
+  input.addEventListener("click", () => {
+    input.dataset.replaceNextDigit = "1";
+    input.select();
+  });
+  input.addEventListener("beforeinput", (event) => {
+    const incoming = normalizeNumericInput(event.data || "");
+    if (event.inputType !== "insertText" || !incoming) return;
+
+    const selectedAll = input.selectionStart === 0 && input.selectionEnd === input.value.length;
+    if (input.dataset.replaceNextDigit === "1" || selectedAll) {
+      event.preventDefault();
+      input.value = incoming.slice(-1);
+      input.dataset.replaceNextDigit = "";
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+  });
+  input.addEventListener("keydown", (event) => {
+    if (["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab"].includes(event.key)) {
+      input.dataset.replaceNextDigit = "";
+      return;
+    }
+    if (event.key === "Enter") {
+      input.blur();
+    }
+  });
+  input.addEventListener("blur", () => {
+    input.dataset.replaceNextDigit = "";
+  });
+}
+
+function sanitizeNumericInput(input) {
+  if (!input) return;
+  const cleaned = normalizeNumericInput(input.value);
+  if (input.value !== cleaned) input.value = cleaned;
+  if (cleaned) input.dataset.replaceNextDigit = "";
 }
 
 function renderAll() {
@@ -391,7 +494,23 @@ function renderAll() {
   renderBackgroundCards();
   renderFreeReels();
   renderPhonePreview();
+  updateAudioModeUi();
   updateQuickGenerateBar();
+}
+
+function updateAudioModeUi() {
+  const external = isExternalAudioMode();
+  if (els.externalAudioPanel) els.externalAudioPanel.hidden = !external;
+  if (els.reciterSelect) els.reciterSelect.disabled = external;
+  if (els.suggestBackgrounds) els.suggestBackgrounds.disabled = external && !useExternalAyahMetadata();
+}
+
+function isExternalAudioMode() {
+  return els.audioMode?.value === "external";
+}
+
+function useExternalAyahMetadata() {
+  return Boolean(els.externalUseAyahs?.checked);
 }
 
 function renderSurahOptions() {
@@ -406,12 +525,34 @@ function renderSurahOptions() {
 
 function renderReciterOptions() {
   if (els.reciterSelect.options.length || !state.reciters.length) return;
-  state.reciters.forEach((reciter) => {
-    const option = document.createElement("option");
-    option.value = reciter.id;
-    option.textContent = `${reciter.name} - ${reciter.riwayah}`;
-    els.reciterSelect.appendChild(option);
+  groupedRecitersByRiwayah(state.reciters).forEach((group) => {
+    const optgroup = document.createElement("optgroup");
+    optgroup.label = group.riwayah;
+    group.reciters.forEach((reciter) => {
+      const option = document.createElement("option");
+      option.value = reciter.id;
+      option.textContent = reciter.name;
+      optgroup.appendChild(option);
+    });
+    els.reciterSelect.appendChild(optgroup);
   });
+}
+
+function groupedRecitersByRiwayah(reciters) {
+  const groups = new Map();
+  reciters.forEach((reciter) => {
+    const riwayah = reciter.riwayah || "رواية غير محددة";
+    if (!groups.has(riwayah)) groups.set(riwayah, []);
+    groups.get(riwayah).push(reciter);
+  });
+
+  return [...groups.entries()]
+    .map(([riwayah, items]) => ({
+      riwayah,
+      reciters: items,
+      priority: riwayah.includes("حفص") ? 0 : riwayah.includes("ورش") ? 1 : 2,
+    }))
+    .sort((a, b) => a.priority - b.priority || a.riwayah.localeCompare(b.riwayah, "ar"));
 }
 
 function renderBackgroundOptions(options = {}) {
@@ -471,7 +612,7 @@ function renderBackgroundCards() {
       if (item.remoteOnly && !item.localFileReady) {
         const remoteBadge = document.createElement("em");
         remoteBadge.className = "remote-badge";
-        remoteBadge.textContent = state.preparingBackgroundIds.has(item.id) ? "جاري التجهيز" : "ينزل عند الاختيار";
+        remoteBadge.textContent = state.preparingBackgroundIds.has(item.id) ? "جاري التجهيز" : "تنزل عند الاختيار";
         button.append(remoteBadge);
       }
       if (state.suggestedBackgroundIds.has(item.id)) {
@@ -600,26 +741,76 @@ function renderFreeReels() {
   els.freeReelsGrid.replaceChildren(...cards);
 }
 
-function clampAyahInputs() {
+function clampAyahInputs(options = {}) {
+  const surah = selectedSurah();
+  if (!surah) return;
+  const commit = options.commit !== false;
+  const maxAyah = surah.ayahs.length;
+  const start = clampNumber(els.ayahStart.value || "1", 1, maxAyah);
+  const maxCount = maxAyahCountForSelection(surah, start);
+  const count = clampNumber(els.ayahCount.value || "1", 1, maxCount);
+  els.ayahStart.max = String(maxAyah);
+  els.ayahCount.max = String(maxCount);
+  if (commit) {
+    els.ayahStart.value = String(start);
+    els.ayahCount.value = String(count);
+  }
+  syncAyahStartControls(start, maxAyah);
+  syncAyahCountControls(count, maxCount);
+  updateRangeSummary();
+}
+
+function setAyahStartByStep(step) {
   const surah = selectedSurah();
   if (!surah) return;
   const maxAyah = surah.ayahs.length;
-  const start = clampNumber(els.ayahStart.value, 1, maxAyah);
-  const count = clampNumber(els.ayahCount.value, 1, Math.min(20, maxAyah - start + 1));
-  els.ayahStart.max = String(maxAyah);
-  els.ayahCount.max = String(Math.min(20, maxAyah - start + 1));
-  els.ayahStart.value = String(start);
-  els.ayahCount.value = String(count);
-  updateRangeSummary();
+  const next = clampNumber(readAyahStart() + step, 1, maxAyah);
+  els.ayahStart.value = String(next);
+  clampAyahInputs();
+  updateBackgroundSuggestions({ selectFirst: false });
+  renderAll();
+}
+
+function syncAyahStartControls(start, maxAyah) {
+  if (els.surahAyahTotal) els.surahAyahTotal.textContent = String(maxAyah);
+  if (els.selectedAyahStartLabel) els.selectedAyahStartLabel.textContent = String(start);
+  if (els.ayahStartMinus) els.ayahStartMinus.disabled = start <= 1;
+  if (els.ayahStartPlus) els.ayahStartPlus.disabled = start >= maxAyah;
+}
+
+function setAyahCountByStep(step) {
+  const surah = selectedSurah();
+  if (!surah) return;
+  const maxCount = maxAyahCountForSelection(surah, readAyahStart());
+  const next = clampNumber(readAyahCount() + step, 1, maxCount);
+  els.ayahCount.value = String(next);
+  clampAyahInputs();
+  updateBackgroundSuggestions({ selectFirst: false });
+  renderAll();
+}
+
+function syncAyahCountControls(count, maxCount) {
+  if (els.maxAyahCountLabel) els.maxAyahCountLabel.textContent = String(maxCount);
+  if (els.selectedAyahCountLabel) els.selectedAyahCountLabel.textContent = String(count);
+  if (els.ayahCountMinus) els.ayahCountMinus.disabled = count <= 1;
+  if (els.ayahCountPlus) els.ayahCountPlus.disabled = count >= maxCount;
+}
+
+function maxAyahCountForSelection(surah, start) {
+  const maxAyah = surah?.ayahs?.length || 286;
+  return Math.min(20, maxAyah - start + 1, surah ? recommendedAyahLimit(surah, start) : 20);
 }
 
 function updateRangeSummary() {
   const surah = selectedSurah();
   if (!surah || !els.rangeSummary) return;
-  const start = Number(els.ayahStart.value || 1);
-  const count = Number(els.ayahCount.value || 1);
+  const start = readAyahStart();
+  const count = readAyahCount();
   const end = start + count - 1;
-  els.rangeSummary.textContent = `سيتم توليد ${surahName(surah.number)} من الآية ${start}${end > start ? ` إلى ${end}` : ""} - عدد الآيات: ${count}`;
+  const profile = ayahTextProfile(selectedAyahs());
+  const warning = ayahLengthWarning(profile);
+  els.rangeSummary.classList.toggle("warning", Boolean(warning));
+  els.rangeSummary.textContent = `سيتم إنشاء ${surahName(surah.number)} من الآية ${start}${end > start ? ` إلى ${end}` : ""} - عدد الآيات: ${count}${warning ? ` - ${warning}` : ""}`;
 }
 
 function renderAyahPreview() {
@@ -631,9 +822,12 @@ function renderAyahPreview() {
     return;
   }
 
-  const start = Number(els.ayahStart.value);
+  const start = readAyahStart();
   const end = start + ayahs.length - 1;
+  const profile = ayahTextProfile(ayahs);
   els.referenceLine.textContent = `${surahName(surah.number)} من الآية ${start}${end > start ? ` إلى ${end}` : ""}`;
+  els.ayahPreview.classList.toggle("is-long", profile.severity === "long");
+  els.ayahPreview.classList.toggle("is-very-long", profile.severity === "very-long");
   els.ayahPreview.replaceChildren(
     ...ayahs.map((ayah) => {
       const row = document.createElement("div");
@@ -644,8 +838,13 @@ function renderAyahPreview() {
   );
 
   const source = state.quran?.source;
+  const reciter = selectedReciter();
+  const riwayah = String(reciter?.riwayah || "");
+  const riwayahNote = riwayah && !riwayah.includes("حفص")
+    ? ` - تنبيه: الصوت برواية ${riwayah}، والنص المعروض من مصدر المصحف الحالي.`
+    : "";
   els.sourceLine.textContent = source
-    ? `المصدر: ${source.name} - ${source.edition || "رسم عثماني"}`
+    ? `المصدر: ${source.name} - ${source.edition || "رسم عثماني"}${riwayahNote}`
     : "";
 }
 
@@ -664,8 +863,8 @@ function updateBackgroundSuggestions({ selectFirst }) {
 }
 
 function renderPhonePreview() {
-  const ayahs = selectedAyahs();
-  const surah = selectedSurah();
+  const ayahs = isExternalAudioMode() && !useExternalAyahMetadata() ? [] : selectedAyahs();
+  const surah = isExternalAudioMode() && !useExternalAyahMetadata() ? null : selectedSurah();
   const reciter = selectedReciter();
   const background = selectedBackground();
   els.phonePreview.style.backgroundImage = `url("${displayPoster(background)}")`;
@@ -684,9 +883,12 @@ function renderPhonePreview() {
     ensurePreviewVideoPlays();
   }
 
-  els.phoneAyah.textContent = ayahs.map((ayah) => `${ayah.text} ﴿${ayah.number}﴾`).join(" ");
+  const profile = applyPhoneAyahFit(ayahs);
+  els.phoneAyah.textContent = ayahs.length ? ayahs.map((ayah) => `${ayah.text} ﴿${ayah.number}﴾`).join(" ") : "تلاوة قرآنية";
+  els.phoneAyah.title = ayahLengthWarning(profile) || "";
+  els.phoneReciter.textContent = phoneReciterLabel(reciter);
   els.phoneReference.textContent = surah ? formatReferenceLabel(surah, ayahs) : "";
-  els.phoneReciter.textContent = reciter?.name?.split(" - ")[0] || "";
+  els.phoneRiwayah.textContent = phoneRiwayahLabel(reciter);
   updateQuickGenerateBar();
 }
 
@@ -697,28 +899,45 @@ function updateQuickGenerateBar() {
   const ayahs = selectedAyahs();
   const reciter = selectedReciter();
   const background = selectedBackground();
-  const ready = Boolean(surah && ayahs.length && reciter);
-  const needsBackgroundPrep = Boolean(background?.remoteOnly && !background.localFileReady);
+  const external = isExternalAudioMode();
+  const externalSource = Boolean(els.externalAudioFile?.files?.[0]);
+  const ready = external ? externalSource : Boolean(surah && ayahs.length && reciter);
 
   if (state.busy) {
-    els.quickGenerateTitle.textContent = "جاري التوليد";
-    els.quickGenerateButton.textContent = "جاري التوليد...";
+    els.quickGenerateTitle.textContent = "جاري الإنشاء";
+    setFancyButtonText(els.quickGenerateButton, "جاري الإنشاء...");
+  } else if (state.lastVideoReady) {
+    els.quickGenerateTitle.textContent = "الفيديو جاهز";
+    setFancyButtonText(els.quickGenerateButton, "إنشاء نسخة جديدة");
+  } else if (external && !externalSource) {
+    els.quickGenerateTitle.textContent = "ارفع ملف صوت أو فيديو";
+    setFancyButtonText(els.quickGenerateButton, "اختر الملف أولا");
   } else if (!ready) {
     els.quickGenerateTitle.textContent = "أكمل الاختيارات";
-    els.quickGenerateButton.textContent = "أكمل الاختيارات";
-  } else if (needsBackgroundPrep) {
-    els.quickGenerateTitle.textContent = "الخلفية تحتاج تجهيز";
-    els.quickGenerateButton.textContent = "تجهيز ثم توليد";
+    setFancyButtonText(els.quickGenerateButton, "أكمل الاختيارات");
   } else {
-    els.quickGenerateTitle.textContent = "جاهز للتوليد";
-    els.quickGenerateButton.textContent = "توليد الفيديو";
+    els.quickGenerateTitle.textContent = "جاهز للإنشاء";
+    setFancyButtonText(els.quickGenerateButton, "إنشاء الفيديو");
   }
 
-  const reference = surah && ayahs.length ? formatReferenceLabel(surah, ayahs) : "اختر الآيات";
-  const reciterName = reciter?.name?.split(" - ")[0] || "اختر القارئ";
+  const reference = external && !useExternalAyahMetadata() ? "صوت خارجي" : surah && ayahs.length ? formatReferenceLabel(surah, ayahs) : "اختر الآيات";
+  const reciterName = external ? externalReciterName() || "قارئ اختياري" : reciter?.name?.split(" - ")[0] || "اختر القارئ";
   const backgroundName = background?.category ? backgroundCategoryName(background.category) : "اختر الخلفية";
   els.quickGenerateSummary.textContent = `${reference} | ${reciterName} | ${backgroundName}`;
   els.quickGenerateButton.disabled = state.busy || !ready;
+}
+
+function setFancyButtonText(button, label) {
+  if (!button) return;
+  const text = String(label || "").trim();
+  button.dataset.actionText = text;
+  button.setAttribute("aria-label", text);
+  const primaryText = button.querySelector(".txt:first-child");
+  if (primaryText) {
+    primaryText.textContent = text;
+  } else {
+    button.textContent = text;
+  }
 }
 
 function formatReferenceLabel(surah, ayahs) {
@@ -732,6 +951,16 @@ function formatAyahRange(first, last) {
   return first === last ? String(first) : `\u200e${last}-${first}\u200e`;
 }
 
+function phoneReciterLabel(reciter) {
+  if (isExternalAudioMode()) return externalReciterName() || "قارئ القرآن";
+  return cleanReciterName(reciter);
+}
+
+function phoneRiwayahLabel(reciter) {
+  if (isExternalAudioMode()) return "صوت خارجي";
+  return String(reciter?.riwayah || "حفص عن عاصم").trim();
+}
+
 function ensurePreviewVideoPlays() {
   els.backgroundPreview.muted = true;
   els.backgroundPreview.playsInline = true;
@@ -743,6 +972,10 @@ function ensurePreviewVideoPlays() {
 
 async function generateVideo() {
   if (state.busy) return;
+  if (isExternalAudioMode()) {
+    await generateExternalAudioVideo();
+    return;
+  }
   const surah = selectedSurah();
   const reciter = selectedReciter();
   if (!surah || !reciter) {
@@ -751,7 +984,7 @@ async function generateVideo() {
   }
   let background = selectedBackground();
   if (background?.remoteOnly && !background.localFileReady) {
-    setStatus("الخلفية المختارة تحتاج تجهيز قبل التوليد. جاري التجهيز الآن...", "info");
+    setStatus("الخلفية المختارة تحتاج تجهيز قبل الإنشاء. جاري التجهيز الآن...", "info");
     await prepareBackgroundForPreview(background);
     background = selectedBackground();
     if (background?.remoteOnly && !background.localFileReady) {
@@ -764,29 +997,43 @@ async function generateVideo() {
   els.generateButton.disabled = true;
   els.videoLink.hidden = true;
   hideVideoResult();
-  setStatus("جاري تنزيل الصوت وتوليد الفيديو. قد يستغرق ذلك قليلا لأول مرة...", "info");
+  showRenderJobStatus({ status: "pending" }, "تم إرسال الطلب. يبدأ الإنشاء الآن.");
+  setStatus("تم إنشاء طلب الإنشاء. جاري المعالجة...", "info");
 
   try {
     const payload = {
       surah: surah.number,
-      ayahStart: Number(els.ayahStart.value),
-      ayahCount: Number(els.ayahCount.value),
+      ayahStart: readAyahStart(),
+      ayahCount: readAyahCount(),
       reciter: reciter.id,
       background: background.id,
     };
-    const response = await fetch("/api/compose-selected-video", {
+    const response = await fetch("/api/render", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
     const result = await response.json();
     if (!response.ok || !result.ready) {
-      throw new Error(result.error || "فشل توليد الفيديو.");
+      throw new Error(formatGenerationFailure(result));
     }
-    setStatus("تم توليد الفيديو بنجاح.", "ok");
-    showVideoResult(result);
+    showRenderJobStatus(result, "تم إنشاء رقم الطلب. نتابع حالة المعالجة.");
+    const job = await waitForRenderJob(result);
+    if (job.status !== "completed" || !job.videoUrl) {
+      showRenderJobStatus(job, job.error || "تعذر اكتمال طلب الإنشاء.");
+      throw new Error(job.error || "فشل طلب الإنشاء.");
+    }
+    showRenderJobStatus(job, "اكتمل الطلب وأصبح الفيديو جاهزا.");
+    setStatus("تم إنشاء الفيديو بنجاح.", "ok");
+    showVideoResult({
+      ...result,
+      outUrl: job.videoUrl,
+      jobId: job.jobId,
+      status: job.status,
+    });
   } catch (error) {
-    setStatus(`لم ينجح التوليد: ${error.message}`, "error");
+    showRenderJobStatus({ status: "failed", error: error.message }, error.message);
+    setStatus(`لم ينجح الإنشاء: ${error.message}`, "error");
   } finally {
     state.busy = false;
     els.generateButton.disabled = false;
@@ -794,9 +1041,177 @@ async function generateVideo() {
   }
 }
 
+async function waitForRenderJob(initialJob) {
+  let job = normalizeRenderJob(initialJob);
+  showRenderJobStatus(job, "تم استلام طلب الإنشاء.");
+  if (job.status === "completed" || job.status === "failed") return job;
+  if (!job.jobId) return job;
+
+  for (let attempt = 0; attempt < 30; attempt += 1) {
+    setStatus(`جاري المعالجة... الحالة: ${renderStatusLabel(job.status)}`, "info");
+    showRenderJobStatus(job, `جاري المعالجة... محاولة متابعة ${attempt + 1}.`);
+    await delay(1500);
+    const response = await fetch(`/api/render/${encodeURIComponent(job.jobId)}`, { cache: "no-store" });
+    const next = await response.json();
+    if (!response.ok || !next.ready) {
+      throw new Error(formatGenerationFailure(next));
+    }
+    job = normalizeRenderJob(next);
+    showRenderJobStatus(job, job.status === "completed" ? "اكتمل الطلب وأصبح الفيديو جاهزا." : "ما زال الطلب تحت المعالجة.");
+    if (job.status === "completed" || job.status === "failed") return job;
+  }
+
+  return {
+    ...job,
+    status: "failed",
+    error: "استغرق الإنشاء وقتا أطول من المتوقع. جرّب فتح النتيجة لاحقا من حالة الطلب.",
+  };
+}
+
+function normalizeRenderJob(value) {
+  return {
+    jobId: String(value?.jobId || ""),
+    status: String(value?.status || ""),
+    videoUrl: String(value?.videoUrl || value?.outUrl || ""),
+    error: String(value?.error || ""),
+    code: String(value?.code || ""),
+    hint: String(value?.hint || ""),
+  };
+}
+
+function renderStatusLabel(status) {
+  const labels = {
+    pending: "بالانتظار",
+    processing: "قيد المعالجة",
+    completed: "اكتمل",
+    failed: "فشل",
+  };
+  return labels[status] || status || "غير معروفة";
+}
+
+function renderStatusProgress(status) {
+  const progress = {
+    pending: 22,
+    processing: 68,
+    completed: 100,
+    failed: 100,
+  };
+  return progress[status] || 12;
+}
+
+function showRenderJobStatus(jobLike, detail) {
+  if (!els.renderJobPanel) return;
+  const job = normalizeRenderJob(jobLike);
+  const status = job.status || "pending";
+  const label = renderStatusLabel(status);
+  els.renderJobPanel.hidden = false;
+  els.renderJobPanel.className = `render-job-panel ${status === "failed" ? "failed" : ""}`;
+  els.renderJobBadge.textContent = label;
+  els.renderJobBadge.className = `render-job-badge ${status}`;
+  els.renderJobProgress.style.width = `${renderStatusProgress(status)}%`;
+  els.renderJobTitle.textContent = job.jobId ? `طلب الإنشاء ${job.jobId}` : "حالة طلب الإنشاء";
+  els.renderJobDetail.textContent = detail || formatGenerationFailure(job) || `الحالة الحالية: ${label}`;
+}
+
+function hideRenderJobStatus() {
+  if (!els.renderJobPanel) return;
+  els.renderJobPanel.hidden = true;
+  els.renderJobPanel.className = "render-job-panel";
+  els.renderJobBadge.textContent = "";
+  els.renderJobBadge.className = "render-job-badge";
+  els.renderJobProgress.style.width = "0";
+  els.renderJobTitle.textContent = "حالة طلب الإنشاء";
+  els.renderJobDetail.textContent = "";
+}
+
+function delay(ms) {
+  return new Promise((resolveDelay) => window.setTimeout(resolveDelay, ms));
+}
+
+async function generateExternalAudioVideo() {
+  const file = els.externalAudioFile?.files?.[0];
+  if (!file) {
+    setStatus("ارفع ملف صوت أو فيديو أولا.", "error");
+    return;
+  }
+
+  let background = selectedBackground();
+  if (background?.remoteOnly && !background.localFileReady) {
+    setStatus("الخلفية المختارة تحتاج تجهيز قبل الإنشاء. جاري التجهيز الآن...", "info");
+    await prepareBackgroundForPreview(background);
+    background = selectedBackground();
+    if (background?.remoteOnly && !background.localFileReady) {
+      setStatus("الخلفية لم تجهز بعد. اختر خلفية أخرى ظاهرة بصورة حقيقية أو حاول تجهيزها مرة أخرى.", "error");
+      return;
+    }
+  }
+
+  state.busy = true;
+  els.generateButton.disabled = true;
+  els.videoLink.hidden = true;
+  hideVideoResult();
+  setStatus("جاري استخراج الصوت من الملف الخارجي وإنشاء الفيديو...", "info");
+
+  try {
+    const form = new FormData();
+    if (file) form.append("audio", file);
+    form.append("background", background.id);
+    form.append("reciterName", externalReciterName());
+    form.append("useAyahs", useExternalAyahMetadata() ? "1" : "0");
+    if (useExternalAyahMetadata()) {
+      form.append("surah", String(selectedSurah()?.number || ""));
+      form.append("ayahStart", String(readAyahStart() || ""));
+      form.append("ayahCount", String(readAyahCount() || ""));
+    }
+
+    const response = await fetch("/api/compose-external-audio-video", {
+      method: "POST",
+      body: form,
+    });
+    const result = await response.json();
+    if (!response.ok || !result.ready) {
+      throw new Error(formatGenerationFailure(result));
+    }
+    setStatus("تم إنشاء الفيديو من الصوت الخارجي بنجاح.", "ok");
+    showVideoResult(result);
+  } catch (error) {
+    setStatus(`لم ينجح الإنشاء: ${error.message}`, "error");
+  } finally {
+    state.busy = false;
+    els.generateButton.disabled = false;
+    updateQuickGenerateBar();
+  }
+}
+
+function externalReciterName() {
+  return String(els.externalReciterName?.value || "").trim();
+}
+
+function formatGenerationFailure(result) {
+  const code = String(result?.code || "").trim();
+  const message = String(result?.error || "فشل إنشاء الفيديو.").trim();
+  const hint = String(result?.hint || "").trim();
+  const prefix = generationFailurePrefix(code);
+  return [prefix, message, hint].filter(Boolean).join(" ");
+}
+
+function generationFailurePrefix(code) {
+  const labels = {
+    "ffmpeg-missing": "مشكلة FFmpeg:",
+    "ffmpeg-failed": "مشكلة FFmpeg:",
+    "font-missing": "مشكلة الخط:",
+    "background-missing": "مشكلة الخلفية:",
+    "background-not-ready": "مشكلة الخلفية:",
+    "recitation-audio-failed": "مشكلة صوت القارئ:",
+    "reciter-not-supported": "مشكلة القارئ:",
+  };
+  return labels[code] || "";
+}
+
 function showVideoResult(result) {
-  const href = result.outUrl || result.out || "";
+  const href = normalizeVideoHref(result.outUrl || result.out || "");
   const fileName = href.split("/").filter(Boolean).pop() || "ayah-studio-video.mp4";
+  state.lastVideoReady = true;
   els.videoLink.href = href;
   els.videoLink.hidden = false;
   els.videoDownloadLink.href = href;
@@ -807,11 +1222,23 @@ function showVideoResult(result) {
   showQuickVideoActions(href, fileName);
 }
 
+function normalizeVideoHref(value) {
+  const raw = String(value || "").trim();
+  if (!raw) return "";
+  if (/^https?:\/\//i.test(raw)) return raw;
+  const clean = raw
+    .replace(/^\/?app\/outputs\//i, "/outputs/")
+    .replace(/^outputs\//i, "/outputs/");
+  return new URL(clean, window.location.origin).href;
+}
+
 function hideVideoResult() {
+  state.lastVideoReady = false;
   els.videoResultPanel.hidden = true;
   els.videoResultName.textContent = "";
   els.videoDownloadLink.href = "#";
   els.videoDownloadLink.removeAttribute("download");
+  hideRenderJobStatus();
   hideInstagramCaption();
   hideQuickVideoActions();
 }
@@ -920,10 +1347,9 @@ async function copyInstagramCaption() {
 }
 
 function buildInstagramCaption() {
-  const surah = selectedSurah();
-  const ayahs = selectedAyahs();
-  const reciter = selectedReciter();
-  const reciterName = cleanReciterName(reciter);
+  const surah = captionSurah();
+  const ayahs = captionAyahs();
+  const reciterName = captionReciterName();
   const content = buildInstagramFallbackTafsirText(ayahs);
   const lines = [
     `القارئ/ ${reciterName}`,
@@ -931,7 +1357,7 @@ function buildInstagramCaption() {
     formatInstagramAyahLine(ayahs),
     content,
     "",
-    buildInstagramHashtags(surah, reciter).join(" "),
+    buildInstagramHashtags(surah, reciterName).join(" "),
   ];
   return lines.join("\n").trim();
 }
@@ -948,30 +1374,29 @@ async function renderInstagramCaption() {
 }
 
 function buildInstagramLoadingCaption() {
-  const ayahs = selectedAyahs();
+  const ayahs = captionAyahs();
   if (ayahs.length) return buildInstagramCaptionWithContent("تفسير السعدي: جاري جلب تفسير الآيات المختارة...");
   return buildInstagramCaption();
 }
 
 async function buildInstagramCaptionAsync() {
-  const ayahs = selectedAyahs();
+  const ayahs = captionAyahs();
   if (!ayahs.length) return buildInstagramCaption();
   const tafsir = await fetchSaadiTafsirForAyahs(ayahs);
   return buildInstagramCaptionWithContent(tafsir || buildInstagramFallbackTafsirText(ayahs));
 }
 
 function buildInstagramCaptionWithContent(content) {
-  const surah = selectedSurah();
-  const ayahs = selectedAyahs();
-  const reciter = selectedReciter();
-  const reciterName = cleanReciterName(reciter);
+  const surah = captionSurah();
+  const ayahs = captionAyahs();
+  const reciterName = captionReciterName();
   const lines = [
     `القارئ/ ${reciterName}`,
     `السورة/ ${surah ? surahName(surah.number) : "آيات من القرآن الكريم"}`,
     formatInstagramAyahLine(ayahs),
     content,
     "",
-    buildInstagramHashtags(surah, reciter).join(" "),
+    buildInstagramHashtags(surah, reciterName).join(" "),
   ];
   return lines.join("\n").trim();
 }
@@ -987,7 +1412,7 @@ async function fetchSaadiTafsirForAyahs(ayahs) {
 }
 
 async function fetchSaadiTafsirForAyah(ayah) {
-  const surah = selectedSurah();
+  const surah = captionSurah();
   if (!surah || !ayah?.number) return "";
   try {
     const verseKey = `${surah.number}:${ayah.number}`;
@@ -1017,7 +1442,7 @@ function formatInstagramAyahLine(ayahs) {
 function buildInstagramHashtags(surah, reciter) {
   const tags = ["#قرآن", "#تلاوة"];
   if (surah) tags.push(`#سورة_${normalizeHashtagPart(surahName(surah.number))}`);
-  const reciterTag = normalizeHashtagPart(cleanReciterName(reciter));
+  const reciterTag = normalizeHashtagPart(typeof reciter === "string" ? reciter : cleanReciterName(reciter));
   if (reciterTag) tags.push(`#${reciterTag}`);
   tags.push("#Quran");
   return uniqueValues(tags).slice(0, 5);
@@ -1025,6 +1450,19 @@ function buildInstagramHashtags(surah, reciter) {
 
 function cleanReciterName(reciter) {
   return String(reciter?.name || "قارئ القرآن").split(" - ")[0].trim();
+}
+
+function captionSurah() {
+  return isExternalAudioMode() && !useExternalAyahMetadata() ? null : selectedSurah();
+}
+
+function captionAyahs() {
+  return isExternalAudioMode() && !useExternalAyahMetadata() ? [] : selectedAyahs();
+}
+
+function captionReciterName() {
+  if (isExternalAudioMode()) return externalReciterName() || "قارئ القرآن";
+  return cleanReciterName(selectedReciter());
 }
 
 function normalizeHashtagPart(value) {
@@ -1054,12 +1492,92 @@ function selectedSurah() {
   return state.quran?.surahs?.find((surah) => surah.number === number);
 }
 
+const MAX_PHONE_TEXT_CHARS = 360;
+const MAX_PHONE_AYAH_COUNT = 8;
+
+function cleanQuranTextLength(text) {
+  return String(text || "")
+    .replace(/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED]/g, "")
+    .replace(/\s+/g, "")
+    .length;
+}
+
+function recommendedAyahLimit(surah, start) {
+  const remaining = Math.max(1, surah.ayahs.length - start + 1);
+  const hardLimit = Math.min(MAX_PHONE_AYAH_COUNT, remaining);
+  let totalLength = 0;
+  let allowed = 0;
+
+  for (let offset = 0; offset < hardLimit; offset += 1) {
+    const ayah = surah.ayahs.find((item) => item.number === start + offset);
+    const length = cleanQuranTextLength(ayah?.text);
+    if (allowed > 0 && totalLength + length > MAX_PHONE_TEXT_CHARS) break;
+    totalLength += length;
+    allowed += 1;
+    if (length > MAX_PHONE_TEXT_CHARS) break;
+  }
+
+  return Math.max(1, allowed);
+}
+
+function ayahTextProfile(ayahs) {
+  const lengths = ayahs.map((ayah) => cleanQuranTextLength(ayah.text));
+  const totalLength = lengths.reduce((sum, length) => sum + length, 0);
+  const longestAyah = Math.max(0, ...lengths);
+  let severity = "";
+
+  if (totalLength > 430 || longestAyah > 260 || ayahs.length > 6) {
+    severity = "very-long";
+  } else if (totalLength > 280 || longestAyah > 180 || ayahs.length > 4) {
+    severity = "long";
+  }
+
+  return { totalLength, longestAyah, ayahCount: ayahs.length, severity };
+}
+
+function ayahLengthWarning(profile) {
+  if (!profile?.severity) return "";
+  if (profile.severity === "very-long") {
+    return "تنبيه: النص طويل جداً لفيديو قصير؛ الأفضل تقليل عدد الآيات أو اختيار آية أقصر.";
+  }
+  return "تنبيه: النص طويل وقد يظهر مزدحماً داخل إطار الهاتف.";
+}
+
+function applyPhoneAyahFit(ayahs) {
+  const profile = ayahTextProfile(ayahs);
+  els.phoneAyah.classList.toggle("is-long", profile.severity === "long");
+  els.phoneAyah.classList.toggle("is-very-long", profile.severity === "very-long");
+  els.phoneAyah.style.setProperty("--phone-ayah-width", phoneAyahBoxWidth(profile));
+  return profile;
+}
+
+function phoneAyahBoxWidth(profile) {
+  if (profile.severity === "very-long") return "88%";
+  if (profile.severity === "long") return "84%";
+  if (profile.totalLength <= 42 && profile.ayahCount <= 1) return "58%";
+  if (profile.totalLength <= 90 && profile.ayahCount <= 2) return "72%";
+  return "82%";
+}
+
 function selectedAyahs() {
   const surah = selectedSurah();
   if (!surah) return [];
-  const start = Number(els.ayahStart.value || 1);
-  const count = Number(els.ayahCount.value || 1);
+  const start = readAyahStart();
+  const count = readAyahCount();
   return surah.ayahs.filter((ayah) => ayah.number >= start && ayah.number < start + count);
+}
+
+function readAyahStart() {
+  const surah = selectedSurah();
+  const maxAyah = surah?.ayahs?.length || 286;
+  return clampNumber(els.ayahStart.value || "1", 1, maxAyah);
+}
+
+function readAyahCount() {
+  const surah = selectedSurah();
+  const start = readAyahStart();
+  const maxCount = maxAyahCountForSelection(surah, start);
+  return clampNumber(els.ayahCount.value || "1", 1, maxCount);
 }
 
 function selectedReciter() {
@@ -1088,8 +1606,15 @@ function isUsableBackground(item) {
   if (item.hiddenDuplicate) return false;
   if (!hasRealPoster(item)) return false;
   if (!isQuranAppropriateBackground(item)) return false;
-  if (item.remoteOnly && !hasRealPoster(item)) return false;
   return true;
+}
+
+function isGenerationReadyBackground(item) {
+  if (!item) return false;
+  if (item.localFileReady === true) return true;
+  if (item.remoteOnly === false && item.localFile) return true;
+  if (["makkah", "madinah", "nature"].includes(String(item.id || ""))) return true;
+  return false;
 }
 
 function hasRealPoster(item) {
@@ -1194,8 +1719,9 @@ function selectBackground(id, options = {}) {
   if (!item) return;
   els.backgroundSelect.value = item.id;
   if (!options.silent) {
-    const suffix = item.remoteOnly ? " - سيتم تجهيزها عند الاختيار، ولن يبدأ التوليد قبل جاهزيتها." : "";
+    const suffix = "";
     els.suggestionLine.textContent = `تم اختيار الخلفية: ${item.title}${suffix}`;
+    setStatus("تم اختيار الخلفية. اضغط إنشاء الفيديو للمتابعة.", "info");
   }
   renderBackgroundCards();
   renderPhonePreview();
@@ -1219,7 +1745,7 @@ async function prepareBackgroundForPreview(item) {
       throw new Error(result.error || "تعذر تجهيز الخلفية.");
     }
     applyPreparedBackground(result.item);
-    setStatus("تم تجهيز الخلفية للمعاينة والتوليد.", "ok");
+    setStatus("تم تجهيز الخلفية للمعاينة والإنشاء.", "ok");
     renderBackgroundCards();
     renderPhonePreview();
   } catch (error) {
@@ -1330,9 +1856,16 @@ function surahName(number) {
 }
 
 function clampNumber(value, min, max) {
-  const numeric = Number(value);
+  const numeric = Number(normalizeNumericInput(value));
   if (!Number.isFinite(numeric)) return min;
   return Math.max(min, Math.min(max, Math.trunc(numeric)));
+}
+
+function normalizeNumericInput(value) {
+  return String(value || "")
+    .replace(/[\u0660-\u0669]/g, (digit) => String(digit.charCodeAt(0) - 0x0660))
+    .replace(/[\u06F0-\u06F9]/g, (digit) => String(digit.charCodeAt(0) - 0x06F0))
+    .replace(/[^\d]/g, "");
 }
 
 function setStatus(message, level) {

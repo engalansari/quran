@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-07T14:52:27.240Z",
+  "provider": {
+    "name": "Al Quran Cloud / Islamic Network CDN",
+    "apiBase": "https://api.alquran.cloud/v1",
+    "note": "Ayah Studio stores downloaded MP3 files locally and maps every file to an explicit surah and ayah. No recognition or guessing is used."
+  },
+  "reciter": "everyayah.hafs.muhsin-alqasim-192",
+  "reciterName": "محسن القاسم - EveryAyah",
+  "ayahs": [
+    {
+      "surah": 1,
+      "ayah": 1,
+      "globalAyahNumber": null,
+      "reciter": "everyayah.hafs.muhsin-alqasim-192",
+      "reciterName": "محسن القاسم - EveryAyah",
+      "sourceUrl": "https://everyayah.com/data/Muhsin_Al_Qasim_192kbps/001001.mp3",
+      "sourceProvider": "EveryAyah",
+      "file": "assets/audio/everyayah.hafs.muhsin-alqasim-192/001/001.mp3",
+      "sha256": "21ed0501ad982becd5fa3a6ee6af5780b20eb99b37348bcb75f8b40f73af9dd3"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-07T14:52:24.874Z",
+  "provider": {
+    "name": "Al Quran Cloud / Islamic Network CDN",
+    "apiBase": "https://api.alquran.cloud/v1",
+    "note": "Ayah Studio stores downloaded MP3 files locally and maps every file to an explicit surah and ayah. No recognition or guessing is used."
+  },
+  "reciter": "everyayah.hafs.ghamadi-40",
+  "reciterName": "سعد الغامدي - EveryAyah",
+  "ayahs": [
+    {
+      "surah": 1,
+      "ayah": 1,
+      "globalAyahNumber": null,
+      "reciter": "everyayah.hafs.ghamadi-40",
+      "reciterName": "سعد الغامدي - EveryAyah",
+      "sourceUrl": "https://everyayah.com/data/Ghamadi_40kbps/001001.mp3",
+      "sourceProvider": "EveryAyah",
+      "file": "assets/audio/everyayah.hafs.ghamadi-40/001/001.mp3",
+      "sha256": "3ab00816a3906554e35ec769a7275d22ee3031eae74e27d43649609bb517a4d3"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-07T14:52:24.374Z",
+  "provider": {
+    "name": "Al Quran Cloud / Islamic Network CDN",
+    "apiBase": "https://api.alquran.cloud/v1",
+    "note": "Ayah Studio stores downloaded MP3 files locally and maps every file to an explicit surah and ayah. No recognition or guessing is used."
+  },
+  "reciter": "everyayah.hafs.ayman-sowaid-64",
+  "reciterName": "أيمن سويد - EveryAyah",
+  "ayahs": [
+    {
+      "surah": 1,
+      "ayah": 1,
+      "globalAyahNumber": null,
+      "reciter": "everyayah.hafs.ayman-sowaid-64",
+      "reciterName": "أيمن سويد - EveryAyah",
+      "sourceUrl": "https://everyayah.com/data/Ayman_Sowaid_64kbps/001001.mp3",
+      "sourceProvider": "EveryAyah",
+      "file": "assets/audio/everyayah.hafs.ayman-sowaid-64/001/001.mp3",
+      "sha256": "98947a21a7e0e955145bcf9b500e05b4f688a12b37ef521ebf288722d34c55fa"
+    }
+  ]
+}

@@ -2,8 +2,18 @@
   "scripts": {
     "test": "node scripts/test-all.mjs",
     "start": "node scripts/serve-mobile-backend.mjs --host 127.0.0.1 --port 4173",
+    "start:phone": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts\\start-phone-server.ps1 -Port 4175",
+    "start:cloud": "node scripts/serve-mobile-backend.mjs --host 0.0.0.0",
     "audit:backgrounds": "node scripts/audit-background-sources.mjs",
-    "proof:ffmpeg": "node scripts/find-ffmpeg.mjs"
+    "proof:ffmpeg": "node scripts/find-ffmpeg.mjs",
+    "proof:audio-policy": "node scripts/test-recitation-audio-policy.mjs",
+    "proof:quran-policy": "node scripts/test-quran-text-policy.mjs",
+    "proof:font-policy": "node scripts/test-quran-font-policy.mjs",
+    "proof:text-fit": "node scripts/test-ayah-text-fit-policy.mjs",
+    "proof:layout-examples": "node scripts/test-ayah-layout-examples.mjs",
+    "proof:online-config": "node scripts/test-online-config.mjs",
+    "proof:firebase-ready": "node scripts/test-firebase-ready.mjs",
+    "proof:render-jobs": "node scripts/test-render-job-store.mjs"
   },
   "dependencies": {
     "tesseract.js": "^5.1.1"

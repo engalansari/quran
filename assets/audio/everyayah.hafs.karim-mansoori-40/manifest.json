@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-07T14:52:25.476Z",
+  "provider": {
+    "name": "Al Quran Cloud / Islamic Network CDN",
+    "apiBase": "https://api.alquran.cloud/v1",
+    "note": "Ayah Studio stores downloaded MP3 files locally and maps every file to an explicit surah and ayah. No recognition or guessing is used."
+  },
+  "reciter": "everyayah.hafs.karim-mansoori-40",
+  "reciterName": "كريم منصوري - EveryAyah",
+  "ayahs": [
+    {
+      "surah": 1,
+      "ayah": 1,
+      "globalAyahNumber": null,
+      "reciter": "everyayah.hafs.karim-mansoori-40",
+      "reciterName": "كريم منصوري - EveryAyah",
+      "sourceUrl": "https://everyayah.com/data/Karim_Mansoori_40kbps/001001.mp3",
+      "sourceProvider": "EveryAyah",
+      "file": "assets/audio/everyayah.hafs.karim-mansoori-40/001/001.mp3",
+      "sha256": "649e4d8b40fc09e5776c0fbbab31569a8cdea498e4f8fc4ade013f3d73279ccf"
+    }
+  ]
+}

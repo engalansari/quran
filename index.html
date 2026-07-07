@@ -13,7 +13,7 @@
           .catch(() => {});
       }
     </script>
-    <link rel="stylesheet" href="styles.css?v=20260704-saadi-caption" />
+    <link rel="stylesheet" href="styles.css?v=20260707-ayah-font-v10" />
   </head>
   <body>
     <main class="app-shell">
@@ -31,7 +31,7 @@
             <span>1</span>
             <div>
               <h2>اختر الآيات</h2>
-              <p>اختر السورة والآية مباشرة، ثم راجع النص قبل التوليد.</p>
+              <p>اختر السورة والآية مباشرة، ثم راجع النص قبل الإنشاء.</p>
             </div>
           </div>
 
@@ -42,11 +42,39 @@
             </label>
             <label>
               آية البداية
-              <input id="ayahStart" type="number" min="1" value="1" inputmode="numeric" />
+              <div class="ayah-start-toolbar" aria-label="&#1575;&#1582;&#1578;&#1610;&#1575;&#1585; &#1570;&#1610;&#1577; &#1575;&#1604;&#1576;&#1583;&#1575;&#1610;&#1577;">
+                <div class="surah-total-pill">
+                  <span>&#1593;&#1583;&#1583; &#1570;&#1610;&#1575;&#1578; &#1575;&#1604;&#1587;&#1608;&#1585;&#1577;</span>
+                  <strong id="surahAyahTotal">-</strong>
+                </div>
+                <div class="ayah-stepper" role="group" aria-label="&#1585;&#1602;&#1605; &#1570;&#1610;&#1577; &#1575;&#1604;&#1576;&#1583;&#1575;&#1610;&#1577;">
+                  <button id="ayahStartMinus" class="stepper-button" type="button" aria-label="&#1573;&#1606;&#1602;&#1575;&#1589; &#1570;&#1610;&#1577; &#1575;&#1604;&#1576;&#1583;&#1575;&#1610;&#1577;">-</button>
+                  <input id="ayahStart" class="stepper-input" type="text" value="1" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-label="&#1585;&#1602;&#1605; &#1570;&#1610;&#1577; &#1575;&#1604;&#1576;&#1583;&#1575;&#1610;&#1577;" />
+                  <button id="ayahStartPlus" class="stepper-button" type="button" aria-label="&#1586;&#1610;&#1575;&#1583;&#1577; &#1570;&#1610;&#1577; &#1575;&#1604;&#1576;&#1583;&#1575;&#1610;&#1577;">+</button>
+                </div>
+                <div class="selected-start-pill">
+                  <span>&#1570;&#1610;&#1577; &#1575;&#1604;&#1576;&#1583;&#1575;&#1610;&#1577;</span>
+                  <strong id="selectedAyahStartLabel">1</strong>
+                </div>
+              </div>
             </label>
             <label>
               عدد الآيات
-              <input id="ayahCount" type="number" min="1" max="20" value="2" inputmode="numeric" />
+              <div class="ayah-count-toolbar" aria-label="&#1575;&#1582;&#1578;&#1610;&#1575;&#1585; &#1593;&#1583;&#1583; &#1575;&#1604;&#1570;&#1610;&#1575;&#1578; &#1575;&#1604;&#1605;&#1593;&#1585;&#1608;&#1590;&#1577;">
+                <div class="count-max-pill">
+                  <span>&#1575;&#1604;&#1581;&#1583; &#1575;&#1604;&#1605;&#1578;&#1575;&#1581;</span>
+                  <strong id="maxAyahCountLabel">-</strong>
+                </div>
+                <div class="ayah-stepper" role="group" aria-label="&#1593;&#1583;&#1583; &#1575;&#1604;&#1570;&#1610;&#1575;&#1578; &#1575;&#1604;&#1605;&#1593;&#1585;&#1608;&#1590;&#1577;">
+                  <button id="ayahCountMinus" class="stepper-button" type="button" aria-label="&#1573;&#1606;&#1602;&#1575;&#1589; &#1593;&#1583;&#1583; &#1575;&#1604;&#1570;&#1610;&#1575;&#1578;">-</button>
+                  <input id="ayahCount" class="stepper-input" type="text" value="2" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-label="&#1593;&#1583;&#1583; &#1575;&#1604;&#1570;&#1610;&#1575;&#1578; &#1575;&#1604;&#1605;&#1593;&#1585;&#1608;&#1590;&#1577;" />
+                  <button id="ayahCountPlus" class="stepper-button" type="button" aria-label="&#1586;&#1610;&#1575;&#1583;&#1577; &#1593;&#1583;&#1583; &#1575;&#1604;&#1570;&#1610;&#1575;&#1578;">+</button>
+                </div>
+                <div class="selected-count-pill">
+                  <span>&#1610;&#1593;&#1585;&#1590;</span>
+                  <strong><span id="selectedAyahCountLabel">2</span> &#1570;&#1610;&#1575;&#1578;</strong>
+                </div>
+              </div>
             </label>
           </div>
           <div id="rangeSummary" class="range-summary">اختر السورة وآية البداية وعدد الآيات.</div>
@@ -82,6 +110,31 @@
             </label>
           </div>
 
+          <div class="audio-source-panel">
+            <label>
+              مصدر الصوت
+              <select id="audioMode">
+                <option value="library">صوت من البرنامج</option>
+                <option value="external">رفع صوت / فيديو خارجي</option>
+              </select>
+            </label>
+            <div id="externalAudioPanel" class="external-audio-panel" hidden>
+              <label>
+                رفع فيديو أو صوت من الجهاز
+                <input id="externalAudioFile" type="file" accept="audio/*,video/*" />
+              </label>
+              <label>
+                اسم القارئ اختياري
+                <input id="externalReciterName" type="text" placeholder="مثال: مشاري العفاسي" />
+              </label>
+              <label class="check-field">
+                <input id="externalUseAyahs" type="checkbox" />
+                <span>إظهار السورة والآيات المختارة على الفيديو</span>
+              </label>
+              <p class="external-audio-note">استخدم ملف صوت أو فيديو محفوظ على الجهاز، وسيأخذ البرنامج الصوت منه ويولّد MP4 بالخلفية المختارة.</p>
+            </div>
+          </div>
+
           <div class="background-tools">
             <input id="backgroundSearch" class="background-search" type="search" placeholder="بحث في الخلفيات" />
             <button id="suggestBackgrounds" class="secondary-action" type="button">اقتراح خلفيات مناسبة للآيات</button>
@@ -115,8 +168,28 @@
         </section>
 
         <section class="panel action-panel">
-          <button id="generateButton" class="primary-action" type="button">توليد فيديو MP4</button>
-          <div id="statusBox" class="status-box">جاهز للتجربة. اختر الآيات ثم اضغط توليد.</div>
+          <button id="generateButton" class="primary-action uiverse-button" type="button" data-action-text="إنشاء فيديو MP4" aria-label="إنشاء فيديو MP4">
+            <span class="txt-box" aria-hidden="true">
+              <span class="txt">إنشاء فيديو MP4</span>
+              <span class="txt">ابدأ الآن</span>
+            </span>
+            <span class="uiverse-frame" aria-hidden="true"></span>
+            <span class="point top left" aria-hidden="true"></span>
+            <span class="point top right" aria-hidden="true"></span>
+            <span class="point bottom left" aria-hidden="true"></span>
+            <span class="point bottom right" aria-hidden="true"></span>
+          </button>
+          <div id="statusBox" class="status-box">جاهز للتجربة. اختر الآيات ثم اضغط إنشاء.</div>
+          <div id="renderJobPanel" class="render-job-panel" hidden>
+            <div class="render-job-head">
+              <strong id="renderJobTitle">حالة طلب الإنشاء</strong>
+              <span id="renderJobBadge" class="render-job-badge">بالانتظار</span>
+            </div>
+            <div class="render-job-track" aria-hidden="true">
+              <span id="renderJobProgress"></span>
+            </div>
+            <p id="renderJobDetail"></p>
+          </div>
           <a id="videoLink" class="video-link" href="#" target="_blank" rel="noreferrer" hidden>فتح الفيديو الناتج</a>
           <div id="videoResultPanel" class="video-result-panel" hidden>
             <p id="videoResultName" class="video-result-name"></p>
@@ -151,20 +224,31 @@
           <div class="brand-mark">@tilawat_alquran30</div>
           <div id="phoneAyah" class="phone-ayah"></div>
           <div class="phone-meta">
-            <span id="phoneReference"></span>
             <span id="phoneReciter"></span>
+            <span id="phoneReference"></span>
+            <span id="phoneRiwayah"></span>
           </div>
         </div>
       </aside>
     </main>
 
-    <aside class="quick-generate-bar" aria-label="توليد سريع">
+    <aside class="quick-generate-bar" aria-label="إنشاء سريع">
       <div class="quick-generate-summary">
         <strong id="quickGenerateTitle">جاهز للتجربة</strong>
         <span id="quickGenerateSummary">اختر الآيات والقارئ والخلفية.</span>
       </div>
       <div class="quick-generate-actions">
-        <button id="quickGenerateButton" class="quick-generate-button" type="button">توليد الفيديو</button>
+        <button id="quickGenerateButton" class="quick-generate-button uiverse-button" type="button" data-action-text="إنشاء الفيديو" aria-label="إنشاء الفيديو">
+          <span class="txt-box" aria-hidden="true">
+            <span class="txt">إنشاء الفيديو</span>
+            <span class="txt">ابدأ الآن</span>
+          </span>
+          <span class="uiverse-frame" aria-hidden="true"></span>
+          <span class="point top left" aria-hidden="true"></span>
+          <span class="point top right" aria-hidden="true"></span>
+          <span class="point bottom left" aria-hidden="true"></span>
+          <span class="point bottom right" aria-hidden="true"></span>
+        </button>
         <a id="quickOpenVideo" class="quick-result-action" href="#" target="_blank" rel="noreferrer" hidden>فتح</a>
         <a id="quickDownloadVideo" class="quick-result-action" href="#" download hidden>تحميل</a>
         <button id="quickShareVideo" class="quick-result-action" type="button" hidden>إرسال</button>
@@ -172,6 +256,6 @@
       </div>
     </aside>
 
-    <script src="app.js?v=20260704-saadi-caption"></script>
+    <script src="app.js?v=20260707-ayah-font-v10"></script>
   </body>
 </html>

@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join, relative, resolve } from "node:path";
+import { pathToFileURL } from "node:url";
 import { spawnSync } from "node:child_process";
 
 const args = parseArgs(process.argv.slice(2));
@@ -16,15 +17,19 @@ const surah = numberArg(args.surah, "surah");
 const ayahStart = numberArg(args["ayah-start"] || args.ayah, "ayah-start");
 const ayahCount = numberArg(args["ayah-count"] || 1, "ayah-count");
 const quranPath = resolve(args.quran || "data/quran-uthmani.json");
+const catalogPath = resolve(args.catalog || "assets/recitation-catalog.json");
 const background = resolve(args.background || "assets/production/nature.mp4");
 const font = resolve(args.font || "assets/fonts/hafs.18.ttf");
 const out = resolve(args.out || `outputs/ayah-${surah}-${ayahStart}-${ayahCount}-${reciter}.mp4`);
 const workDir = resolve(args["work-dir"] || "outputs/work");
 const audioDir = resolve(args["audio-dir"] || "assets/audio");
-const ffmpeg = resolve(args.ffmpeg || "tools/ffmpeg/ffmpeg-master-latest-win64-gpl/bin/ffmpeg.exe");
-const ffprobe = resolve(args.ffprobe || "tools/ffmpeg/ffmpeg-master-latest-win64-gpl/bin/ffprobe.exe");
+const ffmpeg = executableArg(args.ffmpeg, process.env.FFMPEG, "tools/ffmpeg/ffmpeg-master-latest-win64-gpl/bin/ffmpeg.exe", "ffmpeg");
+const ffprobe = executableArg(args.ffprobe, process.env.FFPROBE, "tools/ffmpeg/ffmpeg-master-latest-win64-gpl/bin/ffprobe.exe", "ffprobe");
 const fontName = args["font-name"] || "KFGQPC HAFS Uthmanic Script";
 const accountName = args.account || "@tilawat_alquran30";
+const quranRenderer = String(args["quran-renderer"] || process.env.QURAN_TEXT_RENDERER || "ass").toLowerCase();
+const chromium = executableArg(args.chromium, process.env.CHROMIUM, "", "chromium");
+const pangoView = executableArg(args["pango-view"], process.env.PANGO_VIEW, "", "pango-view");
 
 const SURAH_NAMES = [
   "الفاتحة", "البقرة", "آل عمران", "النساء", "المائدة", "الأنعام", "الأعراف", "الأنفال", "التوبة", "يونس",
@@ -69,14 +74,25 @@ if (!surah || !ayahStart || !ayahCount) {
   process.exit(1);
 }
 
-for (const [path, label] of [[quranPath, "Quran data"], [background, "background"], [font, "font"], [ffmpeg, "FFmpeg"], [ffprobe, "FFprobe"]]) {
+for (const [path, label] of [[quranPath, "Quran data"], [catalogPath, "recitation catalog"], [background, "background"], [font, "font"]]) {
   if (!existsSync(path)) fail(`Missing ${label}: ${path}`);
+}
+for (const [command, label] of [[ffmpeg, "FFmpeg"], [ffprobe, "FFprobe"]]) {
+  if (!commandWorks(command)) fail(`Missing ${label}: ${command}`);
+}
+if (quranRenderer === "chromium" && !commandWorks(chromium)) {
+  fail(`Missing Chromium Quran text renderer: ${chromium}`);
+}
+if (quranRenderer === "pango" && !commandWorks(pangoView, ["--help"])) {
+  fail(`Missing Pango Quran text renderer: ${pangoView}`);
 }
 
 mkdirSync(dirname(out), { recursive: true });
 mkdirSync(workDir, { recursive: true });
 
 const quran = readJson(quranPath);
+const recitationCatalog = readJson(catalogPath);
+const catalogReciter = recitationCatalog.reciters?.find((item) => item.id === reciter);
 const selected = selectedAyahs(quran, surah, ayahStart, ayahCount);
 const audioFiles = selected.map((item) => resolve(audioDir, reciter, pad3(surah), `${pad3(item.ayah)}.mp3`));
 
@@ -118,10 +134,13 @@ const finalAudioDuration = probeDuration(finalAudio);
 const schedule = clampScheduleEnd(buildSchedule(selected, audioFiles), finalAudioDuration);
 const meta = {
   accountName,
-  reciterName: RECITER_NAMES[reciter] || reciter,
+  reciterName: cleanOverlayName(catalogReciter?.name || RECITER_NAMES[reciter] || reciter),
+  riwayah: catalogReciter?.riwayah || "حفص عن عاصم",
   reference: referenceLabel(surah, selected),
+  duration: finalAudioDuration,
 };
-writeSubtitleFile(subtitlePath, schedule, meta);
+const ayahOverlays = quranRenderer === "chromium" || quranRenderer === "pango" ? writeAyahOverlayPngs(schedule, workDir) : [];
+writeSubtitleFile(subtitlePath, ayahOverlays.length ? [] : schedule, meta);
 
 run(ffmpeg, [
   "-y",
@@ -129,7 +148,8 @@ run(ffmpeg, [
   "-stream_loop", "-1",
   "-i", background,
   "-i", finalAudio,
-  "-filter_complex", buildVideoFilter(subtitlePath, dirname(font), schedule),
+  ...ayahOverlays.flatMap((overlay) => ["-i", overlay]),
+  "-filter_complex", buildVideoFilter(subtitlePath, dirname(font), schedule, ayahOverlays.length),
   "-map", "[vout]",
   "-map", "1:a:0",
   "-c:v", "libx264",
@@ -148,10 +168,13 @@ const result = {
   ready: true,
   out: relativePath(out),
   subtitles: relativePath(subtitlePath),
+  quranRenderer,
+  ayahOverlays: ayahOverlays.map(relativePath),
   audio: relativePath(finalAudio),
   duration: round(finalAudioDuration),
   reciter,
   reciterName: meta.reciterName,
+  riwayah: meta.riwayah,
   surah,
   surahName: surahName(surah),
   ayahStart,
@@ -230,15 +253,19 @@ function formatSeconds(value) {
 
 function writeSubtitleFile(path, schedule, meta) {
   const start = "0:00:00.00";
-  const end = formatAssTime(Math.max(...schedule.map((item) => item.end), 1));
+  const end = formatAssTime(schedule.length ? Math.max(...schedule.map((item) => item.end), 1) : Math.max(Number(meta.duration) || 1, 1));
   const fixedEvents = [
     `Dialogue: 1,${start},${end},Account,,0,0,0,,${escapeAssText(meta.accountName)}`,
-    `Dialogue: 1,${start},${end},MetaLeft,,0,0,0,,${escapeAssText(meta.reference)}`,
-    `Dialogue: 1,${start},${end},MetaRight,,0,0,0,,${escapeAssText(meta.reciterName)}`,
+    `Dialogue: 1,${start},${end},MetaReciter,,0,0,0,,${escapeAssText(meta.reciterName)}`,
+    `Dialogue: 1,${start},${end},MetaReference,,0,0,0,,${escapeAssText(meta.reference)}`,
+    `Dialogue: 1,${start},${end},MetaRiwayah,,0,0,0,,${escapeAssText(meta.riwayah)}`,
   ];
-  const events = schedule.map((item) => {
+  const events = schedule.flatMap((item) => {
     const layout = ayahTextLayout(item.text || "");
-    return `Dialogue: 0,${formatAssTime(item.start)},${formatAssTime(item.end)},Ayah,,0,0,${layout.textY},,{\\q2\\fs${layout.fontSize}\\bord1\\shad0}${wrapAssText(item.text)}`;
+    return [
+      roundedAyahBoxDialogue(item, layout),
+      `Dialogue: 1,${formatAssTime(item.start)},${formatAssTime(item.end)},Ayah,,0,0,${layout.textY},,{\\q2\\fs${layout.fontSize}\\bord2\\shad1}${wrapAssText(item.text)}`,
+    ];
   });
   const body = [
     "[Script Info]",
@@ -250,10 +277,12 @@ function writeSubtitleFile(path, schedule, meta) {
     "",
     "[V4+ Styles]",
     "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding",
-    `Style: Ayah,${fontName},84,&H00FFF8E8,&H00FFF8E8,&H66000000,&H00000000,0,0,0,0,100,100,0,0,1,1,0,8,92,92,620,1`,
+    "Style: AyahBox,Arial,20,&H66171909,&H66171909,&H99E8F8FF,&H00000000,0,0,0,0,100,100,0,0,1,3,0,7,0,0,0,1",
+    `Style: Ayah,${fontName},88,&H00FFF8E8,&H00FFF8E8,&H88000000,&H66000000,1,0,0,0,103,103,0,0,1,2,1,8,92,92,620,1`,
     "Style: Account,Segoe UI,64,&H00FFFFFF,&H00FFFFFF,&H66000000,&H66000000,1,0,0,0,100,100,0,0,3,12,0,7,54,54,54,1",
-    "Style: MetaLeft,Segoe UI,76,&H00FFFFFF,&H00FFFFFF,&H66000000,&H66000000,1,0,0,0,100,100,0,0,3,12,0,1,60,60,132,1",
-    "Style: MetaRight,Segoe UI,76,&H00FFFFFF,&H00FFFFFF,&H66000000,&H66000000,1,0,0,0,100,100,0,0,3,12,0,3,60,60,132,1",
+    "Style: MetaReciter,Segoe UI,72,&H00FFFFFF,&H00FFFFFF,&H66000000,&H66000000,1,0,0,0,100,100,0,0,3,12,0,2,90,90,338,1",
+    "Style: MetaReference,Segoe UI,64,&H00FFFFFF,&H00FFFFFF,&H66000000,&H66000000,1,0,0,0,100,100,0,0,3,12,0,2,150,150,248,1",
+    "Style: MetaRiwayah,Segoe UI,50,&H00BFF1FF,&H00BFF1FF,&H66143B35,&H66143B35,1,0,0,0,100,100,0,0,3,10,0,2,300,300,168,1",
     "",
     "[Events]",
     "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text",
@@ -264,16 +293,171 @@ function writeSubtitleFile(path, schedule, meta) {
   writeFileSync(path, body, "utf8");
 }
 
-function buildVideoFilter(subtitlePath, fontsDir, schedule) {
-  const textBoxes = schedule.map(textBoxFilter);
+function buildVideoFilter(subtitlePath, fontsDir, schedule, overlayCount = 0) {
+  if (overlayCount) {
+    const filters = [
+      [
+        "[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,setsar=1",
+        ...schedule.map(textBoxFilter),
+        "format=yuv420p[base]",
+      ].join(","),
+    ];
+    let current = "base";
+    schedule.forEach((item, index) => {
+      const next = index === overlayCount - 1 ? "texted" : `ayahov${index}`;
+      const layout = ayahTextLayout(item.text || "");
+      const y = `${layout.y}+(${layout.height}-h)/2`;
+      filters.push(`[${current}][${index + 2}:v]overlay=x=(W-w)/2:y='${y}':enable='between(t,${Number(item.start).toFixed(2)},${Number(item.end).toFixed(2)})'[${next}]`);
+      current = next;
+    });
+    filters.push(`[${current}]subtitles='${escapeFilter(subtitlePath)}':fontsdir='${escapeFilter(fontsDir)}'[vout]`);
+    return filters.join(";");
+  }
   return [
     [
       "[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,setsar=1",
-      ...textBoxes,
       "format=yuv420p[base]",
     ].join(","),
     `[base]subtitles='${escapeFilter(subtitlePath)}':fontsdir='${escapeFilter(fontsDir)}'[vout]`,
   ].join(";");
+}
+
+function writeAyahOverlayPngs(schedule, dir) {
+  const overlaysDir = join(dir, "ayah-overlays");
+  mkdirSync(overlaysDir, { recursive: true });
+  return schedule.map((item, index) => {
+    const htmlPath = join(overlaysDir, `ayah-${surah}-${item.ayah}-${index}.html`);
+    const pngPath = join(overlaysDir, `ayah-${surah}-${item.ayah}-${index}.png`);
+    if (quranRenderer === "pango") {
+      writeAyahOverlayWithPango(item, pngPath, overlaysDir, index);
+    } else {
+      writeFileSync(htmlPath, buildAyahOverlayHtml(item.text || ""), "utf8");
+      screenshotWithChromium(htmlPath, pngPath, overlaysDir, index);
+    }
+    if (!existsSync(pngPath)) fail(`Quran text renderer did not create overlay: ${pngPath}`);
+    return pngPath;
+  });
+}
+
+function writeAyahOverlayWithPango(item, pngPath, overlaysDir, index) {
+  const layout = ayahTextLayout(item.text || "");
+  const textPath = join(overlaysDir, `ayah-${surah}-${item.ayah}-${index}.txt`);
+  writeFileSync(textPath, wrappedLines(item.text || "").join("\n"), "utf8");
+  run(pangoView, [
+    "--no-display",
+    `--font=${fontName} ${layout.fontSize}`,
+    "--foreground=#fff8e8",
+    "--background=transparent",
+    "--align=center",
+    "--rtl",
+    `--width=${layout.width - 108}`,
+    "--margin=0",
+    `--output=${pngPath}`,
+    textPath,
+  ]);
+}
+
+function screenshotWithChromium(htmlPath, pngPath, overlaysDir, index) {
+  const commonFlags = [
+    "--no-sandbox",
+    "--disable-setuid-sandbox",
+    "--disable-dev-shm-usage",
+    "--disable-gpu",
+    "--disable-software-rasterizer",
+    "--disable-background-networking",
+    "--disable-extensions",
+    "--disable-sync",
+    "--disable-breakpad",
+    "--disable-crash-reporter",
+    "--hide-scrollbars",
+    "--mute-audio",
+    "--no-first-run",
+    "--no-default-browser-check",
+    "--password-store=basic",
+    `--user-data-dir=${join(overlaysDir, `profile-${index}`)}`,
+    `--data-path=${join(overlaysDir, `data-${index}`)}`,
+    `--disk-cache-dir=${join(overlaysDir, `cache-${index}`)}`,
+    `--crash-dumps-dir=${join(overlaysDir, `crash-${index}`)}`,
+    "--default-background-color=00000000",
+    "--window-size=1080,1920",
+    `--screenshot=${pngPath}`,
+    pathToFileURL(htmlPath).href,
+  ];
+  const attempts = [
+    ["--headless=new", ...commonFlags],
+    ["--headless", ...commonFlags],
+  ];
+
+  for (const commandArgs of attempts) {
+    const result = spawnSync(chromium, commandArgs, {
+      encoding: "utf8",
+      windowsHide: true,
+    });
+    if ((result.status ?? 1) === 0 || existsSync(pngPath)) return;
+    const output = [result.stdout, result.stderr].filter(Boolean).join("\n").trim();
+    if (output) console.error(output);
+  }
+
+  fail(`Command failed: ${chromium} ${attempts[attempts.length - 1].join(" ")}`);
+}
+
+function buildAyahOverlayHtml(text) {
+  const layout = ayahTextLayout(text);
+  const lines = wrappedLines(text).map((line) => `<span>${escapeHtml(line)}</span>`).join("");
+  return `<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<style>
+@font-face {
+  font-family: "${fontName}";
+  src: url("${pathToFileURL(font).href}") format("truetype");
+  font-display: block;
+}
+html, body {
+  width: 1080px;
+  height: 1920px;
+  margin: 0;
+  overflow: hidden;
+  background: transparent;
+}
+.ayah-box {
+  position: absolute;
+  left: ${layout.x}px;
+  top: ${layout.y}px;
+  width: ${layout.width}px;
+  height: ${layout.height}px;
+  box-sizing: border-box;
+  border: 3px solid rgba(255, 248, 232, 0.28);
+  border-radius: 24px;
+  background: rgba(9, 25, 23, 0.62);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 44px 54px;
+}
+.ayah-text {
+  color: #fff8e8;
+  font-family: "${fontName}", serif;
+  font-size: ${layout.fontSize}px;
+  font-weight: 700;
+  line-height: 1.22;
+  text-align: center;
+  direction: rtl;
+  unicode-bidi: plaintext;
+  text-shadow:
+    0 0 1px #fff8e8,
+    0 3px 7px rgba(0, 0, 0, 0.34);
+}
+.ayah-text span {
+  display: block;
+}
+</style>
+</head>
+<body>
+  <div class="ayah-box"><div class="ayah-text">${lines}</div></div>
+</body>
+</html>`;
 }
 
 function textBoxFilter(item) {
@@ -287,12 +471,55 @@ function textBoxFilter(item) {
   ].join(",");
 }
 
+function roundedAyahBoxDialogue(item, layout) {
+  const start = formatAssTime(item.start);
+  const end = formatAssTime(item.end);
+  const path = roundedRectPath(layout.width, layout.height, 24);
+  return `Dialogue: 0,${start},${end},AyahBox,,0,0,0,,{\\p1\\an7\\pos(${layout.x},${layout.y})}${path}`;
+}
+
+function roundedRectPath(width, height, radius) {
+  const w = Math.round(width);
+  const h = Math.round(height);
+  const r = Math.min(Math.round(radius), Math.floor(w / 2), Math.floor(h / 2));
+  const c = Math.round(r * 0.5523);
+  return [
+    `m ${r} 0`,
+    `l ${w - r} 0`,
+    `b ${w - r + c} 0 ${w} ${r - c} ${w} ${r}`,
+    `l ${w} ${h - r}`,
+    `b ${w} ${h - r + c} ${w - r + c} ${h} ${w - r} ${h}`,
+    `l ${r} ${h}`,
+    `b ${r - c} ${h} 0 ${h - r + c} 0 ${h - r}`,
+    `l 0 ${r}`,
+    `b 0 ${r - c} ${r - c} 0 ${r} 0`,
+  ].join(" ");
+}
+
 function run(command, commandArgs) {
   const result = spawnSync(command, commandArgs, {
     stdio: "inherit",
     windowsHide: true,
   });
   if ((result.status ?? 1) !== 0) fail(`Command failed: ${command} ${commandArgs.join(" ")}`);
+}
+
+function executableArg(explicitValue, envValue, localPath, commandName) {
+  if (explicitValue) return resolve(explicitValue);
+  if (envValue) return /[\\/]/.test(envValue) || /^[A-Za-z]:/.test(envValue) ? resolve(envValue) : envValue;
+  if (localPath) {
+    const resolvedLocal = resolve(localPath);
+    if (existsSync(resolvedLocal)) return resolvedLocal;
+  }
+  return commandName;
+}
+
+function commandWorks(command, commandArgs = ["-version"]) {
+  const result = spawnSync(command, commandArgs, {
+    encoding: "utf8",
+    windowsHide: true,
+  });
+  return (result.status ?? 1) === 0;
 }
 
 function parseArgs(input) {
@@ -335,10 +562,10 @@ function wrapAssText(value) {
 function ayahTextLayout(value) {
   const lines = wrappedLines(value);
   const fontSize = fontSizeForText(value);
-  const width = 948;
-  const height = clamp(Math.round(lines.length * fontSize * 1.22 + 104), 220, 640);
-  const x = 66;
-  const y = clamp(Math.round(768 - height / 2), 420, 700);
+  const width = ayahBoxWidth(lines, fontSize);
+  const height = clamp(Math.round(lines.length * fontSize * 1.22 + 128), 220, 980);
+  const x = Math.round((1080 - width) / 2);
+  const y = clamp(Math.round(760 - height / 2), 300, 700);
   return {
     x,
     y,
@@ -349,12 +576,17 @@ function ayahTextLayout(value) {
   };
 }
 
+function ayahBoxWidth(lines, fontSize) {
+  const longest = Math.max(0, ...lines.map((line) => cleanQuranTextLength(line)));
+  return clamp(Math.round(longest * fontSize * 0.24 + 180), 520, 948);
+}
+
 function fontSizeForText(value) {
   const lines = wrappedLines(value);
-  if (lines.length <= 2) return 90;
-  if (lines.length <= 3) return 86;
-  if (lines.length <= 4) return 80;
-  return 74;
+  if (lines.length <= 2) return 96;
+  if (lines.length <= 3) return 90;
+  if (lines.length <= 4) return 84;
+  return 78;
 }
 
 function wrappedLines(value) {
@@ -374,8 +606,23 @@ function wrappedLines(value) {
   return lines.length ? lines : [""];
 }
 
+function cleanQuranTextLength(value) {
+  return String(value || "")
+    .replace(/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED]/g, "")
+    .replace(/\s+/g, "")
+    .length;
+}
+
 function escapeAssText(value) {
   return String(value).replaceAll("\\", "\\\\").replaceAll("{", "\\{").replaceAll("}", "\\}");
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
 }
 
 function formatAssTime(value) {
@@ -414,6 +661,10 @@ function formatAyahRange(first, last) {
   return first === last ? String(first) : `\u200e${last}-${first}\u200e`;
 }
 
+function cleanOverlayName(value) {
+  return String(value || "قارئ القرآن").split(" - ")[0].trim();
+}
+
 function round(value) {
   return Math.round(value * 100) / 100;
 }
@@ -423,7 +674,7 @@ function clamp(value, min, max) {
 }
 
 function relativePath(path) {
-  return resolve(path).replace(`${process.cwd()}\\`, "").replaceAll("\\", "/");
+  return relative(process.cwd(), resolve(path)).replaceAll("\\", "/");
 }
 
 function fail(message) {

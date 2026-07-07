@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-07T14:23:32.541Z",
+  "provider": {
+    "name": "Al Quran Cloud / Islamic Network CDN",
+    "apiBase": "https://api.alquran.cloud/v1",
+    "note": "Ayah Studio stores downloaded MP3 files locally and maps every file to an explicit surah and ayah. No recognition or guessing is used."
+  },
+  "reciter": "everyayah.hafs.minshawy-mujawwad-64",
+  "reciterName": "???? ???? ???????? - ?????? - EveryAyah",
+  "ayahs": [
+    {
+      "surah": 1,
+      "ayah": 1,
+      "globalAyahNumber": null,
+      "reciter": "everyayah.hafs.minshawy-mujawwad-64",
+      "reciterName": "???? ???? ???????? - ?????? - EveryAyah",
+      "sourceUrl": "https://everyayah.com/data/Minshawy_Mujawwad_64kbps/001001.mp3",
+      "sourceProvider": "EveryAyah",
+      "file": "assets/audio/everyayah.hafs.minshawy-mujawwad-64/001/001.mp3",
+      "sha256": "140a2c911f08faa959e2049aebb1ab9aa17fa5e5b62820e8ba40eaacba612f73"
+    }
+  ]
+}

@@ -146,6 +146,580 @@
       "riwayah": "حفص عن عاصم",
       "quality": "provider-default",
       "verseByVerse": true
+    },
+    {
+      "id": "everyayah.warsh.abdulbasit",
+      "name": "عبد الباسط عبد الصمد - ورش",
+      "riwayah": "ورش عن نافع",
+      "quality": "128kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/warsh/warsh_Abdul_Basit_128kbps/",
+        "urlTemplate": "https://everyayah.com/data/warsh/warsh_Abdul_Basit_128kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Warsh audio. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.warsh.ibrahim-aldosary",
+      "name": "إبراهيم الدوسري - ورش",
+      "riwayah": "ورش عن نافع",
+      "quality": "128kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/warsh/warsh_ibrahim_aldosary_128kbps/",
+        "urlTemplate": "https://everyayah.com/data/warsh/warsh_ibrahim_aldosary_128kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Warsh audio. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.warsh.yassin-aljazaery",
+      "name": "ياسين الجزائري - ورش",
+      "riwayah": "ورش عن نافع",
+      "quality": "64kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/warsh/warsh_yassin_al_jazaery_64kbps/",
+        "urlTemplate": "https://everyayah.com/data/warsh/warsh_yassin_al_jazaery_64kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Warsh audio. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.abdullah-basfar-64",
+      "name": "\u0639\u0628\u062f \u0627\u0644\u0644\u0647 \u0628\u0635\u0641\u0631 - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "64kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Abdullah_Basfar_64kbps/",
+        "urlTemplate": "https://everyayah.com/data/Abdullah_Basfar_64kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.abdurrahmaan-sudais-64",
+      "name": "\u0639\u0628\u062f \u0627\u0644\u0631\u062d\u0645\u0646 \u0627\u0644\u0633\u062f\u064a\u0633 - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "64kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Abdurrahmaan_As-Sudais_64kbps/",
+        "urlTemplate": "https://everyayah.com/data/Abdurrahmaan_As-Sudais_64kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.abu-bakr-shaatree-64",
+      "name": "\u0623\u0628\u0648 \u0628\u0643\u0631 \u0627\u0644\u0634\u0627\u0637\u0631\u064a - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "64kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Abu_Bakr_Ash-Shaatree_64kbps/",
+        "urlTemplate": "https://everyayah.com/data/Abu_Bakr_Ash-Shaatree_64kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.alafasy-64",
+      "name": "\u0645\u0634\u0627\u0631\u064a \u0631\u0627\u0634\u062f \u0627\u0644\u0639\u0641\u0627\u0633\u064a - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "64kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Alafasy_64kbps/",
+        "urlTemplate": "https://everyayah.com/data/Alafasy_64kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.hani-rifai-64",
+      "name": "\u0647\u0627\u0646\u064a \u0627\u0644\u0631\u0641\u0627\u0639\u064a - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "64kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Hani_Rifai_64kbps/",
+        "urlTemplate": "https://everyayah.com/data/Hani_Rifai_64kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.hudhaify-64",
+      "name": "\u0639\u0644\u064a \u0627\u0644\u062d\u0630\u064a\u0641\u064a - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "64kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Hudhaify_64kbps/",
+        "urlTemplate": "https://everyayah.com/data/Hudhaify_64kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.husary-64",
+      "name": "\u0645\u062d\u0645\u0648\u062f \u062e\u0644\u064a\u0644 \u0627\u0644\u062d\u0635\u0631\u064a - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "64kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Husary_64kbps/",
+        "urlTemplate": "https://everyayah.com/data/Husary_64kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.husary-mujawwad-64",
+      "name": "\u0645\u062d\u0645\u0648\u062f \u062e\u0644\u064a\u0644 \u0627\u0644\u062d\u0635\u0631\u064a - \u0627\u0644\u0645\u062c\u0648\u062f - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "64kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Husary_Mujawwad_64kbps/",
+        "urlTemplate": "https://everyayah.com/data/Husary_Mujawwad_64kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.maher-muaiqly-64",
+      "name": "\u0645\u0627\u0647\u0631 \u0627\u0644\u0645\u0639\u064a\u0642\u0644\u064a - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "64kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Maher_AlMuaiqly_64kbps/",
+        "urlTemplate": "https://everyayah.com/data/Maher_AlMuaiqly_64kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.minshawy-murattal-128",
+      "name": "\u0645\u062d\u0645\u062f \u0635\u062f\u064a\u0642 \u0627\u0644\u0645\u0646\u0634\u0627\u0648\u064a - \u0645\u0631\u062a\u0644 - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "128kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Minshawy_Murattal_128kbps/",
+        "urlTemplate": "https://everyayah.com/data/Minshawy_Murattal_128kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.minshawy-mujawwad-64",
+      "name": "\u0645\u062d\u0645\u062f \u0635\u062f\u064a\u0642 \u0627\u0644\u0645\u0646\u0634\u0627\u0648\u064a - \u0627\u0644\u0645\u062c\u0648\u062f - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "64kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Minshawy_Mujawwad_64kbps/",
+        "urlTemplate": "https://everyayah.com/data/Minshawy_Mujawwad_64kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.muhammad-ayyoub-64",
+      "name": "\u0645\u062d\u0645\u062f \u0623\u064a\u0648\u0628 - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "64kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Muhammad_Ayyoub_64kbps/",
+        "urlTemplate": "https://everyayah.com/data/Muhammad_Ayyoub_64kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.muhammad-jibreel-64",
+      "name": "\u0645\u062d\u0645\u062f \u062c\u0628\u0631\u064a\u0644 - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "64kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Muhammad_Jibreel_64kbps/",
+        "urlTemplate": "https://everyayah.com/data/Muhammad_Jibreel_64kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.saood-shuraym-64",
+      "name": "\u0633\u0639\u0648\u062f \u0627\u0644\u0634\u0631\u064a\u0645 - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "64kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Saood_ash-Shuraym_64kbps/",
+        "urlTemplate": "https://everyayah.com/data/Saood_ash-Shuraym_64kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.yasser-dussary-128",
+      "name": "\u064a\u0627\u0633\u0631 \u0627\u0644\u062f\u0648\u0633\u0631\u064a - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "128kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Yasser_Ad-Dussary_128kbps/",
+        "urlTemplate": "https://everyayah.com/data/Yasser_Ad-Dussary_128kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.fares-abbad-64",
+      "name": "\u0641\u0627\u0631\u0633 \u0639\u0628\u0627\u062f - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "64kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Fares_Abbad_64kbps/",
+        "urlTemplate": "https://everyayah.com/data/Fares_Abbad_64kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.ali-jaber-64",
+      "name": "\u0639\u0644\u064a \u062c\u0627\u0628\u0631 - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "64kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Ali_Jaber_64kbps/",
+        "urlTemplate": "https://everyayah.com/data/Ali_Jaber_64kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.ahmed-ajamy-64",
+      "name": "\u0623\u062d\u0645\u062f \u0628\u0646 \u0639\u0644\u064a \u0627\u0644\u0639\u062c\u0645\u064a - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "64kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Ahmed_ibn_Ali_al-Ajamy_64kbps_QuranExplorer.Com/",
+        "urlTemplate": "https://everyayah.com/data/Ahmed_ibn_Ali_al-Ajamy_64kbps_QuranExplorer.Com/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.parhizgar-48",
+      "name": "\u0634\u0647\u0631\u064a\u0627\u0631 \u067e\u0631\u0647\u064a\u0632\u06af\u0627\u0631 - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "48kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Parhizgar_48kbps/",
+        "urlTemplate": "https://everyayah.com/data/Parhizgar_48kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.abdulbasit-murattal-64",
+      "name": "\u0639\u0628\u062f \u0627\u0644\u0628\u0627\u0633\u0637 \u0639\u0628\u062f \u0627\u0644\u0635\u0645\u062f - \u0645\u0631\u062a\u0644 - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "64kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Abdul_Basit_Murattal_64kbps/",
+        "urlTemplate": "https://everyayah.com/data/Abdul_Basit_Murattal_64kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.abdulbasit-mujawwad-128",
+      "name": "\u0639\u0628\u062f \u0627\u0644\u0628\u0627\u0633\u0637 \u0639\u0628\u062f \u0627\u0644\u0635\u0645\u062f - \u0627\u0644\u0645\u062c\u0648\u062f - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "128kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Abdul_Basit_Mujawwad_128kbps/",
+        "urlTemplate": "https://everyayah.com/data/Abdul_Basit_Mujawwad_128kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.abdullaah-juhaynee-128",
+      "name": "\u0639\u0628\u062f \u0627\u0644\u0644\u0647 \u0639\u0648\u0627\u062f \u0627\u0644\u062c\u0647\u0646\u064a - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "128kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Abdullaah_3awwaad_Al-Juhaynee_128kbps/",
+        "urlTemplate": "https://everyayah.com/data/Abdullaah_3awwaad_Al-Juhaynee_128kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.ahmed-neana-128",
+      "name": "\u0623\u062d\u0645\u062f \u0646\u0639\u064a\u0646\u0639 - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "128kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Ahmed_Neana_128kbps/",
+        "urlTemplate": "https://everyayah.com/data/Ahmed_Neana_128kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.ali-hajjaj-suesy-128",
+      "name": "\u0639\u0644\u064a \u062d\u062c\u0627\u062c \u0627\u0644\u0633\u0648\u064a\u0633\u064a - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "128kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Ali_Hajjaj_AlSuesy_128kbps/",
+        "urlTemplate": "https://everyayah.com/data/Ali_Hajjaj_AlSuesy_128kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.ayman-sowaid-64",
+      "name": "\u0623\u064a\u0645\u0646 \u0633\u0648\u064a\u062f - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "64kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Ayman_Sowaid_64kbps/",
+        "urlTemplate": "https://everyayah.com/data/Ayman_Sowaid_64kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.ghamadi-40",
+      "name": "\u0633\u0639\u062f \u0627\u0644\u063a\u0627\u0645\u062f\u064a - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "40kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Ghamadi_40kbps/",
+        "urlTemplate": "https://everyayah.com/data/Ghamadi_40kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.karim-mansoori-40",
+      "name": "\u0643\u0631\u064a\u0645 \u0645\u0646\u0635\u0648\u0631\u064a - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "40kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Karim_Mansoori_40kbps/",
+        "urlTemplate": "https://everyayah.com/data/Karim_Mansoori_40kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.khalid-qahtanee-192",
+      "name": "\u062e\u0627\u0644\u062f \u0639\u0628\u062f \u0627\u0644\u0644\u0647 \u0627\u0644\u0642\u062d\u0637\u0627\u0646\u064a - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "192kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Khaalid_Abdullaah_al-Qahtaanee_192kbps/",
+        "urlTemplate": "https://everyayah.com/data/Khaalid_Abdullaah_al-Qahtaanee_192kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.mohammad-tablaway-64",
+      "name": "\u0645\u062d\u0645\u062f \u0627\u0644\u0637\u0628\u0644\u0627\u0648\u064a - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "64kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Mohammad_al_Tablaway_64kbps/",
+        "urlTemplate": "https://everyayah.com/data/Mohammad_al_Tablaway_64kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.muhsin-alqasim-192",
+      "name": "\u0645\u062d\u0633\u0646 \u0627\u0644\u0642\u0627\u0633\u0645 - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "192kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Muhsin_Al_Qasim_192kbps/",
+        "urlTemplate": "https://everyayah.com/data/Muhsin_Al_Qasim_192kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.mustafa-ismail-48",
+      "name": "\u0645\u0635\u0637\u0641\u0649 \u0625\u0633\u0645\u0627\u0639\u064a\u0644 - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "48kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Mustafa_Ismail_48kbps/",
+        "urlTemplate": "https://everyayah.com/data/Mustafa_Ismail_48kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.nabil-rifai-48",
+      "name": "\u0646\u0628\u064a\u0644 \u0627\u0644\u0631\u0641\u0627\u0639\u064a - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "48kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Nabil_Rifa3i_48kbps/",
+        "urlTemplate": "https://everyayah.com/data/Nabil_Rifa3i_48kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.nasser-qatami-128",
+      "name": "\u0646\u0627\u0635\u0631 \u0627\u0644\u0642\u0637\u0627\u0645\u064a - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "128kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Nasser_Alqatami_128kbps/",
+        "urlTemplate": "https://everyayah.com/data/Nasser_Alqatami_128kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.sahl-yassin-128",
+      "name": "\u0633\u0647\u0644 \u064a\u0627\u0633\u064a\u0646 - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "128kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Sahl_Yassin_128kbps/",
+        "urlTemplate": "https://everyayah.com/data/Sahl_Yassin_128kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.salaah-bukhatir-128",
+      "name": "\u0635\u0644\u0627\u062d \u0628\u0648\u062e\u0627\u0637\u0631 - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "128kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Salaah_AbdulRahman_Bukhatir_128kbps/",
+        "urlTemplate": "https://everyayah.com/data/Salaah_AbdulRahman_Bukhatir_128kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.salah-budair-128",
+      "name": "\u0635\u0644\u0627\u062d \u0627\u0644\u0628\u062f\u064a\u0631 - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "128kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Salah_Al_Budair_128kbps/",
+        "urlTemplate": "https://everyayah.com/data/Salah_Al_Budair_128kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.yaser-salamah-128",
+      "name": "\u064a\u0627\u0633\u0631 \u0633\u0644\u0627\u0645\u0629 - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "128kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/Yaser_Salamah_128kbps/",
+        "urlTemplate": "https://everyayah.com/data/Yaser_Salamah_128kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
+    },
+    {
+      "id": "everyayah.hafs.mahmoud-ali-banna-32",
+      "name": "\u0645\u062d\u0645\u0648\u062f \u0639\u0644\u064a \u0627\u0644\u0628\u0646\u0627 - EveryAyah",
+      "riwayah": "\u062d\u0641\u0635 \u0639\u0646 \u0639\u0627\u0635\u0645",
+      "quality": "32kbps",
+      "verseByVerse": true,
+      "source": {
+        "type": "template",
+        "provider": "EveryAyah",
+        "sourceUrl": "https://everyayah.com/data/mahmoud_ali_al_banna_32kbps/",
+        "urlTemplate": "https://everyayah.com/data/mahmoud_ali_al_banna_32kbps/{surah3}{ayah3}.mp3",
+        "note": "Verse-by-verse Hafs audio from EveryAyah. Quran display text remains the reviewed Uthmani text currently bundled with Ayah Studio."
+      }
     }
   ]
 }

@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-07T14:23:31.262Z",
+  "provider": {
+    "name": "Al Quran Cloud / Islamic Network CDN",
+    "apiBase": "https://api.alquran.cloud/v1",
+    "note": "Ayah Studio stores downloaded MP3 files locally and maps every file to an explicit surah and ayah. No recognition or guessing is used."
+  },
+  "reciter": "everyayah.hafs.maher-muaiqly-64",
+  "reciterName": "???? ???????? - EveryAyah",
+  "ayahs": [
+    {
+      "surah": 1,
+      "ayah": 1,
+      "globalAyahNumber": null,
+      "reciter": "everyayah.hafs.maher-muaiqly-64",
+      "reciterName": "???? ???????? - EveryAyah",
+      "sourceUrl": "https://everyayah.com/data/Maher_AlMuaiqly_64kbps/001001.mp3",
+      "sourceProvider": "EveryAyah",
+      "file": "assets/audio/everyayah.hafs.maher-muaiqly-64/001/001.mp3",
+      "sha256": "c7da61e6c588874e82cd220ddde0bacdbfb93473eb233439b764969635883c62"
+    }
+  ]
+}

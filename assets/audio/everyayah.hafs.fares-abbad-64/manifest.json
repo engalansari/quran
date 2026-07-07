@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-07T14:23:35.344Z",
+  "provider": {
+    "name": "Al Quran Cloud / Islamic Network CDN",
+    "apiBase": "https://api.alquran.cloud/v1",
+    "note": "Ayah Studio stores downloaded MP3 files locally and maps every file to an explicit surah and ayah. No recognition or guessing is used."
+  },
+  "reciter": "everyayah.hafs.fares-abbad-64",
+  "reciterName": "???? ???? - EveryAyah",
+  "ayahs": [
+    {
+      "surah": 1,
+      "ayah": 1,
+      "globalAyahNumber": null,
+      "reciter": "everyayah.hafs.fares-abbad-64",
+      "reciterName": "???? ???? - EveryAyah",
+      "sourceUrl": "https://everyayah.com/data/Fares_Abbad_64kbps/001001.mp3",
+      "sourceProvider": "EveryAyah",
+      "file": "assets/audio/everyayah.hafs.fares-abbad-64/001/001.mp3",
+      "sha256": "783ffca133f121ab1250713b40e0e269b604cf5a309099a81271ae667105d65c"
+    }
+  ]
+}

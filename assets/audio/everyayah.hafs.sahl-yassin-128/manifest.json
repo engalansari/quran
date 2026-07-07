@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-07T14:52:29.459Z",
+  "provider": {
+    "name": "Al Quran Cloud / Islamic Network CDN",
+    "apiBase": "https://api.alquran.cloud/v1",
+    "note": "Ayah Studio stores downloaded MP3 files locally and maps every file to an explicit surah and ayah. No recognition or guessing is used."
+  },
+  "reciter": "everyayah.hafs.sahl-yassin-128",
+  "reciterName": "سهل ياسين - EveryAyah",
+  "ayahs": [
+    {
+      "surah": 1,
+      "ayah": 1,
+      "globalAyahNumber": null,
+      "reciter": "everyayah.hafs.sahl-yassin-128",
+      "reciterName": "سهل ياسين - EveryAyah",
+      "sourceUrl": "https://everyayah.com/data/Sahl_Yassin_128kbps/001001.mp3",
+      "sourceProvider": "EveryAyah",
+      "file": "assets/audio/everyayah.hafs.sahl-yassin-128/001/001.mp3",
+      "sha256": "bd8529eb9fd974a09ad5052f85eb8be6a2a189c90b7b1f4ab70068181e52e9c0"
+    }
+  ]
+}

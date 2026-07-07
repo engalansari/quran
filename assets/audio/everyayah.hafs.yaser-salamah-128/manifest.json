@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-07T15:09:49.640Z",
+  "provider": {
+    "name": "Al Quran Cloud / Islamic Network CDN",
+    "apiBase": "https://api.alquran.cloud/v1",
+    "note": "Ayah Studio stores downloaded MP3 files locally and maps every file to an explicit surah and ayah. No recognition or guessing is used."
+  },
+  "reciter": "everyayah.hafs.yaser-salamah-128",
+  "reciterName": "ياسر سلامة - EveryAyah",
+  "ayahs": [
+    {
+      "surah": 1,
+      "ayah": 1,
+      "globalAyahNumber": null,
+      "reciter": "everyayah.hafs.yaser-salamah-128",
+      "reciterName": "ياسر سلامة - EveryAyah",
+      "sourceUrl": "https://everyayah.com/data/Yaser_Salamah_128kbps/001001.mp3",
+      "sourceProvider": "EveryAyah",
+      "file": "assets/audio/everyayah.hafs.yaser-salamah-128/001/001.mp3",
+      "sha256": "6ad21c16828f61750833a399d2071fe037ee07fc475caec4af7ce605a629c961"
+    },
+    {
+      "surah": 97,
+      "ayah": 1,
+      "globalAyahNumber": null,
+      "reciter": "everyayah.hafs.yaser-salamah-128",
+      "reciterName": "ياسر سلامة - EveryAyah",
+      "sourceUrl": "https://everyayah.com/data/Yaser_Salamah_128kbps/097001.mp3",
+      "sourceProvider": "EveryAyah",
+      "file": "assets/audio/everyayah.hafs.yaser-salamah-128/097/001.mp3",
+      "sha256": "6c020e8943ef959122b63fa513f661417fa88faa097e67f01d706c6bf14d9139"
+    },
+    {
+      "surah": 97,
+      "ayah": 2,
+      "globalAyahNumber": null,
+      "reciter": "everyayah.hafs.yaser-salamah-128",
+      "reciterName": "ياسر سلامة - EveryAyah",
+      "sourceUrl": "https://everyayah.com/data/Yaser_Salamah_128kbps/097002.mp3",
+      "sourceProvider": "EveryAyah",
+      "file": "assets/audio/everyayah.hafs.yaser-salamah-128/097/002.mp3",
+      "sha256": "208a2d76d7156414117fa85602cfae018b37cfadd05dec3da12da591d581ca06"
+    },
+    {
+      "surah": 97,
+      "ayah": 3,
+      "globalAyahNumber": null,
+      "reciter": "everyayah.hafs.yaser-salamah-128",
+      "reciterName": "ياسر سلامة - EveryAyah",
+      "sourceUrl": "https://everyayah.com/data/Yaser_Salamah_128kbps/097003.mp3",
+      "sourceProvider": "EveryAyah",
+      "file": "assets/audio/everyayah.hafs.yaser-salamah-128/097/003.mp3",
+      "sha256": "feaaba12cdae6fb85d255b596f2ee9f97beb3a83338e60d218664b4101fe7821"
+    },
+    {
+      "surah": 97,
+      "ayah": 4,
+      "globalAyahNumber": null,
+      "reciter": "everyayah.hafs.yaser-salamah-128",
+      "reciterName": "ياسر سلامة - EveryAyah",
+      "sourceUrl": "https://everyayah.com/data/Yaser_Salamah_128kbps/097004.mp3",
+      "sourceProvider": "EveryAyah",
+      "file": "assets/audio/everyayah.hafs.yaser-salamah-128/097/004.mp3",
+      "sha256": "8bca51fd78bbf242a1970f032a961ae76d365d9fc2908e76f4fd57a3f362f3b3"
+    }
+  ]
+}

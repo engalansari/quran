@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-07T14:52:23.809Z",
+  "provider": {
+    "name": "Al Quran Cloud / Islamic Network CDN",
+    "apiBase": "https://api.alquran.cloud/v1",
+    "note": "Ayah Studio stores downloaded MP3 files locally and maps every file to an explicit surah and ayah. No recognition or guessing is used."
+  },
+  "reciter": "everyayah.hafs.ali-hajjaj-suesy-128",
+  "reciterName": "علي حجاج السويسي - EveryAyah",
+  "ayahs": [
+    {
+      "surah": 1,
+      "ayah": 1,
+      "globalAyahNumber": null,
+      "reciter": "everyayah.hafs.ali-hajjaj-suesy-128",
+      "reciterName": "علي حجاج السويسي - EveryAyah",
+      "sourceUrl": "https://everyayah.com/data/Ali_Hajjaj_AlSuesy_128kbps/001001.mp3",
+      "sourceProvider": "EveryAyah",
+      "file": "assets/audio/everyayah.hafs.ali-hajjaj-suesy-128/001/001.mp3",
+      "sha256": "78e807e57d0b873327706d3311d3c2450d435fa0a17320dc477d4fb98be0faac"
+    }
+  ]
+}

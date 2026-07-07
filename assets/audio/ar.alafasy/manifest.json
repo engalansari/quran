@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-04T20:09:13.772Z",
+  "generatedAt": "2026-07-07T19:09:00.946Z",
   "provider": {
     "name": "Al Quran Cloud / Islamic Network CDN",
     "apiBase": "https://api.alquran.cloud/v1",
@@ -88,6 +88,17 @@
       "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/13.mp3",
       "file": "assets/audio/ar.alafasy/002/006.mp3",
       "sha256": "0f9b7968af4b424ad3f742d0833153c7c5d883e0b3e161199e65e407b640eb41"
+    },
+    {
+      "surah": 2,
+      "ayah": 275,
+      "globalAyahNumber": 282,
+      "reciter": "ar.alafasy",
+      "reciterName": "مشاري العفاسي",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/282.mp3",
+      "sourceProvider": "Al Quran Cloud / Islamic Network CDN",
+      "file": "assets/audio/ar.alafasy/002/275.mp3",
+      "sha256": "7304f6411fc907eeb79584160ded0c63297340d701a69c4338c172fa26d04e2c"
     },
     {
       "surah": 3,
@@ -188,6 +199,28 @@
       "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/798.mp3",
       "file": "assets/audio/ar.alafasy/006/009.mp3",
       "sha256": "13928546024a1733a761a8bca10d31a5ca2b45e5356aac0187536a581439be8a"
+    },
+    {
+      "surah": 7,
+      "ayah": 1,
+      "globalAyahNumber": 955,
+      "reciter": "ar.alafasy",
+      "reciterName": "مشاري العفاسي",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/955.mp3",
+      "sourceProvider": "Al Quran Cloud / Islamic Network CDN",
+      "file": "assets/audio/ar.alafasy/007/001.mp3",
+      "sha256": "ecaa4887bec2884966912fa4716b497a88910fae0893be0d9b8e589d40f0195a"
+    },
+    {
+      "surah": 7,
+      "ayah": 2,
+      "globalAyahNumber": 956,
+      "reciter": "ar.alafasy",
+      "reciterName": "مشاري العفاسي",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.alafasy/956.mp3",
+      "sourceProvider": "Al Quran Cloud / Islamic Network CDN",
+      "file": "assets/audio/ar.alafasy/007/002.mp3",
+      "sha256": "4d878b33e1393d7cd59e102da274e7f3b227568b17eed4a0990a7fcb69db0cb7"
     },
     {
       "surah": 7,

@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-07T14:52:28.859Z",
+  "provider": {
+    "name": "Al Quran Cloud / Islamic Network CDN",
+    "apiBase": "https://api.alquran.cloud/v1",
+    "note": "Ayah Studio stores downloaded MP3 files locally and maps every file to an explicit surah and ayah. No recognition or guessing is used."
+  },
+  "reciter": "everyayah.hafs.nasser-qatami-128",
+  "reciterName": "ناصر القطامي - EveryAyah",
+  "ayahs": [
+    {
+      "surah": 1,
+      "ayah": 1,
+      "globalAyahNumber": null,
+      "reciter": "everyayah.hafs.nasser-qatami-128",
+      "reciterName": "ناصر القطامي - EveryAyah",
+      "sourceUrl": "https://everyayah.com/data/Nasser_Alqatami_128kbps/001001.mp3",
+      "sourceProvider": "EveryAyah",
+      "file": "assets/audio/everyayah.hafs.nasser-qatami-128/001/001.mp3",
+      "sha256": "ea9327e99d8cb6bab504af2d910b689e955f882d9df29910a3f86f33daa7dc09"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-07T14:23:27.959Z",
+  "provider": {
+    "name": "Al Quran Cloud / Islamic Network CDN",
+    "apiBase": "https://api.alquran.cloud/v1",
+    "note": "Ayah Studio stores downloaded MP3 files locally and maps every file to an explicit surah and ayah. No recognition or guessing is used."
+  },
+  "reciter": "everyayah.hafs.alafasy-64",
+  "reciterName": "????? ???? ??????? - EveryAyah",
+  "ayahs": [
+    {
+      "surah": 1,
+      "ayah": 1,
+      "globalAyahNumber": null,
+      "reciter": "everyayah.hafs.alafasy-64",
+      "reciterName": "????? ???? ??????? - EveryAyah",
+      "sourceUrl": "https://everyayah.com/data/Alafasy_64kbps/001001.mp3",
+      "sourceProvider": "EveryAyah",
+      "file": "assets/audio/everyayah.hafs.alafasy-64/001/001.mp3",
+      "sha256": "b36a204a31ce2ac1e23ce3b4ed3e16f862f74cfa54de4b0a246fe3579620b802"
+    }
+  ]
+}

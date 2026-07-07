@@ -1,6 +1,7 @@
 key/
 *.env
 .env.local
+.firebase/
 node_modules/
 outputs/
 tools/
@@ -8,6 +9,10 @@ tools/
 server-*.out.log
 server-*.err.log
 *.zip
+*.docx
+**/*.example.json
+quran-phone-*.png
+quran-current-screen.png
 ui-preview-*.png
 ayah-studio-*.png
 ayah-studio-*.jpg

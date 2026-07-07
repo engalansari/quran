@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-07T14:52:31.709Z",
+  "provider": {
+    "name": "Al Quran Cloud / Islamic Network CDN",
+    "apiBase": "https://api.alquran.cloud/v1",
+    "note": "Ayah Studio stores downloaded MP3 files locally and maps every file to an explicit surah and ayah. No recognition or guessing is used."
+  },
+  "reciter": "everyayah.hafs.mahmoud-ali-banna-32",
+  "reciterName": "محمود علي البنا - EveryAyah",
+  "ayahs": [
+    {
+      "surah": 1,
+      "ayah": 1,
+      "globalAyahNumber": null,
+      "reciter": "everyayah.hafs.mahmoud-ali-banna-32",
+      "reciterName": "محمود علي البنا - EveryAyah",
+      "sourceUrl": "https://everyayah.com/data/mahmoud_ali_al_banna_32kbps/001001.mp3",
+      "sourceProvider": "EveryAyah",
+      "file": "assets/audio/everyayah.hafs.mahmoud-ali-banna-32/001/001.mp3",
+      "sha256": "5c4117092ea933d7b7ce2e154efad1cf97c076185d3dd6f36017fb04e618905a"
+    }
+  ]
+}

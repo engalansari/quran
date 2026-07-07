@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-07T18:50:11.352Z",
+  "provider": {
+    "name": "Al Quran Cloud / Islamic Network CDN",
+    "apiBase": "https://api.alquran.cloud/v1",
+    "note": "Ayah Studio stores downloaded MP3 files locally and maps every file to an explicit surah and ayah. No recognition or guessing is used."
+  },
+  "reciter": "ar.shaatree",
+  "reciterName": "أبو بكر الشاطري",
+  "ayahs": [
+    {
+      "surah": 2,
+      "ayah": 275,
+      "globalAyahNumber": 282,
+      "reciter": "ar.shaatree",
+      "reciterName": "أبو بكر الشاطري",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.shaatree/282.mp3",
+      "sourceProvider": "Al Quran Cloud / Islamic Network CDN",
+      "file": "assets/audio/ar.shaatree/002/275.mp3",
+      "sha256": "868439beddf4ff1db49b39886f84680126617c8e08f8a2020f52e4c41d07b92a"
+    }
+  ]
+}

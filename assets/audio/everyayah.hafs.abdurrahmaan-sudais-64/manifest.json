@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-07T14:23:26.829Z",
+  "provider": {
+    "name": "Al Quran Cloud / Islamic Network CDN",
+    "apiBase": "https://api.alquran.cloud/v1",
+    "note": "Ayah Studio stores downloaded MP3 files locally and maps every file to an explicit surah and ayah. No recognition or guessing is used."
+  },
+  "reciter": "everyayah.hafs.abdurrahmaan-sudais-64",
+  "reciterName": "??? ?????? ?????? - EveryAyah",
+  "ayahs": [
+    {
+      "surah": 1,
+      "ayah": 1,
+      "globalAyahNumber": null,
+      "reciter": "everyayah.hafs.abdurrahmaan-sudais-64",
+      "reciterName": "??? ?????? ?????? - EveryAyah",
+      "sourceUrl": "https://everyayah.com/data/Abdurrahmaan_As-Sudais_64kbps/001001.mp3",
+      "sourceProvider": "EveryAyah",
+      "file": "assets/audio/everyayah.hafs.abdurrahmaan-sudais-64/001/001.mp3",
+      "sha256": "6766d5d68d0c90a8bb19ea549e616bfaf4af2c9d6f81545562d17cb70d785786"
+    }
+  ]
+}

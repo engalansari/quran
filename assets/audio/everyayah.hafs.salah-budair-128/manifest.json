@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-07T14:52:30.619Z",
+  "provider": {
+    "name": "Al Quran Cloud / Islamic Network CDN",
+    "apiBase": "https://api.alquran.cloud/v1",
+    "note": "Ayah Studio stores downloaded MP3 files locally and maps every file to an explicit surah and ayah. No recognition or guessing is used."
+  },
+  "reciter": "everyayah.hafs.salah-budair-128",
+  "reciterName": "صلاح البدير - EveryAyah",
+  "ayahs": [
+    {
+      "surah": 1,
+      "ayah": 1,
+      "globalAyahNumber": null,
+      "reciter": "everyayah.hafs.salah-budair-128",
+      "reciterName": "صلاح البدير - EveryAyah",
+      "sourceUrl": "https://everyayah.com/data/Salah_Al_Budair_128kbps/001001.mp3",
+      "sourceProvider": "EveryAyah",
+      "file": "assets/audio/everyayah.hafs.salah-budair-128/001/001.mp3",
+      "sha256": "3249848c254012481468b88a2202e1583085816d3650eae200c72fb7cb69071a"
+    }
+  ]
+}

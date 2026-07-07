@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-07T14:23:33.673Z",
+  "provider": {
+    "name": "Al Quran Cloud / Islamic Network CDN",
+    "apiBase": "https://api.alquran.cloud/v1",
+    "note": "Ayah Studio stores downloaded MP3 files locally and maps every file to an explicit surah and ayah. No recognition or guessing is used."
+  },
+  "reciter": "everyayah.hafs.muhammad-jibreel-64",
+  "reciterName": "???? ????? - EveryAyah",
+  "ayahs": [
+    {
+      "surah": 1,
+      "ayah": 1,
+      "globalAyahNumber": null,
+      "reciter": "everyayah.hafs.muhammad-jibreel-64",
+      "reciterName": "???? ????? - EveryAyah",
+      "sourceUrl": "https://everyayah.com/data/Muhammad_Jibreel_64kbps/001001.mp3",
+      "sourceProvider": "EveryAyah",
+      "file": "assets/audio/everyayah.hafs.muhammad-jibreel-64/001/001.mp3",
+      "sha256": "dc97e0958e112fc32d7e7b6099fb52838d58a3b908816148b9656a4593d1d4fd"
+    }
+  ]
+}

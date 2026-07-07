@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-07T14:52:22.606Z",
+  "provider": {
+    "name": "Al Quran Cloud / Islamic Network CDN",
+    "apiBase": "https://api.alquran.cloud/v1",
+    "note": "Ayah Studio stores downloaded MP3 files locally and maps every file to an explicit surah and ayah. No recognition or guessing is used."
+  },
+  "reciter": "everyayah.hafs.abdullaah-juhaynee-128",
+  "reciterName": "عبد الله عواد الجهني - EveryAyah",
+  "ayahs": [
+    {
+      "surah": 1,
+      "ayah": 1,
+      "globalAyahNumber": null,
+      "reciter": "everyayah.hafs.abdullaah-juhaynee-128",
+      "reciterName": "عبد الله عواد الجهني - EveryAyah",
+      "sourceUrl": "https://everyayah.com/data/Abdullaah_3awwaad_Al-Juhaynee_128kbps/001001.mp3",
+      "sourceProvider": "EveryAyah",
+      "file": "assets/audio/everyayah.hafs.abdullaah-juhaynee-128/001/001.mp3",
+      "sha256": "675f04701fc480cb649a0b39ad2bf0798fe762a36a7194ef62d55c8622238913"
+    }
+  ]
+}

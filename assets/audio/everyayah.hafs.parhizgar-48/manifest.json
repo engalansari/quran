@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-07T14:54:47.431Z",
+  "provider": {
+    "name": "Al Quran Cloud / Islamic Network CDN",
+    "apiBase": "https://api.alquran.cloud/v1",
+    "note": "Ayah Studio stores downloaded MP3 files locally and maps every file to an explicit surah and ayah. No recognition or guessing is used."
+  },
+  "reciter": "everyayah.hafs.parhizgar-48",
+  "reciterName": "شهريار پرهيزگار - EveryAyah",
+  "ayahs": [
+    {
+      "surah": 1,
+      "ayah": 1,
+      "globalAyahNumber": null,
+      "reciter": "everyayah.hafs.parhizgar-48",
+      "reciterName": "شهريار پرهيزگار - EveryAyah",
+      "sourceUrl": "https://everyayah.com/data/Parhizgar_48kbps/001001.mp3",
+      "sourceProvider": "EveryAyah",
+      "file": "assets/audio/everyayah.hafs.parhizgar-48/001/001.mp3",
+      "sha256": "68d7fd4e859badbb019c1e4ff472362294d0a1cda0c626f02ba5c2dfc57d535a"
+    },
+    {
+      "surah": 1,
+      "ayah": 2,
+      "globalAyahNumber": null,
+      "reciter": "everyayah.hafs.parhizgar-48",
+      "reciterName": "شهريار پرهيزگار - EveryAyah",
+      "sourceUrl": "https://everyayah.com/data/Parhizgar_48kbps/001002.mp3",
+      "sourceProvider": "EveryAyah",
+      "file": "assets/audio/everyayah.hafs.parhizgar-48/001/002.mp3",
+      "sha256": "e066798b2dd0ca478a56944ab4ec926f60508bd867320b20050cccdc0de5b72f"
+    }
+  ]
+}

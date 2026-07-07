@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-07T14:18:44.914Z",
+  "provider": {
+    "name": "Al Quran Cloud / Islamic Network CDN",
+    "apiBase": "https://api.alquran.cloud/v1",
+    "note": "Ayah Studio stores downloaded MP3 files locally and maps every file to an explicit surah and ayah. No recognition or guessing is used."
+  },
+  "reciter": "everyayah.warsh.abdulbasit",
+  "reciterName": "عبد الباسط عبد الصمد - ورش",
+  "ayahs": [
+    {
+      "surah": 1,
+      "ayah": 1,
+      "globalAyahNumber": null,
+      "reciter": "everyayah.warsh.abdulbasit",
+      "reciterName": "عبد الباسط عبد الصمد - ورش",
+      "sourceUrl": "https://everyayah.com/data/warsh/warsh_Abdul_Basit_128kbps/001001.mp3",
+      "sourceProvider": "EveryAyah",
+      "file": "assets/audio/everyayah.warsh.abdulbasit/001/001.mp3",
+      "sha256": "68ce5b9678c2c6389a55444befa4f9de6ca67b7fad49b3bc568b56e727e9c56f"
+    },
+    {
+      "surah": 29,
+      "ayah": 2,
+      "globalAyahNumber": null,
+      "reciter": "everyayah.warsh.abdulbasit",
+      "reciterName": "عبد الباسط عبد الصمد - ورش",
+      "sourceUrl": "https://everyayah.com/data/warsh/warsh_Abdul_Basit_128kbps/029002.mp3",
+      "sourceProvider": "EveryAyah",
+      "file": "assets/audio/everyayah.warsh.abdulbasit/029/002.mp3",
+      "sha256": "705244570c9aa9101accc957304c0de74b3c1da58abeb488837b1e21cba83c3b"
+    },
+    {
+      "surah": 29,
+      "ayah": 3,
+      "globalAyahNumber": null,
+      "reciter": "everyayah.warsh.abdulbasit",
+      "reciterName": "عبد الباسط عبد الصمد - ورش",
+      "sourceUrl": "https://everyayah.com/data/warsh/warsh_Abdul_Basit_128kbps/029003.mp3",
+      "sourceProvider": "EveryAyah",
+      "file": "assets/audio/everyayah.warsh.abdulbasit/029/003.mp3",
+      "sha256": "32e447789f6e180eb6144080541b1fabd7391fff48d68fcb5fba5864c9f7164f"
+    }
+  ]
+}

@@ -1429,9 +1429,11 @@
       "localFile": "assets/background-library/processed/pexels-35189265.mp4",
       "poster": "https://images.pexels.com/videos/35189265/4k-asia-islam-kaaba-35189265.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=630",
       "localPoster": "assets/background-library/posters/pexels-35189265.jpg",
-      "remoteOnly": true,
+      "remoteOnly": false,
       "author": "Earth Photart",
-      "authorUrl": "https://www.pexels.com/@earth-photart-2149767641"
+      "authorUrl": "https://www.pexels.com/@earth-photart-2149767641",
+      "localFileReady": true,
+      "localPosterReady": true
     },
     {
       "id": "pexels-35189267",
@@ -4120,9 +4122,11 @@
       "localFile": "assets/background-library/processed/pexels-34649235.mp4",
       "poster": "https://images.pexels.com/videos/34649235/adventure-aerial-view-asia-travel-beautiful-place-34649235.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=630",
       "localPoster": "assets/background-library/posters/pexels-34649235.jpg",
-      "remoteOnly": true,
+      "remoteOnly": false,
       "author": "Mohammed Irfu",
-      "authorUrl": "https://www.pexels.com/@irf2u"
+      "authorUrl": "https://www.pexels.com/@irf2u",
+      "localFileReady": true,
+      "localPosterReady": true
     },
     {
       "id": "pexels-34918767",
@@ -17315,9 +17319,10 @@
       "localFile": "assets/background-library/processed/mixkit-35176.mp4",
       "poster": "assets/background-library/posters/mixkit-35176.jpg",
       "localPoster": "assets/background-library/posters/mixkit-35176.jpg",
-      "remoteOnly": true,
+      "remoteOnly": false,
       "tags": "sea",
-      "localPosterReady": true
+      "localPosterReady": true,
+      "localFileReady": true
     },
     {
       "id": "mixkit-35468",
@@ -17351,9 +17356,10 @@
       "localFile": "assets/background-library/processed/mixkit-35867.mp4",
       "poster": "assets/background-library/posters/mixkit-35867.jpg",
       "localPoster": "assets/background-library/posters/mixkit-35867.jpg",
-      "remoteOnly": true,
+      "remoteOnly": false,
       "tags": "sea",
-      "localPosterReady": true
+      "localPosterReady": true,
+      "localFileReady": true
     },
     {
       "id": "mixkit-38794",

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-04T16:29:09.523Z",
+  "generatedAt": "2026-07-07T08:20:03.531Z",
   "provider": {
     "name": "Al Quran Cloud / Islamic Network CDN",
     "apiBase": "https://api.alquran.cloud/v1",
@@ -9,6 +9,16 @@
   "reciter": "ar.muhammadayyoub",
   "reciterName": "محمد أيوب",
   "ayahs": [
+    {
+      "surah": 5,
+      "ayah": 1,
+      "globalAyahNumber": 670,
+      "reciter": "ar.muhammadayyoub",
+      "reciterName": "محمد أيوب",
+      "sourceUrl": "https://cdn.islamic.network/quran/audio/128/ar.muhammadayyoub/670.mp3",
+      "file": "assets/audio/ar.muhammadayyoub/005/001.mp3",
+      "sha256": "33c1205912d2f49f954fba05e500deb71ef49cd2a833770475a697422f7a76e1"
+    },
     {
       "surah": 24,
       "ayah": 1,

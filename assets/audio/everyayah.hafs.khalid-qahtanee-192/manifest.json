@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-07T14:52:26.088Z",
+  "provider": {
+    "name": "Al Quran Cloud / Islamic Network CDN",
+    "apiBase": "https://api.alquran.cloud/v1",
+    "note": "Ayah Studio stores downloaded MP3 files locally and maps every file to an explicit surah and ayah. No recognition or guessing is used."
+  },
+  "reciter": "everyayah.hafs.khalid-qahtanee-192",
+  "reciterName": "خالد عبد الله القحطاني - EveryAyah",
+  "ayahs": [
+    {
+      "surah": 1,
+      "ayah": 1,
+      "globalAyahNumber": null,
+      "reciter": "everyayah.hafs.khalid-qahtanee-192",
+      "reciterName": "خالد عبد الله القحطاني - EveryAyah",
+      "sourceUrl": "https://everyayah.com/data/Khaalid_Abdullaah_al-Qahtaanee_192kbps/001001.mp3",
+      "sourceProvider": "EveryAyah",
+      "file": "assets/audio/everyayah.hafs.khalid-qahtanee-192/001/001.mp3",
+      "sha256": "c8edf8fb0c46b25767dea903a6ff5cf70ec0059f33175d6643dfeb613d224694"
+    }
+  ]
+}
