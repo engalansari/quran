@@ -4,16 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#123b35" />
-    <title>Ayah Studio</title>
-    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Ayah" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>Ayah</title>
+    <link rel="manifest" href="manifest.webmanifest?v=20260707-private-app-v1" />
+    <link rel="icon" href="assets/icons/app/ayah-icon-192.png" type="image/png" />
+    <link rel="apple-touch-icon" href="assets/icons/app/ayah-icon-180.png" />
     <script>
       if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.getRegistrations()
-          .then((items) => items.forEach((item) => item.unregister()))
+        navigator.serviceWorker.register("sw.js?v=20260707-private-app-v1")
           .catch(() => {});
       }
     </script>
-    <link rel="stylesheet" href="styles.css?v=20260707-ayah-font-v10" />
+    <link rel="stylesheet" href="styles.css?v=20260707-private-app-v1" />
   </head>
   <body>
     <main class="app-shell">
@@ -256,6 +261,6 @@
       </div>
     </aside>
 
-    <script src="app.js?v=20260707-ayah-font-v10"></script>
+    <script src="app.js?v=20260707-private-app-v1"></script>
   </body>
 </html>
