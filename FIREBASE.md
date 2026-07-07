@@ -43,6 +43,17 @@ Build and deploy the backend service:
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts\deploy-cloud-run.ps1
 ```
 
+The deploy script protects the render API with `PRIVATE_APP_TOKEN`.
+If you do not provide one, it generates a private access code and prints it during deploy.
+Save that code. The phone app will ask for it the first time you generate a video.
+
+To choose your own code:
+
+```powershell
+$env:PRIVATE_APP_TOKEN="YOUR_PRIVATE_CODE"
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts\deploy-cloud-run.ps1
+```
+
 The service id must match `ayah-studio-render` because `firebase.json` rewrites `/api/**` to that Cloud Run service.
 `firebase.json` also rewrites `/outputs/**` to Cloud Run so generated MP4 links can be opened from Firebase Hosting.
 
@@ -52,6 +63,7 @@ Default cost guards in the deploy script:
 - `--max-instances 1`: only one render worker at a time while testing.
 - `--concurrency 1`: one request per instance.
 - `--memory 2Gi`, `--cpu 2`, `--timeout 900`: enough for FFmpeg, but still bounded.
+- `PRIVATE_APP_TOKEN`: prevents strangers from calling the render API if they find the URL.
 
 These settings keep the first online version conservative. Later, raise `MaxInstances` only after testing cost and demand.
 

@@ -269,6 +269,38 @@ const els = {
 
 init();
 
+function privateAccessToken() {
+  const url = new URL(window.location.href);
+  const tokenFromUrl = String(url.searchParams.get("token") || "").trim();
+  if (tokenFromUrl) {
+    window.localStorage.setItem("ayahPrivateToken", tokenFromUrl);
+    url.searchParams.delete("token");
+    window.history.replaceState({}, "", url.toString());
+    return tokenFromUrl;
+  }
+  return String(window.localStorage.getItem("ayahPrivateToken") || "").trim();
+}
+
+async function apiFetch(url, options = {}) {
+  const requestOptions = withPrivateToken(options);
+  let response = await fetch(url, requestOptions);
+  if (response.status !== 401) return response;
+
+  window.localStorage.removeItem("ayahPrivateToken");
+  const token = window.prompt("Private access code");
+  if (!token) return response;
+  window.localStorage.setItem("ayahPrivateToken", token.trim());
+  response = await fetch(url, withPrivateToken(options));
+  return response;
+}
+
+function withPrivateToken(options = {}) {
+  const token = privateAccessToken();
+  const headers = new Headers(options.headers || {});
+  if (token) headers.set("x-ayah-private-token", token);
+  return { ...options, headers };
+}
+
 async function init() {
   unregisterLocalServiceWorkers();
   setStatus("جاري تحميل بيانات القرآن والقراء...", "info");
@@ -401,7 +433,7 @@ function bindEvents() {
   els.backgroundRefresh?.addEventListener("click", async () => {
     setStatus("جاري تحديث مكتبة الخلفيات المجانية...", "info");
     try {
-      const response = await fetch("/api/refresh-background-library", {
+      const response = await apiFetch("/api/refresh-background-library", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -1008,7 +1040,7 @@ async function generateVideo() {
       reciter: reciter.id,
       background: background.id,
     };
-    const response = await fetch("/api/render", {
+    const response = await apiFetch("/api/render", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -1051,7 +1083,7 @@ async function waitForRenderJob(initialJob) {
     setStatus(`جاري المعالجة... الحالة: ${renderStatusLabel(job.status)}`, "info");
     showRenderJobStatus(job, `جاري المعالجة... محاولة متابعة ${attempt + 1}.`);
     await delay(1500);
-    const response = await fetch(`/api/render/${encodeURIComponent(job.jobId)}`, { cache: "no-store" });
+    const response = await apiFetch(`/api/render/${encodeURIComponent(job.jobId)}`, { cache: "no-store" });
     const next = await response.json();
     if (!response.ok || !next.ready) {
       throw new Error(formatGenerationFailure(next));
@@ -1164,7 +1196,7 @@ async function generateExternalAudioVideo() {
       form.append("ayahCount", String(readAyahCount() || ""));
     }
 
-    const response = await fetch("/api/compose-external-audio-video", {
+    const response = await apiFetch("/api/compose-external-audio-video", {
       method: "POST",
       body: form,
     });
@@ -1416,7 +1448,7 @@ async function fetchSaadiTafsirForAyah(ayah) {
   if (!surah || !ayah?.number) return "";
   try {
     const verseKey = `${surah.number}:${ayah.number}`;
-    const response = await fetch(`/api/saadi-tafsir?verse_key=${encodeURIComponent(verseKey)}`, { cache: "no-store" });
+    const response = await apiFetch(`/api/saadi-tafsir?verse_key=${encodeURIComponent(verseKey)}`, { cache: "no-store" });
     const result = await response.json();
     if (!response.ok || !result.ready || !result.tafsir?.text) return "";
     return `آية ${ayah.number}: ${result.tafsir.text}`;
@@ -1735,7 +1767,7 @@ async function prepareBackgroundForPreview(item) {
   setStatus(`جاري تجهيز الخلفية: ${item.title}`, "info");
 
   try {
-    const response = await fetch("/api/prepare-background", {
+    const response = await apiFetch("/api/prepare-background", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ background: item.id }),

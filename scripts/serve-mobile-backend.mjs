@@ -17,12 +17,21 @@ const whisperPath = resolve(args.whisper || "tools/whisper.cpp/Release/whisper-c
 const modelPath = resolve(args.model || "tools/whisper.cpp/models/ggml-small.bin");
 const ffmpegPath = executableArg(args.ffmpeg, process.env.FFMPEG, "tools/ffmpeg/ffmpeg-master-latest-win64-gpl/bin/ffmpeg.exe", "ffmpeg");
 const renderJobs = createRenderJobStore(args["jobs-file"] || join(root, "outputs/render-jobs-local.json"));
+const privateAppToken = String(process.env.PRIVATE_APP_TOKEN || args["private-token"] || "").trim();
 
 mkdirSync(uploadDir, { recursive: true });
 
 const server = createServer(async (request, response) => {
   try {
     const url = new URL(request.url || "/", `http://${host}:${port}`);
+    if (url.pathname.startsWith("/api/") && !isAuthorizedPrivateRequest(request)) {
+      writeJson(response, 401, {
+        ready: false,
+        error: "Private access code is required.",
+        code: "private-access-required",
+      });
+      return;
+    }
     if (request.method === "POST" && url.pathname === "/api/transcribe-match") {
       await handleTranscribeMatch(request, response);
       return;
@@ -80,6 +89,14 @@ function parseArgs(input) {
     }
   }
   return parsed;
+}
+
+function isAuthorizedPrivateRequest(request) {
+  if (!privateAppToken) return true;
+  const headerToken = String(request.headers["x-ayah-private-token"] || "").trim();
+  const authorization = String(request.headers.authorization || "").trim();
+  const bearerToken = authorization.toLowerCase().startsWith("bearer ") ? authorization.slice(7).trim() : "";
+  return headerToken === privateAppToken || bearerToken === privateAppToken;
 }
 
 async function handleSaadiTafsir(url, response) {

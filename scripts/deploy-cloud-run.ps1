@@ -6,7 +6,8 @@ param(
   [int]$Concurrency = 1,
   [string]$Memory = "2Gi",
   [int]$Cpu = 2,
-  [int]$TimeoutSeconds = 900
+  [int]$TimeoutSeconds = 900,
+  [string]$PrivateAppToken = $env:PRIVATE_APP_TOKEN
 )
 
 $ErrorActionPreference = "Stop"
@@ -18,6 +19,17 @@ if (Test-Path $installed) {
 }
 
 $image = "gcr.io/$ProjectId/$ServiceName"
+
+if (-not $PrivateAppToken) {
+  $bytes = New-Object byte[] 24
+  $rng = [System.Security.Cryptography.RandomNumberGenerator]::Create()
+  $rng.GetBytes($bytes)
+  $rng.Dispose()
+  $PrivateAppToken = [Convert]::ToBase64String($bytes).TrimEnd("=").Replace("+", "-").Replace("/", "_")
+  Write-Host "Generated PRIVATE_APP_TOKEN for this deploy:"
+  Write-Host $PrivateAppToken
+  Write-Host "Save this code. The phone app will ask for it on first render."
+}
 
 Write-Host "Using project: $ProjectId"
 Write-Host "Using region: $Region"
@@ -39,4 +51,4 @@ Write-Host "Cost guard: min-instances=0 max-instances=$MaxInstances concurrency=
   --min-instances 0 `
   --max-instances $MaxInstances `
   --concurrency $Concurrency `
-  --set-env-vars NODE_ENV=production,FFMPEG=ffmpeg,FFPROBE=ffprobe,CHROMIUM=chromium,PANGO_VIEW=pango-view,QURAN_TEXT_RENDERER=pango
+  --set-env-vars NODE_ENV=production,FFMPEG=ffmpeg,FFPROBE=ffprobe,CHROMIUM=chromium,PANGO_VIEW=pango-view,QURAN_TEXT_RENDERER=pango,PRIVATE_APP_TOKEN=$PrivateAppToken
