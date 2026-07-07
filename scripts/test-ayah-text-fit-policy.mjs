@@ -5,6 +5,7 @@ import { readFileSync } from "node:fs";
 const appSource = readFileSync("app.js", "utf8");
 const cssSource = readFileSync("styles.css", "utf8");
 const todoSource = readFileSync("TODO.md", "utf8");
+const composerSource = readFileSync("scripts/compose-selected-ayah-video.mjs", "utf8");
 
 const checks = [
   {
@@ -26,6 +27,14 @@ const checks = [
   {
     label: "phone ayah long styles exist",
     pass: /\.phone-ayah\.is-long/.test(cssSource) && /\.phone-ayah\.is-very-long/.test(cssSource),
+  },
+  {
+    label: "export ayah frame keeps text inside",
+    pass:
+      /estimatedRenderedLineCount/.test(composerSource)
+      && /const minimum = longest <= 32 && lines\.length <= 1 \? 820 : 560/.test(composerSource)
+      && /estimatedLines \* fontSize \* 1\.46 \+ 168/.test(composerSource)
+      && /--width=\$\{layout\.width - 132\}/.test(composerSource),
   },
   {
     label: "TODO tracks text fit work",

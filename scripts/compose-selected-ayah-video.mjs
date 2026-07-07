@@ -350,7 +350,7 @@ function writeAyahOverlayWithPango(item, pngPath, overlaysDir, index) {
     "--background=transparent",
     "--align=center",
     "--rtl",
-    `--width=${layout.width - 108}`,
+    `--width=${layout.width - 132}`,
     "--margin=0",
     `--output=${pngPath}`,
     textPath,
@@ -563,22 +563,31 @@ function ayahTextLayout(value) {
   const lines = wrappedLines(value);
   const fontSize = fontSizeForText(value);
   const width = ayahBoxWidth(lines, fontSize);
-  const height = clamp(Math.round(lines.length * fontSize * 1.22 + 128), 220, 980);
+  const estimatedLines = Math.max(lines.length, estimatedRenderedLineCount(value, fontSize, width));
+  const height = clamp(Math.round(estimatedLines * fontSize * 1.46 + 168), 300, 1040);
   const x = Math.round((1080 - width) / 2);
-  const y = clamp(Math.round(760 - height / 2), 300, 700);
+  const y = clamp(Math.round(760 - height / 2), 250, 700);
   return {
     x,
     y,
     width,
     height,
     fontSize,
-    textY: y + 48,
+    textY: y + 72,
   };
 }
 
 function ayahBoxWidth(lines, fontSize) {
   const longest = Math.max(0, ...lines.map((line) => cleanQuranTextLength(line)));
-  return clamp(Math.round(longest * fontSize * 0.24 + 180), 520, 948);
+  const minimum = longest <= 32 && lines.length <= 1 ? 820 : 560;
+  return clamp(Math.round(longest * fontSize * 0.34 + 240), minimum, 988);
+}
+
+function estimatedRenderedLineCount(value, fontSize, boxWidth) {
+  const textLength = cleanQuranTextLength(value);
+  const usableWidth = Math.max(120, boxWidth - 132);
+  const estimatedTextWidth = textLength * fontSize * 0.34;
+  return Math.max(1, Math.ceil(estimatedTextWidth / usableWidth));
 }
 
 function fontSizeForText(value) {
