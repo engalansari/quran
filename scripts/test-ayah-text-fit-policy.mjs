@@ -6,6 +6,8 @@ const appSource = readFileSync("app.js", "utf8");
 const cssSource = readFileSync("styles.css", "utf8");
 const todoSource = readFileSync("TODO.md", "utf8");
 const composerSource = readFileSync("scripts/compose-selected-ayah-video.mjs", "utf8");
+const dockerSource = readFileSync("Dockerfile", "utf8");
+const deploySource = readFileSync("scripts/deploy-cloud-run.ps1", "utf8");
 
 const checks = [
   {
@@ -29,14 +31,31 @@ const checks = [
     pass: /\.phone-ayah\.is-long/.test(cssSource) && /\.phone-ayah\.is-very-long/.test(cssSource),
   },
   {
-    label: "export ayah frame keeps text inside",
+    label: "export uses HTML auto Quran caption layout",
     pass:
-      /function\s+probeImageSize\s*\(/.test(composerSource)
+      /htmlQuranRenderer/.test(composerSource)
+      && /function\s+buildAyahOverlayHtml\s*\(/.test(composerSource)
+      && /scrollWidth/.test(composerSource)
+      && /scrollHeight/.test(composerSource)
+      && /minFont:\s*50/.test(composerSource)
+      && /balancedLines/.test(composerSource),
+  },
+  {
+    label: "cloud render uses measured Pango Quran renderer",
+    pass:
+      /QURAN_TEXT_RENDERER=pango/.test(dockerSource)
+      && /QURAN_TEXT_RENDERER=pango/.test(deploySource)
       && /function\s+pangoAyahLayout\s*\(/.test(composerSource)
-      && /function\s+fitPangoOverlayPng\s*\(/.test(composerSource)
-      && /force_original_aspect_ratio=decrease/.test(composerSource)
-      && /size\.height \+ verticalPadding/.test(composerSource)
-      && /pangoFontCandidates/.test(composerSource),
+      && /probeImageSize\(pngPath\)/.test(composerSource),
+  },
+  {
+    label: "Chromium renderer uses container-safe screenshot flags",
+    pass:
+      /--no-zygote/.test(composerSource)
+      && /--single-process/.test(composerSource)
+      && /--disable-crashpad/.test(composerSource)
+      && /--allow-file-access-from-files/.test(composerSource)
+      && !/--disable-software-rasterizer/.test(composerSource),
   },
   {
     label: "TODO tracks text fit work",

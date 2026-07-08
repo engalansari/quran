@@ -28,6 +28,7 @@ const ffprobe = executableArg(args.ffprobe, process.env.FFPROBE, "tools/ffmpeg/f
 const fontName = args["font-name"] || "KFGQPC HAFS Uthmanic Script";
 const accountName = args.account || "@tilawat_alquran30";
 const quranRenderer = String(args["quran-renderer"] || process.env.QURAN_TEXT_RENDERER || "ass").toLowerCase();
+const htmlQuranRenderer = quranRenderer === "html" || quranRenderer === "chromium";
 const chromium = executableArg(args.chromium, process.env.CHROMIUM, "", "chromium");
 const pangoView = executableArg(args["pango-view"], process.env.PANGO_VIEW, "", "pango-view");
 
@@ -80,7 +81,7 @@ for (const [path, label] of [[quranPath, "Quran data"], [catalogPath, "recitatio
 for (const [command, label] of [[ffmpeg, "FFmpeg"], [ffprobe, "FFprobe"]]) {
   if (!commandWorks(command)) fail(`Missing ${label}: ${command}`);
 }
-if (quranRenderer === "chromium" && !commandWorks(chromium)) {
+if (htmlQuranRenderer && !commandWorks(chromium)) {
   fail(`Missing Chromium Quran text renderer: ${chromium}`);
 }
 if (quranRenderer === "pango" && !commandWorks(pangoView, ["--help"])) {
@@ -139,8 +140,12 @@ const meta = {
   reference: referenceLabel(surah, selected),
   duration: finalAudioDuration,
 };
-const ayahOverlays = quranRenderer === "chromium" || quranRenderer === "pango" ? writeAyahOverlayPngs(schedule, workDir) : [];
-writeSubtitleFile(subtitlePath, ayahOverlays.length ? [] : schedule, meta);
+const ayahOverlays = htmlQuranRenderer || quranRenderer === "pango" ? writeAyahOverlayPngs(schedule, workDir) : [];
+writeSubtitleFile(subtitlePath, schedule, meta, {
+  includeAyahBoxes: quranRenderer === "pango" || !ayahOverlays.length,
+  includeAyahText: !ayahOverlays.length,
+  ayahLayouts: ayahOverlays.map((overlay) => overlay.layout),
+});
 
 run(ffmpeg, [
   "-y",
@@ -251,7 +256,10 @@ function formatSeconds(value) {
   return Math.max(0, Number(value) || 0).toFixed(3);
 }
 
-function writeSubtitleFile(path, schedule, meta) {
+function writeSubtitleFile(path, schedule, meta, options = {}) {
+  const includeAyahBoxes = options.includeAyahBoxes ?? true;
+  const includeAyahText = options.includeAyahText ?? true;
+  const ayahLayouts = options.ayahLayouts || [];
   const start = "0:00:00.00";
   const end = formatAssTime(schedule.length ? Math.max(...schedule.map((item) => item.end), 1) : Math.max(Number(meta.duration) || 1, 1));
   const fixedEvents = [
@@ -260,12 +268,14 @@ function writeSubtitleFile(path, schedule, meta) {
     `Dialogue: 1,${start},${end},MetaReference,,0,0,0,,${escapeAssText(meta.reference)}`,
     `Dialogue: 1,${start},${end},MetaRiwayah,,0,0,0,,${escapeAssText(meta.riwayah)}`,
   ];
-  const events = schedule.flatMap((item) => {
-    const layout = ayahTextLayout(item.text || "");
-    return [
-      roundedAyahBoxDialogue(item, layout),
-      `Dialogue: 1,${formatAssTime(item.start)},${formatAssTime(item.end)},Ayah,,0,0,${layout.textY},,{\\q2\\fs${layout.fontSize}\\bord2\\shad1}${wrapAssText(item.text)}`,
-    ];
+  const events = schedule.flatMap((item, index) => {
+    const layout = ayahLayouts[index] || ayahTextLayout(item.text || "");
+    const itemEvents = [];
+    if (includeAyahBoxes) itemEvents.push(roundedAyahBoxDialogue(item, layout));
+    if (includeAyahText) {
+      itemEvents.push(`Dialogue: 1,${formatAssTime(item.start)},${formatAssTime(item.end)},Ayah,,0,0,${layout.textY},,{\\q2\\fs${layout.fontSize}\\bord2\\shad1}${wrapAssText(item.text)}`);
+    }
+    return itemEvents;
   });
   const body = [
     "[Script Info]",
@@ -298,19 +308,20 @@ function buildVideoFilter(subtitlePath, fontsDir, schedule, overlays = []) {
     const filters = [
       [
         "[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,setsar=1",
-        ...schedule.map((item, index) => textBoxFilter(item, overlays[index]?.layout)),
         "format=yuv420p[base]",
       ].join(","),
+      `[base]subtitles='${escapeFilter(subtitlePath)}':fontsdir='${escapeFilter(fontsDir)}'[subbed]`,
     ];
-    let current = "base";
+    let current = "subbed";
     schedule.forEach((item, index) => {
       const next = index === overlays.length - 1 ? "texted" : `ayahov${index}`;
       const layout = overlays[index]?.layout || ayahTextLayout(item.text || "");
-      const y = `${layout.y}+(${layout.height}-h)/2`;
-      filters.push(`[${current}][${index + 2}:v]overlay=x=(W-w)/2:y='${y}':enable='between(t,${Number(item.start).toFixed(2)},${Number(item.end).toFixed(2)})'[${next}]`);
+      const x = layout.fullFrame ? "0" : "(W-w)/2";
+      const y = layout.fullFrame ? "0" : `${layout.y}+(${layout.height}-h)/2`;
+      filters.push(`[${current}][${index + 2}:v]overlay=x='${x}':y='${y}':enable='between(t,${Number(item.start).toFixed(2)},${Number(item.end).toFixed(2)})'[${next}]`);
       current = next;
     });
-    filters.push(`[${current}]subtitles='${escapeFilter(subtitlePath)}':fontsdir='${escapeFilter(fontsDir)}'[vout]`);
+    filters.push(`[${current}]copy[vout]`);
     return filters.join(";");
   }
   return [
@@ -331,13 +342,13 @@ function writeAyahOverlayPngs(schedule, dir) {
     if (quranRenderer === "pango") {
       writeAyahOverlayWithPango(item, pngPath, overlaysDir, index);
     } else {
-      writeFileSync(htmlPath, buildAyahOverlayHtml(item.text || ""), "utf8");
+      writeFileSync(htmlPath, buildAyahOverlayHtml(item.text || "", item.ayah), "utf8");
       screenshotWithChromium(htmlPath, pngPath, overlaysDir, index);
     }
     if (!existsSync(pngPath)) fail(`Quran text renderer did not create overlay: ${pngPath}`);
     return {
       path: pngPath,
-      layout: quranRenderer === "pango" ? pangoAyahLayout(item.text || "", pngPath) : ayahTextLayout(item.text || ""),
+      layout: quranRenderer === "pango" ? pangoAyahLayout(item.text || "", pngPath) : { fullFrame: true, x: 0, y: 0, width: 1080, height: 1920 },
     };
   });
 }
@@ -345,7 +356,7 @@ function writeAyahOverlayPngs(schedule, dir) {
 function writeAyahOverlayWithPango(item, pngPath, overlaysDir, index) {
   const layout = ayahTextLayout(item.text || "");
   const textPath = join(overlaysDir, `ayah-${surah}-${item.ayah}-${index}.txt`);
-  writeFileSync(textPath, wrappedLines(item.text || "").join("\n"), "utf8");
+  writeFileSync(textPath, item.text || "", "utf8");
   const maxTextWidth = layout.width - 132;
   const maxTextHeight = 660;
   for (const fontSize of pangoFontCandidates(item.text || "")) {
@@ -431,17 +442,23 @@ function screenshotWithChromium(htmlPath, pngPath, overlaysDir, index) {
     "--disable-setuid-sandbox",
     "--disable-dev-shm-usage",
     "--disable-gpu",
-    "--disable-software-rasterizer",
+    "--no-zygote",
+    "--single-process",
     "--disable-background-networking",
     "--disable-extensions",
     "--disable-sync",
+    "--disable-crashpad",
+    "--disable-features=Crashpad",
     "--disable-breakpad",
     "--disable-crash-reporter",
+    "--allow-file-access-from-files",
     "--hide-scrollbars",
     "--mute-audio",
     "--no-first-run",
     "--no-default-browser-check",
     "--password-store=basic",
+    "--run-all-compositor-stages-before-draw",
+    "--virtual-time-budget=1000",
     `--user-data-dir=${join(overlaysDir, `profile-${index}`)}`,
     `--data-path=${join(overlaysDir, `data-${index}`)}`,
     `--disk-cache-dir=${join(overlaysDir, `cache-${index}`)}`,
@@ -469,9 +486,9 @@ function screenshotWithChromium(htmlPath, pngPath, overlaysDir, index) {
   fail(`Command failed: ${chromium} ${attempts[attempts.length - 1].join(" ")}`);
 }
 
-function buildAyahOverlayHtml(text) {
-  const layout = ayahTextLayout(text);
-  const lines = wrappedLines(text).map((line) => `<span>${escapeHtml(line)}</span>`).join("");
+function buildAyahOverlayHtml(text, ayahNumber = "") {
+  const safeText = escapeHtml(text);
+  const safeAyahNumber = escapeHtml(ayahNumber ? ` ﴿${ayahNumber}﴾` : "");
   return `<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
@@ -491,39 +508,188 @@ html, body {
 }
 .ayah-box {
   position: absolute;
-  left: ${layout.x}px;
-  top: ${layout.y}px;
-  width: ${layout.width}px;
-  height: ${layout.height}px;
+  left: 50%;
+  top: 43%;
+  width: var(--box-width, 820px);
+  min-height: var(--box-height, 240px);
   box-sizing: border-box;
-  border: 3px solid rgba(255, 248, 232, 0.28);
-  border-radius: 24px;
-  background: rgba(9, 25, 23, 0.62);
+  border: 2px solid rgba(215, 195, 130, 0.55);
+  border-radius: 18px;
+  background: rgba(8, 20, 18, 0.62);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 44px 54px;
+  padding: var(--padding-y, 34px) var(--padding-x, 42px);
+  transform: translate(-50%, -50%);
 }
 .ayah-text {
-  color: #fff8e8;
+  color: #ffffff;
   font-family: "${fontName}", serif;
-  font-size: ${layout.fontSize}px;
+  font-size: var(--font-size, 66px);
   font-weight: 700;
-  line-height: 1.22;
+  line-height: 1.75;
   text-align: center;
   direction: rtl;
   unicode-bidi: plaintext;
+  white-space: normal;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
   text-shadow:
-    0 0 1px #fff8e8,
-    0 3px 7px rgba(0, 0, 0, 0.34);
-}
-.ayah-text span {
-  display: block;
+    0 1px 1px rgba(255, 255, 255, 0.2),
+    0 2px 5px rgba(0, 0, 0, 0.65);
 }
 </style>
 </head>
 <body>
-  <div class="ayah-box"><div class="ayah-text">${lines}</div></div>
+  <div id="ayahBox" class="ayah-box"><p id="ayahText" class="ayah-text">${safeText}${safeAyahNumber}</p></div>
+  <script>
+    const box = document.getElementById("ayahBox");
+    const text = document.getElementById("ayahText");
+    const rawText = ${JSON.stringify(String(text || ""))};
+
+    const limits = {
+      minBoxWidth: 650,
+      maxBoxWidth: 930,
+      minBoxHeight: 170,
+      maxBoxHeight: 560,
+      minFont: 50,
+      maxFont: 74,
+      topPercent: 43,
+    };
+
+    const waqfPattern = /([\\u06D6-\\u06ED])/g;
+    const cleanLength = cleanQuranText(rawText).length;
+    const profile = initialProfile(cleanLength);
+    const candidates = layoutCandidates(profile);
+
+    let best = null;
+    for (const candidate of candidates) {
+      applyCandidate(candidate);
+      const measured = measure();
+      const fits = measured.textWidth <= measured.innerWidth && measured.textHeight <= measured.innerHeight;
+      const readable = candidate.fontSize >= limits.minFont;
+      const slackY = Math.max(0, measured.innerHeight - measured.textHeight);
+      const score = (fits ? 0 : 10000)
+        + (readable ? 0 : 5000)
+        + Math.abs(slackY - candidate.paddingY * 0.45)
+        + Math.abs(measured.innerWidth - measured.textWidth) * 0.12
+        - candidate.fontSize * 5;
+      if (!best || score < best.score) best = { candidate, score, fits, measured };
+      if (fits && readable && slackY <= candidate.fontSize * 1.45) break;
+    }
+
+    applyCandidate(best.candidate);
+
+    function initialProfile(length) {
+      if (length < 45) return { fontStart: 74, fontEnd: 70, widthStart: 650, widthEnd: 760, lines: 2, paddingX: 42, paddingY: 30 };
+      if (length < 90) return { fontStart: 70, fontEnd: 64, widthStart: 760, widthEnd: 860, lines: 3, paddingX: 44, paddingY: 32 };
+      if (length < 150) return { fontStart: 64, fontEnd: 56, widthStart: 860, widthEnd: 930, lines: 4, paddingX: 46, paddingY: 34 };
+      return { fontStart: 56, fontEnd: 50, widthStart: 900, widthEnd: 930, lines: 5, paddingX: 46, paddingY: 34 };
+    }
+
+    function layoutCandidates(profile) {
+      const items = [];
+      for (let fontSize = profile.fontStart; fontSize >= Math.max(profile.fontEnd, limits.minFont); fontSize -= 2) {
+        for (let width = profile.widthStart; width <= profile.widthEnd; width += 30) {
+          const paddingX = profile.paddingX;
+          const paddingY = profile.paddingY;
+          items.push({
+            fontSize,
+            width: clamp(width, limits.minBoxWidth, limits.maxBoxWidth),
+            height: limits.minBoxHeight,
+            paddingX,
+            paddingY,
+            lines: profile.lines,
+          });
+        }
+      }
+      return items;
+    }
+
+    function applyCandidate(candidate) {
+      const lines = balancedLines(rawText, candidate.lines);
+      text.innerHTML = lines.map(escapeHtml).join("<br>") + ${JSON.stringify(safeAyahNumber)};
+      box.style.setProperty("--box-width", candidate.width + "px");
+      box.style.setProperty("--font-size", candidate.fontSize + "px");
+      box.style.setProperty("--padding-x", candidate.paddingX + "px");
+      box.style.setProperty("--padding-y", candidate.paddingY + "px");
+      box.style.setProperty("--box-height", limits.minBoxHeight + "px");
+      const measured = measure();
+      const height = clamp(Math.ceil(measured.textHeight + candidate.paddingY * 2), limits.minBoxHeight, limits.maxBoxHeight);
+      const width = clamp(Math.ceil(measured.textWidth + candidate.paddingX * 2), limits.minBoxWidth, candidate.width);
+      box.style.setProperty("--box-height", height + "px");
+      box.style.setProperty("--box-width", width + "px");
+    }
+
+    function measure() {
+      const boxRect = box.getBoundingClientRect();
+      const textRect = text.getBoundingClientRect();
+      const style = getComputedStyle(box);
+      const paddingX = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+      const paddingY = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+      return {
+        boxWidth: boxRect.width,
+        boxHeight: boxRect.height,
+        innerWidth: boxRect.width - paddingX,
+        innerHeight: boxRect.height - paddingY,
+        textWidth: Math.max(text.scrollWidth, textRect.width),
+        textHeight: Math.max(text.scrollHeight, textRect.height),
+      };
+    }
+
+    function balancedLines(value, maxLines) {
+      const normalized = String(value || "").replace(/\\s+/g, " ").trim();
+      if (!normalized) return [""];
+      const words = normalized.split(" ");
+      const cleanTotal = Math.max(1, cleanQuranText(normalized).length);
+      const targetLines = clamp(Math.ceil(cleanTotal / 34), 1, maxLines);
+      const targetLength = Math.ceil(cleanTotal / targetLines);
+      const lines = [];
+      let line = "";
+      for (const word of words) {
+        const next = line ? line + " " + word : word;
+        const forceBreak = line && cleanQuranText(next).length > targetLength && lines.length < targetLines - 1;
+        const preferWaqf = line && waqfPattern.test(line) && cleanQuranText(line).length >= targetLength * 0.62 && lines.length < targetLines - 1;
+        waqfPattern.lastIndex = 0;
+        if (forceBreak || preferWaqf) {
+          lines.push(line);
+          line = word;
+        } else {
+          line = next;
+        }
+      }
+      if (line) lines.push(line);
+      return rebalanceLines(lines, targetLines);
+    }
+
+    function rebalanceLines(lines, targetLines) {
+      while (lines.length > targetLines) {
+        const last = lines.pop();
+        lines[lines.length - 1] += " " + last;
+      }
+      return lines;
+    }
+
+    function cleanQuranText(value) {
+      return String(value || "")
+        .replace(/[\\u0610-\\u061A\\u064B-\\u065F\\u0670\\u06D6-\\u06ED\\u0640]/g, "")
+        .replace(/\\s+/g, " ")
+        .trim();
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+    }
+
+    function clamp(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
+  </script>
 </body>
 </html>`;
 }
@@ -543,7 +709,7 @@ function roundedAyahBoxDialogue(item, layout) {
   const start = formatAssTime(item.start);
   const end = formatAssTime(item.end);
   const path = roundedRectPath(layout.width, layout.height, 24);
-  return `Dialogue: 0,${start},${end},AyahBox,,0,0,0,,{\\p1\\an7\\pos(${layout.x},${layout.y})}${path}`;
+  return `Dialogue: 0,${start},${end},AyahBox,,0,0,0,,{\\p1\\fs1\\an7\\pos(${layout.x},${layout.y})}${path}`;
 }
 
 function roundedRectPath(width, height, radius) {
