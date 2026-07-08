@@ -40,7 +40,11 @@ const checks = [
   },
   {
     label: "export ASS keeps wrapped Quran text centered",
-    pass: /WrapStyle:\s*2/.test(composerSource) && /Style: Ayah/.test(composerSource) && composerSource.includes("\\\\q2\\\\fs"),
+    pass:
+      /WrapStyle:\s*2/.test(composerSource) &&
+      /Style: Ayah/.test(composerSource) &&
+      composerSource.includes("\\\\q2\\\\an5\\\\pos") &&
+      /function\s+ayahTextDialogueOverride\s*\(/.test(composerSource),
   },
 ];
 
