@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { spawnSync } from "node:child_process";
@@ -148,8 +148,8 @@ run(ffmpeg, [
   "-stream_loop", "-1",
   "-i", background,
   "-i", finalAudio,
-  ...ayahOverlays.flatMap((overlay) => ["-i", overlay]),
-  "-filter_complex", buildVideoFilter(subtitlePath, dirname(font), schedule, ayahOverlays.length),
+  ...ayahOverlays.flatMap((overlay) => ["-i", overlay.path]),
+  "-filter_complex", buildVideoFilter(subtitlePath, dirname(font), schedule, ayahOverlays),
   "-map", "[vout]",
   "-map", "1:a:0",
   "-c:v", "libx264",
@@ -169,7 +169,7 @@ const result = {
   out: relativePath(out),
   subtitles: relativePath(subtitlePath),
   quranRenderer,
-  ayahOverlays: ayahOverlays.map(relativePath),
+  ayahOverlays: ayahOverlays.map((overlay) => relativePath(overlay.path)),
   audio: relativePath(finalAudio),
   duration: round(finalAudioDuration),
   reciter,
@@ -293,19 +293,19 @@ function writeSubtitleFile(path, schedule, meta) {
   writeFileSync(path, body, "utf8");
 }
 
-function buildVideoFilter(subtitlePath, fontsDir, schedule, overlayCount = 0) {
-  if (overlayCount) {
+function buildVideoFilter(subtitlePath, fontsDir, schedule, overlays = []) {
+  if (overlays.length) {
     const filters = [
       [
         "[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,setsar=1",
-        ...schedule.map(textBoxFilter),
+        ...schedule.map((item, index) => textBoxFilter(item, overlays[index]?.layout)),
         "format=yuv420p[base]",
       ].join(","),
     ];
     let current = "base";
     schedule.forEach((item, index) => {
-      const next = index === overlayCount - 1 ? "texted" : `ayahov${index}`;
-      const layout = ayahTextLayout(item.text || "");
+      const next = index === overlays.length - 1 ? "texted" : `ayahov${index}`;
+      const layout = overlays[index]?.layout || ayahTextLayout(item.text || "");
       const y = `${layout.y}+(${layout.height}-h)/2`;
       filters.push(`[${current}][${index + 2}:v]overlay=x=(W-w)/2:y='${y}':enable='between(t,${Number(item.start).toFixed(2)},${Number(item.end).toFixed(2)})'[${next}]`);
       current = next;
@@ -335,7 +335,10 @@ function writeAyahOverlayPngs(schedule, dir) {
       screenshotWithChromium(htmlPath, pngPath, overlaysDir, index);
     }
     if (!existsSync(pngPath)) fail(`Quran text renderer did not create overlay: ${pngPath}`);
-    return pngPath;
+    return {
+      path: pngPath,
+      layout: quranRenderer === "pango" ? pangoAyahLayout(item.text || "", pngPath) : ayahTextLayout(item.text || ""),
+    };
   });
 }
 
@@ -343,18 +346,83 @@ function writeAyahOverlayWithPango(item, pngPath, overlaysDir, index) {
   const layout = ayahTextLayout(item.text || "");
   const textPath = join(overlaysDir, `ayah-${surah}-${item.ayah}-${index}.txt`);
   writeFileSync(textPath, wrappedLines(item.text || "").join("\n"), "utf8");
+  const maxTextWidth = layout.width - 132;
+  const maxTextHeight = 660;
+  for (const fontSize of pangoFontCandidates(item.text || "")) {
+    runPangoView(textPath, pngPath, fontSize, maxTextWidth);
+    const size = probeImageSize(pngPath);
+    if (size.width <= maxTextWidth + 8 && size.height <= maxTextHeight) return;
+  }
+  fitPangoOverlayPng(pngPath, maxTextWidth, maxTextHeight);
+}
+
+function runPangoView(textPath, pngPath, fontSize, width) {
   run(pangoView, [
     "--no-display",
-    `--font=${fontName} ${layout.fontSize}`,
+    `--font=${fontName} ${fontSize}`,
     "--foreground=#fff8e8",
     "--background=transparent",
     "--align=center",
     "--rtl",
-    `--width=${layout.width - 132}`,
+    `--width=${width}`,
     "--margin=0",
     `--output=${pngPath}`,
     textPath,
   ]);
+}
+
+function pangoFontCandidates(value) {
+  const start = fontSizeForText(value);
+  const candidates = [];
+  for (let size = start; size >= 42; size -= 6) candidates.push(size);
+  return candidates;
+}
+
+function pangoAyahLayout(value, pngPath) {
+  const base = ayahTextLayout(value);
+  const size = probeImageSize(pngPath);
+  const horizontalPadding = 116;
+  const verticalPadding = 96;
+  const width = clamp(size.width + horizontalPadding, 560, 1012);
+  const height = clamp(size.height + verticalPadding, 240, 860);
+  const x = Math.round((1080 - width) / 2);
+  const y = clamp(Math.round(760 - height / 2), 240, 760);
+  return {
+    ...base,
+    x,
+    y,
+    width,
+    height,
+  };
+}
+
+function fitPangoOverlayPng(pngPath, maxWidth, maxHeight) {
+  const fittedPath = pngPath.replace(/\.png$/i, ".fit.png");
+  run(ffmpeg, [
+    "-y",
+    "-hide_banner",
+    "-loglevel", "error",
+    "-i", pngPath,
+    "-vf", `scale=${Math.round(maxWidth)}:${Math.round(maxHeight)}:force_original_aspect_ratio=decrease`,
+    "-frames:v", "1",
+    fittedPath,
+  ]);
+  renameSync(fittedPath, pngPath);
+}
+
+function probeImageSize(path) {
+  const result = spawnSync(ffprobe, [
+    "-v", "error",
+    "-select_streams", "v:0",
+    "-show_entries", "stream=width,height",
+    "-of", "csv=s=x:p=0",
+    path,
+  ], { encoding: "utf8", windowsHide: true });
+  const [width, height] = String(result.stdout || "").trim().split("x").map(Number);
+  if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0) {
+    fail(`Could not read Quran overlay image size: ${path}`);
+  }
+  return { width, height };
 }
 
 function screenshotWithChromium(htmlPath, pngPath, overlaysDir, index) {
@@ -460,8 +528,8 @@ html, body {
 </html>`;
 }
 
-function textBoxFilter(item) {
-  const { x, y, width, height } = ayahTextLayout(item.text || "");
+function textBoxFilter(item, explicitLayout = null) {
+  const { x, y, width, height } = explicitLayout || ayahTextLayout(item.text || "");
   const start = Number(item.start).toFixed(2);
   const end = Number(item.end).toFixed(2);
   const enable = `enable='between(t,${start},${end})'`;
@@ -604,7 +672,7 @@ function wrappedLines(value) {
   let line = "";
   words.forEach((word) => {
     const next = line ? `${line} ${word}` : word;
-    if (next.length > 56 && line) {
+    if (cleanQuranTextLength(next) > 34 && line) {
       lines.push(line);
       line = word;
     } else {

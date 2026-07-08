@@ -31,10 +31,12 @@ const checks = [
   {
     label: "export ayah frame keeps text inside",
     pass:
-      /estimatedRenderedLineCount/.test(composerSource)
-      && /const minimum = longest <= 32 && lines\.length <= 1 \? 820 : 560/.test(composerSource)
-      && /estimatedLines \* fontSize \* 1\.46 \+ 168/.test(composerSource)
-      && /--width=\$\{layout\.width - 132\}/.test(composerSource),
+      /function\s+probeImageSize\s*\(/.test(composerSource)
+      && /function\s+pangoAyahLayout\s*\(/.test(composerSource)
+      && /function\s+fitPangoOverlayPng\s*\(/.test(composerSource)
+      && /force_original_aspect_ratio=decrease/.test(composerSource)
+      && /size\.height \+ verticalPadding/.test(composerSource)
+      && /pangoFontCandidates/.test(composerSource),
   },
   {
     label: "TODO tracks text fit work",
