@@ -152,7 +152,7 @@ function writeSubtitleFile(path, schedule, meta, duration) {
     const layout = ayahTextLayout(item.text || "");
     return [
       roundedAyahBoxDialogue(item, layout),
-      `Dialogue: 1,${formatAssTime(item.start)},${formatAssTime(item.end)},Ayah,,0,0,${layout.textY},,{\\q2\\fs${layout.fontSize}\\bord2\\shad1}${wrapAssText(item.text)}`,
+      `Dialogue: 1,${formatAssTime(item.start)},${formatAssTime(item.end)},Ayah,,0,0,0,,${ayahTextDialogueOverride(layout, item.text)}${wrapAssText(item.text)}`,
     ];
   });
   const body = [
@@ -168,9 +168,9 @@ function writeSubtitleFile(path, schedule, meta, duration) {
     "Style: AyahBox,Arial,20,&H66171909,&H66171909,&H99E8F8FF,&H00000000,0,0,0,0,100,100,0,0,1,3,0,7,0,0,0,1",
     `Style: Ayah,${fontName},88,&H00FFF8E8,&H00FFF8E8,&H88000000,&H66000000,1,0,0,0,103,103,0,0,1,2,1,8,92,92,620,1`,
     "Style: Account,Segoe UI,64,&H00FFFFFF,&H00FFFFFF,&H66000000,&H66000000,1,0,0,0,100,100,0,0,3,12,0,7,54,54,54,1",
-    "Style: MetaReciter,Segoe UI,72,&H00FFFFFF,&H00FFFFFF,&H66000000,&H66000000,1,0,0,0,100,100,0,0,3,12,0,2,90,90,338,1",
-    "Style: MetaReference,Segoe UI,64,&H00FFFFFF,&H00FFFFFF,&H66000000,&H66000000,1,0,0,0,100,100,0,0,3,12,0,2,150,150,248,1",
-    "Style: MetaRiwayah,Segoe UI,50,&H00BFF1FF,&H00BFF1FF,&H66143B35,&H66143B35,1,0,0,0,100,100,0,0,3,10,0,2,300,300,168,1",
+    "Style: MetaReciter,Segoe UI,72,&H00FFFFFF,&H00FFFFFF,&H66000000,&H66000000,1,0,0,0,100,100,0,0,3,12,0,2,90,90,410,1",
+    "Style: MetaReference,Segoe UI,64,&H00FFFFFF,&H00FFFFFF,&H66000000,&H66000000,1,0,0,0,100,100,0,0,3,12,0,2,150,150,320,1",
+    "Style: MetaRiwayah,Segoe UI,50,&H00BFF1FF,&H00BFF1FF,&H66143B35,&H66143B35,1,0,0,0,100,100,0,0,3,10,0,2,300,300,240,1",
     "",
     "[Events]",
     "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text",
@@ -209,6 +209,14 @@ function roundedAyahBoxDialogue(item, layout) {
   return `Dialogue: 0,${start},${end},AyahBox,,0,0,0,,{\\p1\\an7\\pos(${layout.x},${layout.y})}${path}`;
 }
 
+function ayahTextDialogueOverride(layout, value = "") {
+  const shortText = cleanQuranTextLength(value) <= 12;
+  const visualCenterOffset = shortText ? Math.round(layout.fontSize * 0.16) : 0;
+  const centerX = Math.round(layout.x + layout.width / 2 + visualCenterOffset);
+  const centerY = Math.round(layout.y + layout.height / 2);
+  return `{\\q2\\an5\\pos(${centerX},${centerY})\\fs${layout.fontSize}\\bord2\\shad1}`;
+}
+
 function roundedRectPath(width, height, radius) {
   const w = Math.round(width);
   const h = Math.round(height);
@@ -231,7 +239,8 @@ function ayahTextLayout(value) {
   const lines = wrappedLines(value);
   const fontSize = fontSizeForText(value);
   const width = ayahBoxWidth(lines, fontSize);
-  const height = clamp(Math.round(lines.length * fontSize * 1.22 + 128), 220, 980);
+  const shortText = cleanQuranTextLength(value) <= 12 && lines.length <= 1;
+  const height = clamp(Math.round(lines.length * fontSize * 1.08 + (shortText ? 60 : 128)), shortText ? 200 : 220, 980);
   const x = Math.round((1080 - width) / 2);
   const y = clamp(Math.round(760 - height / 2), 300, 700);
   return { x, y, width, height, fontSize, textY: y + 48 };
@@ -239,12 +248,18 @@ function ayahTextLayout(value) {
 
 function ayahBoxWidth(lines, fontSize) {
   const longest = Math.max(0, ...lines.map((line) => cleanQuranTextLength(line)));
-  return clamp(Math.round(longest * fontSize * 0.24 + 180), 520, 948);
+  const minimum = longest <= 12 && lines.length <= 1 ? 240 : longest <= 28 && lines.length <= 1 ? 380 : 520;
+  const padding = longest <= 12 && lines.length <= 1 ? 96 : longest <= 28 && lines.length <= 1 ? 150 : 180;
+  return clamp(Math.round(longest * fontSize * 0.24 + padding), minimum, 948);
 }
 
 function fontSizeForText(value) {
   const lines = wrappedLines(value);
-  if (lines.length <= 2) return 96;
+  const length = cleanQuranTextLength(value);
+  if (length <= 12 && lines.length <= 1) return 164;
+  if (length <= 28 && lines.length <= 1) return 108;
+  if (lines.length <= 1) return 108;
+  if (lines.length <= 2) return 100;
   if (lines.length <= 3) return 90;
   if (lines.length <= 4) return 84;
   return 78;

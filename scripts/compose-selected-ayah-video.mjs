@@ -273,7 +273,7 @@ function writeSubtitleFile(path, schedule, meta, options = {}) {
     const itemEvents = [];
     if (includeAyahBoxes) itemEvents.push(roundedAyahBoxDialogue(item, layout));
     if (includeAyahText) {
-      itemEvents.push(`Dialogue: 1,${formatAssTime(item.start)},${formatAssTime(item.end)},Ayah,,0,0,${layout.textY},,{\\q2\\fs${layout.fontSize}\\bord2\\shad1}${wrapAssText(item.text)}`);
+      itemEvents.push(`Dialogue: 1,${formatAssTime(item.start)},${formatAssTime(item.end)},Ayah,,0,0,0,,${ayahTextDialogueOverride(layout, item.text)}${wrapAssText(item.text)}`);
     }
     return itemEvents;
   });
@@ -290,9 +290,9 @@ function writeSubtitleFile(path, schedule, meta, options = {}) {
     "Style: AyahBox,Arial,20,&H66171909,&H66171909,&H99E8F8FF,&H00000000,0,0,0,0,100,100,0,0,1,3,0,7,0,0,0,1",
     `Style: Ayah,${fontName},88,&H00FFF8E8,&H00FFF8E8,&H88000000,&H66000000,1,0,0,0,103,103,0,0,1,2,1,8,92,92,620,1`,
     "Style: Account,Segoe UI,64,&H00FFFFFF,&H00FFFFFF,&H66000000,&H66000000,1,0,0,0,100,100,0,0,3,12,0,7,54,54,54,1",
-    "Style: MetaReciter,Segoe UI,72,&H00FFFFFF,&H00FFFFFF,&H66000000,&H66000000,1,0,0,0,100,100,0,0,3,12,0,2,90,90,338,1",
-    "Style: MetaReference,Segoe UI,64,&H00FFFFFF,&H00FFFFFF,&H66000000,&H66000000,1,0,0,0,100,100,0,0,3,12,0,2,150,150,248,1",
-    "Style: MetaRiwayah,Segoe UI,50,&H00BFF1FF,&H00BFF1FF,&H66143B35,&H66143B35,1,0,0,0,100,100,0,0,3,10,0,2,300,300,168,1",
+    "Style: MetaReciter,Segoe UI,72,&H00FFFFFF,&H00FFFFFF,&H66000000,&H66000000,1,0,0,0,100,100,0,0,3,12,0,2,90,90,410,1",
+    "Style: MetaReference,Segoe UI,64,&H00FFFFFF,&H00FFFFFF,&H66000000,&H66000000,1,0,0,0,100,100,0,0,3,12,0,2,150,150,320,1",
+    "Style: MetaRiwayah,Segoe UI,50,&H00BFF1FF,&H00BFF1FF,&H66143B35,&H66143B35,1,0,0,0,100,100,0,0,3,10,0,2,300,300,240,1",
     "",
     "[Events]",
     "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text",
@@ -392,10 +392,11 @@ function pangoFontCandidates(value) {
 function pangoAyahLayout(value, pngPath) {
   const base = ayahTextLayout(value);
   const size = probeImageSize(pngPath);
-  const horizontalPadding = 116;
-  const verticalPadding = 96;
-  const width = clamp(size.width + horizontalPadding, 560, 1012);
-  const height = clamp(size.height + verticalPadding, 240, 860);
+  const shortText = cleanQuranTextLength(value) <= 12;
+  const horizontalPadding = shortText ? 80 : 116;
+  const verticalPadding = shortText ? 72 : 96;
+  const width = clamp(size.width + horizontalPadding, shortText ? 240 : 560, 1012);
+  const height = clamp(size.height + verticalPadding, shortText ? 160 : 240, 860);
   const x = Math.round((1080 - width) / 2);
   const y = clamp(Math.round(760 - height / 2), 240, 760);
   return {
@@ -549,12 +550,12 @@ html, body {
     const rawText = ${JSON.stringify(String(text || ""))};
 
     const limits = {
-      minBoxWidth: 650,
+      minBoxWidth: 240,
       maxBoxWidth: 930,
-      minBoxHeight: 170,
+      minBoxHeight: 132,
       maxBoxHeight: 560,
       minFont: 50,
-      maxFont: 74,
+      maxFont: 164,
       topPercent: 43,
     };
 
@@ -582,9 +583,10 @@ html, body {
     applyCandidate(best.candidate);
 
     function initialProfile(length) {
-      if (length < 45) return { fontStart: 74, fontEnd: 70, widthStart: 650, widthEnd: 760, lines: 2, paddingX: 42, paddingY: 30 };
-      if (length < 90) return { fontStart: 70, fontEnd: 64, widthStart: 760, widthEnd: 860, lines: 3, paddingX: 44, paddingY: 32 };
-      if (length < 150) return { fontStart: 64, fontEnd: 56, widthStart: 860, widthEnd: 930, lines: 4, paddingX: 46, paddingY: 34 };
+      if (length < 12) return { fontStart: 164, fontEnd: 148, widthStart: 240, widthEnd: 340, lines: 1, paddingX: 26, paddingY: 18 };
+      if (length < 45) return { fontStart: 96, fontEnd: 84, widthStart: 380, widthEnd: 650, lines: 1, paddingX: 34, paddingY: 22 };
+      if (length < 90) return { fontStart: 78, fontEnd: 68, widthStart: 640, widthEnd: 820, lines: 2, paddingX: 38, paddingY: 26 };
+      if (length < 150) return { fontStart: 68, fontEnd: 58, widthStart: 780, widthEnd: 930, lines: 3, paddingX: 42, paddingY: 30 };
       return { fontStart: 56, fontEnd: 50, widthStart: 900, widthEnd: 930, lines: 5, paddingX: 46, paddingY: 34 };
     }
 
@@ -712,6 +714,14 @@ function roundedAyahBoxDialogue(item, layout) {
   return `Dialogue: 0,${start},${end},AyahBox,,0,0,0,,{\\p1\\fs1\\an7\\pos(${layout.x},${layout.y})}${path}`;
 }
 
+function ayahTextDialogueOverride(layout, value = "") {
+  const shortText = cleanQuranTextLength(value) <= 12;
+  const visualCenterOffset = shortText ? Math.round(layout.fontSize * 0.16) : 0;
+  const centerX = Math.round(layout.x + layout.width / 2 + visualCenterOffset);
+  const centerY = Math.round(layout.y + layout.height / 2);
+  return `{\\q2\\an5\\pos(${centerX},${centerY})\\fs${layout.fontSize}\\bord2\\shad1}`;
+}
+
 function roundedRectPath(width, height, radius) {
   const w = Math.round(width);
   const h = Math.round(height);
@@ -798,7 +808,8 @@ function ayahTextLayout(value) {
   const fontSize = fontSizeForText(value);
   const width = ayahBoxWidth(lines, fontSize);
   const estimatedLines = Math.max(lines.length, estimatedRenderedLineCount(value, fontSize, width));
-  const height = clamp(Math.round(estimatedLines * fontSize * 1.46 + 168), 300, 1040);
+  const shortText = cleanQuranTextLength(value) <= 12 && lines.length <= 1;
+  const height = clamp(Math.round(estimatedLines * fontSize * 1.12 + (shortText ? 64 : 168)), shortText ? 200 : 300, 1040);
   const x = Math.round((1080 - width) / 2);
   const y = clamp(Math.round(760 - height / 2), 250, 700);
   return {
@@ -813,8 +824,9 @@ function ayahTextLayout(value) {
 
 function ayahBoxWidth(lines, fontSize) {
   const longest = Math.max(0, ...lines.map((line) => cleanQuranTextLength(line)));
-  const minimum = longest <= 32 && lines.length <= 1 ? 820 : 560;
-  return clamp(Math.round(longest * fontSize * 0.34 + 240), minimum, 988);
+  const minimum = longest <= 12 && lines.length <= 1 ? 240 : longest <= 28 && lines.length <= 1 ? 380 : 560;
+  const padding = longest <= 12 && lines.length <= 1 ? 96 : longest <= 28 && lines.length <= 1 ? 150 : 220;
+  return clamp(Math.round(longest * fontSize * 0.34 + padding), minimum, 988);
 }
 
 function estimatedRenderedLineCount(value, fontSize, boxWidth) {
@@ -826,6 +838,9 @@ function estimatedRenderedLineCount(value, fontSize, boxWidth) {
 
 function fontSizeForText(value) {
   const lines = wrappedLines(value);
+  const length = cleanQuranTextLength(value);
+  if (length <= 12 && lines.length <= 1) return 164;
+  if (length <= 28 && lines.length <= 1) return 104;
   if (lines.length <= 2) return 96;
   if (lines.length <= 3) return 90;
   if (lines.length <= 4) return 84;

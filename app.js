@@ -1579,16 +1579,32 @@ function applyPhoneAyahFit(ayahs) {
   const profile = ayahTextProfile(ayahs);
   els.phoneAyah.classList.toggle("is-long", profile.severity === "long");
   els.phoneAyah.classList.toggle("is-very-long", profile.severity === "very-long");
-  els.phoneAyah.style.setProperty("--phone-ayah-width", phoneAyahBoxWidth(profile));
+  const fit = phoneAyahFit(profile);
+  els.phoneAyah.style.setProperty("--phone-ayah-width", fit.width);
+  els.phoneAyah.style.setProperty("--phone-ayah-font-size", fit.fontSize);
+  els.phoneAyah.style.setProperty("--phone-ayah-line-height", fit.lineHeight);
+  els.phoneAyah.style.setProperty("--phone-ayah-padding-x", fit.paddingX);
+  els.phoneAyah.style.setProperty("--phone-ayah-padding-y", fit.paddingY);
   return profile;
 }
 
-function phoneAyahBoxWidth(profile) {
-  if (profile.severity === "very-long") return "88%";
-  if (profile.severity === "long") return "84%";
-  if (profile.totalLength <= 42 && profile.ayahCount <= 1) return "58%";
-  if (profile.totalLength <= 90 && profile.ayahCount <= 2) return "72%";
-  return "82%";
+function phoneAyahFit(profile) {
+  if (profile.severity === "very-long") {
+    return { width: "88%", fontSize: "1.18rem", lineHeight: "1.62", paddingX: "10px", paddingY: "12px" };
+  }
+  if (profile.severity === "long") {
+    return { width: "84%", fontSize: "1.36rem", lineHeight: "1.72", paddingX: "12px", paddingY: "14px" };
+  }
+  if (profile.totalLength <= 42 && profile.ayahCount <= 1) {
+    if (profile.totalLength <= 12) {
+      return { width: "28%", fontSize: "3.34rem", lineHeight: "1.16", paddingX: "10px", paddingY: "7px" };
+    }
+    return { width: "42%", fontSize: "2.28rem", lineHeight: "1.42", paddingX: "14px", paddingY: "10px" };
+  }
+  if (profile.totalLength <= 90 && profile.ayahCount <= 2) {
+    return { width: "64%", fontSize: "1.82rem", lineHeight: "1.56", paddingX: "15px", paddingY: "12px" };
+  }
+  return { width: "76%", fontSize: "1.58rem", lineHeight: "1.7", paddingX: "14px", paddingY: "14px" };
 }
 
 function selectedAyahs() {

@@ -1258,18 +1258,18 @@ input[type="file"] {
   z-index: 2;
   left: 50%;
   right: auto;
-  width: var(--phone-ayah-width, 82%);
+  width: var(--phone-ayah-width, 74%);
   top: 40%;
   transform: translate(-50%, -50%);
   border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: 8px;
   background: rgba(9, 25, 23, 0.62);
   color: #fff8e8;
-  padding: 16px 14px;
+  padding: var(--phone-ayah-padding-y, 14px) var(--phone-ayah-padding-x, 16px);
   text-align: center;
   font-family: var(--quran-font-family);
-  font-size: 1.58rem;
-  line-height: 1.82;
+  font-size: var(--phone-ayah-font-size, 1.86rem);
+  line-height: var(--phone-ayah-line-height, 1.62);
   font-weight: 600;
   text-shadow:
     0 0 0.7px #fff8e8,
@@ -1283,15 +1283,15 @@ input[type="file"] {
 }
 
 .phone-ayah.is-long {
-  font-size: 1.36rem;
-  line-height: 1.72;
-  padding: 14px 12px;
+  font-size: var(--phone-ayah-font-size, 1.36rem);
+  line-height: var(--phone-ayah-line-height, 1.72);
+  padding: var(--phone-ayah-padding-y, 14px) var(--phone-ayah-padding-x, 12px);
 }
 
 .phone-ayah.is-very-long {
-  font-size: 1.18rem;
-  line-height: 1.62;
-  padding: 12px 10px;
+  font-size: var(--phone-ayah-font-size, 1.18rem);
+  line-height: var(--phone-ayah-line-height, 1.62);
+  padding: var(--phone-ayah-padding-y, 12px) var(--phone-ayah-padding-x, 10px);
   max-height: 70%;
 }
 
@@ -1300,7 +1300,7 @@ input[type="file"] {
   z-index: 2;
   left: 5.6cqw;
   right: 5.6cqw;
-  bottom: 17cqw;
+  bottom: 23cqw;
   display: grid;
   gap: 1.8cqw;
   color: white;
