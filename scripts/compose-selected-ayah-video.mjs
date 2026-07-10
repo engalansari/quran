@@ -31,6 +31,7 @@ const quranRenderer = String(args["quran-renderer"] || process.env.QURAN_TEXT_RE
 const htmlQuranRenderer = quranRenderer === "html" || quranRenderer === "chromium";
 const chromium = executableArg(args.chromium, process.env.CHROMIUM, "", "chromium");
 const pangoView = executableArg(args["pango-view"], process.env.PANGO_VIEW, "", "pango-view");
+const VIDEO_END_HOLD_SECONDS = 0.75;
 
 const SURAH_NAMES = [
   "الفاتحة", "البقرة", "آل عمران", "النساء", "المائدة", "الأنعام", "الأعراف", "الأنفال", "التوبة", "يونس",
@@ -114,7 +115,7 @@ audioFiles.forEach((file) => {
 
 const concatList = join(workDir, `audio-${surah}-${ayahStart}-${ayahCount}-${reciter}.txt`);
 const combinedAudio = join(workDir, `audio-${surah}-${ayahStart}-${ayahCount}-${reciter}.m4a`);
-const finalAudio = join(workDir, `audio-${surah}-${ayahStart}-${ayahCount}-${reciter}.trimmed.m4a`);
+const finalAudio = combinedAudio;
 const subtitlePath = out.replace(/\.mp4$/i, ".ayahs.ass");
 writeFileSync(concatList, audioFiles.map((file) => `file '${escapeConcatPath(file)}'`).join("\n"), "utf8");
 
@@ -130,15 +131,15 @@ run(ffmpeg, [
   combinedAudio,
 ]);
 
-trimFinalSilence(combinedAudio, finalAudio);
 const finalAudioDuration = probeDuration(finalAudio);
+const videoDuration = finalAudioDuration + VIDEO_END_HOLD_SECONDS;
 const schedule = clampScheduleEnd(buildSchedule(selected, audioFiles), finalAudioDuration);
 const meta = {
   accountName,
   reciterName: cleanOverlayName(catalogReciter?.name || RECITER_NAMES[reciter] || reciter),
   riwayah: catalogReciter?.riwayah || "حفص عن عاصم",
   reference: referenceLabel(surah, selected),
-  duration: finalAudioDuration,
+  duration: videoDuration,
 };
 const ayahOverlays = htmlQuranRenderer || quranRenderer === "pango" ? writeAyahOverlayPngs(schedule, workDir) : [];
 writeSubtitleFile(subtitlePath, schedule, meta, {
@@ -163,8 +164,7 @@ run(ffmpeg, [
   "-pix_fmt", "yuv420p",
   "-c:a", "aac",
   "-b:a", "192k",
-  "-t", formatSeconds(finalAudioDuration),
-  "-shortest",
+  "-t", formatSeconds(videoDuration),
   "-movflags", "+faststart",
   out,
 ]);
@@ -177,6 +177,7 @@ const result = {
   ayahOverlays: ayahOverlays.map((overlay) => relativePath(overlay.path)),
   audio: relativePath(finalAudio),
   duration: round(finalAudioDuration),
+  videoDuration: round(videoDuration),
   reciter,
   reciterName: meta.reciterName,
   riwayah: meta.riwayah,
@@ -187,19 +188,6 @@ const result = {
   schedule,
 };
 console.log(JSON.stringify(result, null, 2));
-
-function trimFinalSilence(input, output) {
-  run(ffmpeg, [
-    "-y",
-    "-hide_banner",
-    "-loglevel", "error",
-    "-i", input,
-    "-af", "areverse,silenceremove=start_periods=1:start_duration=0.18:start_threshold=-48dB,areverse",
-    "-c:a", "aac",
-    "-b:a", "192k",
-    output,
-  ]);
-}
 
 function clampScheduleEnd(schedule, finalDuration) {
   if (!schedule.length) return schedule;
@@ -289,10 +277,10 @@ function writeSubtitleFile(path, schedule, meta, options = {}) {
     "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding",
     "Style: AyahBox,Arial,20,&H66171909,&H66171909,&H99E8F8FF,&H00000000,0,0,0,0,100,100,0,0,1,3,0,7,0,0,0,1",
     `Style: Ayah,${fontName},88,&H00FFF8E8,&H00FFF8E8,&H88000000,&H66000000,1,0,0,0,103,103,0,0,1,2,1,8,92,92,620,1`,
-    "Style: Account,Segoe UI,54,&H00FFFFFF,&H00FFFFFF,&H66000000,&H66000000,0,0,0,0,100,100,0,0,3,10,0,7,54,54,132,1",
-    "Style: MetaReciter,Segoe UI,72,&H00FFFFFF,&H00FFFFFF,&H66000000,&H66000000,1,0,0,0,100,100,0,0,3,12,0,2,90,90,410,1",
-    "Style: MetaReference,Segoe UI,64,&H00FFFFFF,&H00FFFFFF,&H66000000,&H66000000,1,0,0,0,100,100,0,0,3,12,0,2,150,150,320,1",
-    "Style: MetaRiwayah,Segoe UI,50,&H00BFF1FF,&H00BFF1FF,&H66143B35,&H66143B35,1,0,0,0,100,100,0,0,3,10,0,2,300,300,240,1",
+    "Style: Account,Segoe UI,54,&H00FFFFFF,&H00FFFFFF,&H66000000,&H66000000,0,0,0,0,100,100,0,0,3,10,0,7,54,54,240,1",
+    "Style: MetaReciter,Segoe UI,72,&H00FFFFFF,&H00FFFFFF,&H66000000,&H66000000,1,0,0,0,100,100,0,0,3,12,0,2,90,90,540,1",
+    "Style: MetaReference,Segoe UI,64,&H00FFFFFF,&H00FFFFFF,&H66000000,&H66000000,1,0,0,0,100,100,0,0,3,12,0,2,150,150,450,1",
+    "Style: MetaRiwayah,Segoe UI,50,&H00BFF1FF,&H00BFF1FF,&H66143B35,&H66143B35,1,0,0,0,100,100,0,0,3,10,0,2,300,300,370,1",
     "",
     "[Events]",
     "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text",

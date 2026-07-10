@@ -14,6 +14,8 @@ requireIncludes(composer, "\"--surah\", String(surah)", "composer must pass sele
 requireIncludes(composer, "\"--ayah-start\", String(ayahStart)", "composer must pass selected ayah start to downloader");
 requireIncludes(composer, "\"--ayah-count\", String(ayahCount)", "composer must pass selected ayah count to downloader");
 requireIncludes(composer, "buildSchedule(selected, audioFiles)", "composer must build schedule from selected ayahs and exact files");
+requireIncludes(composer, "const finalAudio = combinedAudio", "composer must preserve complete recitation audio without final silence trimming");
+requireIncludes(composer, "VIDEO_END_HOLD_SECONDS", "composer must keep a short visual hold after recitation audio completes");
 requireIncludes(downloader, "https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/${reciter}", "downloader must request explicit ayah/reciter URL");
 requireIncludes(downloader, "buildSourceUrl(source.urlTemplate, surah, ayah)", "downloader must support explicit verse URL templates");
 requireIncludes(downloader, "sourceUrl: metadata.data.audio", "downloader must store audio source URL in manifest");
@@ -31,6 +33,7 @@ requireIncludes(composer, "riwayah: catalogReciter?.riwayah", "composer must rea
   "rubberband",
   "rubberband=pitch",
   "aresample=async",
+  "silenceremove",
 ].forEach((token) => {
   if (composer.includes(token)) failures.push(`composer must not alter recitation speed or pitch with ${token}`);
 });

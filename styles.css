@@ -1241,7 +1241,7 @@ input[type="file"] {
 .brand-mark {
   position: absolute;
   z-index: 2;
-  top: 10cqw;
+  top: 20cqw;
   left: 5cqw;
   direction: ltr;
   color: white;
@@ -1300,7 +1300,7 @@ input[type="file"] {
   z-index: 2;
   left: 5.6cqw;
   right: 5.6cqw;
-  bottom: 23cqw;
+  bottom: 34cqw;
   display: grid;
   gap: 1.8cqw;
   color: white;
@@ -1314,6 +1314,10 @@ input[type="file"] {
   padding: 1.6cqw 2.4cqw;
   line-height: 1.25;
   overflow-wrap: anywhere;
+}
+
+.phone-meta span:empty {
+  display: none;
 }
 
 #phoneReciter {

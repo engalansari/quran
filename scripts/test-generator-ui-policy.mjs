@@ -40,7 +40,7 @@ const required = [
   ["styles.css", readFileSync("styles.css", "utf8"), "unicode-bidi: plaintext"],
   ["index.html", indexHtml, "assets/production/makkah.mp4"],
   ["index.html", indexHtml, "app.js?v="],
-  ["index.html", indexHtml, "20260710-surah-required-v1"],
+  ["index.html", indexHtml, "20260711-meta-audio-v1"],
   ["app.js", appJs, "اختر السورة"],
   ["app.js", appJs, "/api/render"],
   ["app.js", appJs, "waitForRenderJob"],
