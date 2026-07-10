@@ -30,6 +30,7 @@
       "**/*.md",
       "*.docx",
       "quran-phone-*.png",
+      "quran-ui*.xml",
       "phone-screenshot-*.png",
       "quran-current-*.png",
       "ayah-*.png",

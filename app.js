@@ -348,11 +348,9 @@ async function loadFreeReels() {
 }
 
 function bindEvents() {
-  els.surahSelect.addEventListener("change", () => {
-    clampAyahInputs();
-    updateBackgroundSuggestions({ selectFirst: false });
-    renderAll();
-  });
+  els.surahSelect.addEventListener("input", handleSurahSelectionChange);
+  els.surahSelect.addEventListener("change", handleSurahSelectionChange);
+  els.surahSelect.addEventListener("blur", handleSurahSelectionChange);
   els.ayahStartMinus?.addEventListener("click", () => {
     setAyahStartByStep(-1);
   });
@@ -473,6 +471,12 @@ function bindEvents() {
   });
 }
 
+function handleSurahSelectionChange() {
+  clampAyahInputs();
+  updateBackgroundSuggestions({ selectFirst: false });
+  renderAll();
+}
+
 function bindNumericStepperInput(input) {
   if (!input) return;
   input.addEventListener("focus", () => {
@@ -547,6 +551,11 @@ function useExternalAyahMetadata() {
 
 function renderSurahOptions() {
   if (els.surahSelect.options.length || !state.quran) return;
+  const placeholder = document.createElement("option");
+  placeholder.value = "";
+  placeholder.textContent = "اختر السورة";
+  placeholder.selected = true;
+  els.surahSelect.appendChild(placeholder);
   state.quran.surahs.forEach((surah) => {
     const option = document.createElement("option");
     option.value = String(surah.number);
@@ -1520,8 +1529,18 @@ async function copyGeneratedVideoLink() {
 }
 
 function selectedSurah() {
-  const number = Number(els.surahSelect.value || 1);
+  const number = readSelectedSurahNumber();
+  if (!number) return null;
   return state.quran?.surahs?.find((surah) => surah.number === number);
+}
+
+function readSelectedSurahNumber() {
+  const directValue = Number(els.surahSelect.value);
+  if (Number.isInteger(directValue) && directValue >= 1) return directValue;
+  const selectedOption = els.surahSelect.selectedOptions?.[0] || els.surahSelect.options[els.surahSelect.selectedIndex];
+  const optionValue = Number(selectedOption?.value);
+  if (Number.isInteger(optionValue) && optionValue >= 1) return optionValue;
+  return null;
 }
 
 const MAX_PHONE_TEXT_CHARS = 360;

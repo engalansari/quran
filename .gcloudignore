@@ -17,7 +17,9 @@ data/source
 *.log
 *.md
 *.docx
-*.png
-*.jpg
+phone-screenshot-*.png
+quran-phone-*.png
+quran-current-*.png
+quran-ui*.xml
 *.zip
 **/*.example.json
