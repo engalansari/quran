@@ -4,6 +4,7 @@
     "ignore": [
       "firebase.json",
       ".firebaserc",
+      ".gcloudignore",
       ".git/**",
       ".agents/**",
       ".codex/**",
@@ -29,6 +30,7 @@
       "**/*.md",
       "*.docx",
       "quran-phone-*.png",
+      "phone-screenshot-*.png",
       "quran-current-*.png",
       "ayah-*.png",
       "ayah-studio-*.png",

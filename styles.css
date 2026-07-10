@@ -1241,7 +1241,7 @@ input[type="file"] {
 .brand-mark {
   position: absolute;
   z-index: 2;
-  top: 5cqw;
+  top: 10cqw;
   left: 5cqw;
   direction: ltr;
   color: white;
@@ -1249,8 +1249,8 @@ input[type="file"] {
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 999px;
   padding: 1.8cqw 2.4cqw;
-  font-size: 5.95cqw;
-  font-weight: 900;
+  font-size: 5.25cqw;
+  font-weight: 500;
 }
 
 .phone-ayah {
